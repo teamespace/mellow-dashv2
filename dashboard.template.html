@@ -201,12 +201,20 @@
   .pill.st-accepted{background:var(--ok-bg);color:var(--ok-fg)}
   .pill.st-waitlisted{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.st-rejected{background:var(--bad-bg);color:var(--bad-fg)}
+  .pill.pay-invoicing{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.pay-awaiting_payment{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.pay-paid{background:var(--ok-bg);color:var(--ok-fg)}
-  .tag-none{
+  .pill.pay-overdue{background:var(--bad-bg);color:var(--bad-fg)}
+  .pill.pay-voided{background:var(--muted);color:var(--muted-foreground)}
+  /* static pill — payment states the admin cannot set by hand */
+  .tagp{
     display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--radius-md);
-    background:var(--muted);color:var(--muted-foreground);font-size:12px;line-height:16px;font-weight:500
+    font-size:12px;line-height:16px;font-weight:500
   }
+  .tagp.grey{background:var(--muted);color:var(--muted-foreground)}
+  .tagp.warn{background:var(--warn-bg);color:var(--warn-fg)}
+  .tagp.ok{background:var(--ok-bg);color:var(--ok-fg)}
+  .tagp.bad{background:var(--bad-bg);color:var(--bad-fg)}
   .stall-sel{
     appearance:none;height:28px;border:1px solid var(--input);border-radius:var(--radius-md);
     padding:0 26px 0 10px;background:var(--background);font-size:14px;outline:none;
@@ -257,11 +265,16 @@
 
   /* ---------- popover (column picker) ---------- */
   .pop-wrap{position:relative;display:inline-flex}
+  /* Opens rightward from the button's left edge. Anchoring it to the right
+     ran it off the left of .main, which clips (overflow:hidden). */
   .pop{
-    position:absolute;top:calc(100% + 4px);right:0;z-index:60;width:240px;
+    position:absolute;top:calc(100% + 4px);left:0;z-index:60;width:240px;
+    max-height:min(60vh,432px);overflow-y:auto;overscroll-behavior:contain;
     background:var(--popover);border-radius:var(--radius);padding:4px;
     box-shadow:var(--shadow-pop),0 0 0 1px color-mix(in oklab,var(--foreground) 10%,transparent)
   }
+  .pop .pop-h{position:sticky;top:0;background:var(--popover);z-index:1}
+  .pop .pop-f{position:sticky;bottom:0;background:var(--popover)}
   .pop[hidden]{display:none}
   .pop .pop-h{font-size:12px;color:var(--muted-foreground);padding:6px 8px}
   .pop label{
@@ -1543,12 +1556,14 @@ let DATA = RAW.map(r => {
   return row;
 });
 
-/* Stall price list. The CSV export carries no prices; only
-   "Mini — $250 AUD" is legible in the admin UI. Adjust here. */
+/* Stall prices. The CSV export carries none — these come from the
+   stall_options table (seed.sql) in the production dashboard, where stalls
+   are event-scoped and the Debut tiers are priced lower than the standard
+   ones. Summer 2026: Mini/Standard/Flagship. Debut 2026: the "– Debut" tiers. */
 const PRICES = {
-  "Mini": 250, "Mini – Debut": 250,
-  "Standard": 450, "Standard – Debut": 450,
-  "Flagship": 750, "Flagship – Debut": 750
+  "Mini": 250, "Mini – Debut": 200,
+  "Standard": 450, "Standard – Debut": 400,
+  "Flagship": 570, "Flagship – Debut": 520
 };
 const STALLS = Object.keys(PRICES);
 
@@ -1570,8 +1585,21 @@ const F = {
 };
 
 const STATUSES = ["pending","accepted","waitlisted","rejected"];
-const PAYS = ["none","awaiting_payment","paid"];
-const PAY_LABEL = {none:"Not sent", awaiting_payment:"Awaiting payment", paid:"Paid"};
+
+/* Payment machine: none -> invoicing -> awaiting_payment -> paid, plus
+   overdue / voided. `none` and `invoicing` are driven by the invoice job and
+   are not hand-settable, so they render as a static pill; the other four are
+   the ones an admin reconciles by hand. */
+const PAYS = ["none","invoicing","awaiting_payment","paid","overdue","voided"];
+const MANUAL_PAYS = ["awaiting_payment","paid","overdue","voided"];
+const PAY_LABEL = {
+  none:"Not sent", invoicing:"Invoicing", awaiting_payment:"Awaiting payment",
+  paid:"Paid", overdue:"Overdue", voided:"Voided"
+};
+const PAY_TONE = {
+  none:"grey", invoicing:"warn", awaiting_payment:"warn",
+  paid:"ok", overdue:"bad", voided:"grey"
+};
 
 /* ---- email workflow ----
    Changing a status to waitlisted/rejected queues an email for review.
@@ -1949,9 +1977,11 @@ function stallCell(r){
 }
 function payCell(r){
   const pay = r[F.pay];
-  if(pay==="none") return `<span class="tag-none">Not sent</span>`;
+  if(pay === "none" || pay === "invoicing")
+    return `<span class="tagp ${esc(PAY_TONE[pay])}">${esc(PAY_LABEL[pay])}</span>`;
+  const opts = MANUAL_PAYS.indexOf(pay) === -1 ? [pay].concat(MANUAL_PAYS) : MANUAL_PAYS;
   return `<span class="pill-wrap"><select class="pill pay-${esc(pay)}" data-pay="${esc(r[F.ref])}">${
-    PAYS.map(v=>`<option value="${v}"${v===pay?" selected":""}>${PAY_LABEL[v]}</option>`).join("")
+    opts.map(v=>`<option value="${v}"${v===pay?" selected":""}>${PAY_LABEL[v]}</option>`).join("")
   }</select><span class="caret"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span></span>`;
 }
 function emailCell(r){
@@ -2283,7 +2313,7 @@ function showScreen(name){
    ============================================================ */
 function boot(){
   opt($("#fStatus"), [["","All application"]].concat(STATUSES.map(s=>[s, s.charAt(0).toUpperCase()+s.slice(1)])), "");
-  opt($("#fPay"), [["","All payment"]].concat(PAYS.map(p=>[p, PAY_LABEL[p]])), "");
+  opt($("#fPay"), [["","All payment"]].concat(PAYS.map(p=>[p, PAY_LABEL[p]])), "");   /* all six states */
   opt($("#fEmail"), [["","All email"],["pending","Email: pending review"],["sent","Email: sent"],
                      ["skipped","Email: skipped"],["__none__","Email: not tracked"]], "");
   const events = [...new Set(RAW.map(r=>r[F.ev]))];
