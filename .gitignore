@@ -1,0 +1,11 @@
+# Build output — regenerate with build_dashboard.py.
+# It embeds every applicant record, so it never belongs in the repo.
+mellow-dashv2.html
+
+# Applicant data and uploaded documents.
+*.csv
+*.pdf
+assets/
+
+.DS_Store
+__pycache__/
