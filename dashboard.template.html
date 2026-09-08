@@ -252,10 +252,6 @@
   .screen[hidden]{display:none}
   .nav a.stub{opacity:.45;cursor:default}
   .nav a.stub:hover{background:none;color:var(--ink-2)}
-  .nav .new-pill{
-    margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.06em;
-    background:#141414;color:#fff;border-radius:99px;padding:2px 6px
-  }
 
   /* ---------- table: no forced horizontal scroll ---------- */
   .tablewrap{overflow-x:auto}
@@ -538,9 +534,18 @@
   #es-root .opt-btn span{color:var(--ink-2);font-size:12px}
   #es-root select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236f6a64' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
 
-/* ===== merge overrides — must come after the studio CSS to win ===== */
+/* ===== merge overrides — must come after the studio CSS to win =====
+   The studio's base `body` and `button` rules are dropped during scoping
+   (they would leak to the shell), so re-add them bound to #es-root. Its
+   segmented controls set no border of their own and rely on that reset —
+   without it they render with native browser chrome. */
+  #es-root{font-size:14px;line-height:1.5}
+  #es-root button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  #es-root ::placeholder{color:var(--ink-3)}
+
   #es-root .topbar{display:none}      /* the shell supplies the breadcrumb bar */
   #es-root .page{max-width:none}
+  #es-root #btn-new{white-space:nowrap;flex-shrink:0}   /* was wrapping to two lines */
 </style>
 </head>
 
@@ -565,7 +570,7 @@
       <a href="#" class="stub"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 12h4l2.5-6 4 12 2.5-6h4"/></svg>Activity</a>
       <a href="#" class="stub"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20c.6-3.6 3.3-5.6 6.4-5.6s5.8 2 6.4 5.6"/><path d="M16.5 5.2a3.4 3.4 0 0 1 0 6.6M18 14.8c2.2.6 3.6 2.5 4 5.2"/></svg>Users</a>
       <a href="#" class="stub"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg>Invoice settings</a>
-      <a href="#" data-screen="email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>Email templates<span class="new-pill">NEW</span></a>
+      <a href="#" data-screen="email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>Email templates</a>
     </nav>
     <div class="side-foot">
       <span class="mail">mellowartmarket@gmail.com</span>
