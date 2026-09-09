@@ -464,6 +464,12 @@
   }
   .modal-actions .btn-solid:hover{background:color-mix(in oklab,var(--destructive) 20%,transparent)}
   .modal-actions .btn-solid:disabled{opacity:.5;pointer-events:none}
+  .modal-actions .btn-primary{
+    height:28px;padding:0 10px;border-radius:var(--radius-md);font-size:12.8px;font-weight:500;
+    background:var(--primary);color:var(--primary-foreground)
+  }
+  .modal-actions .btn-primary:hover{background:color-mix(in oklab,var(--primary) 90%,transparent)}
+  .modal-actions .btn-primary:active{transform:translateY(1px)}
 
   /* ---------- toast (sonner) ---------- */
   .toast{
@@ -807,6 +813,18 @@
   </div>
 </div>
 
+<!-- backup confirmation -->
+<div class="veil" id="bkConfirm" hidden>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="bkConfirmTitle">
+    <h2 id="bkConfirmTitle">Back up this data?</h2>
+    <p>Downloads a .zip with <b id="bkcTotal">0</b> records &mdash; <b>inquiries.csv</b>, <b>inquiries.html</b> and an <b>images/</b> folder. Every record is included; the current filters are ignored.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="bkcNo">No</button>
+      <button class="btn-primary" id="bkcYes">Yes, back up</button>
+    </div>
+  </div>
+</div>
+
 <!-- backup progress -->
 <div class="veil" id="bkModal" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
@@ -904,7 +922,7 @@ function defaultState(){
       footerText:'This is an automated message from Mellow Art.\n© 2026 Mellow Art · Australia'
     },
     templates:[
-      { id:uid(), name:'Approval / invoice', status:'Active', trigger:TRIGGERS[0], updated:'Edited 2 days ago',
+      { id:uid(), key:'approval', name:'Approval / invoice', status:'Active', trigger:TRIGGERS[0], updated:'Edited 2 days ago',
         subject:"You're in! Complete your payment for {{eventName}} ({{reference}})",
         preheader:'Your application has been approved — complete payment to secure your spot.',
         blocks:[
@@ -915,7 +933,7 @@ function defaultState(){
           {id:uid(),type:'divider',props:{}},
           {id:uid(),type:'text',props:{content:'Prefer bank transfer?\nAccount name: {{bankAccountName}}\nBSB: {{bankBsb}}\nAccount number: {{bankAccountNumber}}\nReference: {{reference}}',align:'left',hideIf:''}}
         ]},
-      { id:uid(), name:'Application received', status:'Active', trigger:TRIGGERS[1], updated:'Edited 5 days ago',
+      { id:uid(), key:'received', name:'Application received', status:'Active', trigger:TRIGGERS[1], updated:'Edited 5 days ago',
         subject:'We received your application for {{eventName}}',
         preheader:'Thanks {{firstName}} — our team will review it shortly.',
         blocks:[
@@ -924,14 +942,14 @@ function defaultState(){
           {id:uid(),type:'text',props:{content:'Our team reviews every application carefully. You’ll hear from us within 10 business days.\n\nYour submission reference is {{reference}} — keep it handy if you contact us.',align:'left',hideIf:''}},
           {id:uid(),type:'button',props:{label:'Visit our website',href:'{{confirmationFormUrl}}',align:'center',full:false,bg:'',hideIf:''}}
         ]},
-      { id:uid(), name:'Rejection', status:'Active', trigger:TRIGGERS[2], updated:'Edited 1 week ago',
+      { id:uid(), key:'rejection', name:'Rejection', status:'Active', trigger:TRIGGERS[2], updated:'Edited 1 week ago',
         subject:'An update on your {{eventName}} application',
         preheader:'Thank you for applying to {{eventName}}.',
         blocks:[
           {id:uid(),type:'hero',props:{badge:'Application Update',heading:'Thank you, {{firstName}}',subtext:'An update on your application for {{eventName}}.',bg:'#2C2422',image:''}},
           {id:uid(),type:'text',props:{content:'Hi {{firstName}},\n\nThank you so much for applying. Unfortunately we’re unable to offer you a stall this time.\n\n{{reason}}\n\nWe’d love to see you apply again for future events.',align:'left',hideIf:''}}
         ]},
-      { id:uid(), name:'Waitlist', status:'Draft', trigger:TRIGGERS[3], updated:'Edited 3 weeks ago',
+      { id:uid(), key:'waitlist', name:'Waitlist', status:'Draft', trigger:TRIGGERS[3], updated:'Edited 3 weeks ago',
         subject:'You’re on the waitlist for {{eventName}}',
         preheader:'We’ll be in touch if a spot opens up.',
         blocks:[
@@ -946,6 +964,20 @@ function defaultState(){
 let state;
 try{ state = JSON.parse(localStorage.getItem('mellowDashV2.email')) || defaultState(); }
 catch(e){ state = defaultState(); }
+
+/* Back-compat: stamp factory keys onto state saved before Reset existed. */
+(function(){
+  const facts = defaultState().templates;
+  state.templates.forEach(t=>{ if(!t.key){ const m = facts.find(x=>x.name===t.name); if(m) t.key = m.key; } });
+})();
+
+/* ---------- undo history (in memory only, never persisted) ---------- */
+const HISTORY_MAX = 50;
+const COALESCE_MS = 600;      // a burst of typing collapses into one undo step
+let past = [];                // serialized states, oldest first
+let future = [];              // states undone, ready to redo
+let snapshot = JSON.stringify(state);
+let lastPush = 0;
 let view = 'list';            // list | editor
 let editorTab = 'content';    // content | branding (combined editor tabs)
 let currentId = null;         // template id in editor
@@ -958,7 +990,62 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const merge = s => esc(s).replace(/\{\{\s*(\w+)\s*\}\}/g,(m,k)=> k in SAMPLE ? `<strong>${esc(SAMPLE[k])}</strong>` : m).replace(/\n/g,'<br>');
 const mergePlain = s => String(s??'').replace(/\{\{\s*(\w+)\s*\}\}/g,(m,k)=> SAMPLE[k] ?? m);
-const save = ()=>{ localStorage.setItem('mellowDashV2.email', JSON.stringify(state)); flashSaved(); };
+const save = (discrete)=>{ pushHistory(discrete); localStorage.setItem('mellowDashV2.email', JSON.stringify(state)); flashSaved(); };
+
+/* discrete=true forces its own undo step (adding, deleting, reordering).
+   Otherwise rapid edits inside COALESCE_MS collapse, so one undo clears a
+   whole burst of typing rather than a single character. */
+function pushHistory(discrete){
+  const now = Date.now();
+  future.length = 0;          // a fresh edit invalidates anything undone
+  if(!discrete && past.length && now - lastPush < COALESCE_MS){
+    lastPush = now; snapshot = JSON.stringify(state); syncHistoryBtns(); return;
+  }
+  past.push(snapshot);
+  if(past.length > HISTORY_MAX) past.shift();
+  lastPush = now; snapshot = JSON.stringify(state);
+  syncHistoryBtns();
+}
+function syncHistoryBtns(){
+  const u = $('#es-undo'); if(u) u.disabled = !past.length;
+  const r = $('#es-redo'); if(r) r.disabled = !future.length;
+}
+
+/* Swap in a stored state and put the editor back on something that exists. */
+function restore(serialized){
+  state = JSON.parse(serialized);
+  snapshot = JSON.stringify(state); lastPush = 0;
+  localStorage.setItem('mellowDashV2.email', JSON.stringify(state));
+  if(currentId && !state.templates.some(t=>t.id===currentId)){ view='list'; currentId=null; }
+  if(selectedBlock){ const t=tpl(); if(!t || !t.blocks.some(b=>b.id===selectedBlock)) selectedBlock=null; }
+  render();
+}
+
+function undo(){
+  if(!past.length){ toast('Nothing to undo'); return; }
+  future.push(JSON.stringify(state));
+  if(future.length > HISTORY_MAX) future.shift();
+  restore(past.pop()); toast('Undone');
+}
+
+function redo(){
+  if(!future.length){ toast('Nothing to redo'); return; }
+  past.push(JSON.stringify(state));
+  if(past.length > HISTORY_MAX) past.shift();
+  restore(future.pop()); toast('Redone');
+}
+
+/* Reset the open template to the content it shipped with. */
+function resetTemplate(){
+  const t = tpl(); if(!t) return;
+  const d = t.key ? defaultState().templates.find(x=>x.key===t.key) : null;
+  if(!d){ toast('This template has no factory default'); return; }
+  if(!confirm(`Reset \u201c${t.name}\u201d to its default content?\n\nThe subject, preheader and every block are replaced. You can undo this.`)) return;
+  const i = state.templates.findIndex(x=>x.id===t.id);
+  state.templates[i] = Object.assign(d, { id:t.id, updated:'Reset just now' });
+  selectedBlock = null;
+  save(true); render(); toast('Template reset to default');
+}
 const tpl = ()=> state.templates.find(t=>t.id===currentId);
 
 function toast(msg){ const t=$('#es-toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200); }
@@ -1220,6 +1307,9 @@ function viewEditor(){
       <button class="btn btn-ghost btn-sm" data-goto="list">← Templates</button>
       <input class="tpl-name-input" id="tpl-name" value="${esc(t.name)}">
       <span class="saved-chip" id="saved-chip">Autosaved</span>
+      <button class="btn btn-ghost btn-sm" id="es-undo" title="Undo last change (⌘Z)">↺ Undo</button>
+      <button class="btn btn-ghost btn-sm" id="es-redo" title="Redo (⇧⌘Z)">↻ Redo</button>
+      <button class="btn btn-ghost btn-sm" id="es-reset" title="Reset this template to its default content">⟲ Reset</button>
       <div class="device-toggle">
         <button data-dev="desktop" class="${device==='desktop'?'on':''}">Desktop</button>
         <button data-dev="mobile" class="${device==='mobile'?'on':''}">Mobile</button>
@@ -1327,12 +1417,18 @@ function bindCommon(){
     document.querySelectorAll('[data-del]').forEach(b=> b.onclick = e=>{ e.stopPropagation();
       const t = state.templates.find(x=>x.id===b.dataset.del);
       if(confirm(`Delete template "${t.name}"? This can’t be undone.`)){
-        state.templates = state.templates.filter(x=>x.id!==b.dataset.del); save(); render(); toast('Template deleted'); } });
+        state.templates = state.templates.filter(x=>x.id!==b.dataset.del); save(true); render(); toast('Template deleted'); } });
     const openNew = ()=> openModal();
     $('#btn-new').onclick = openNew; $('#btn-new-2').onclick = openNew;
   }
 
   if(view==='editor'){
+    /* undo + reset */
+    const ub = $('#es-undo'); if(ub) ub.onclick = undo;
+    const rdb = $('#es-redo'); if(rdb) rdb.onclick = redo;
+    const rb = $('#es-reset'); if(rb) rb.onclick = resetTemplate;
+    syncHistoryBtns();
+
     /* Content / Branding tab switching */
     document.querySelectorAll('.panel-tabs button').forEach(b=>{
       b.onclick = ()=>{
@@ -1362,7 +1458,7 @@ function bindCommon(){
         const t=tpl();
         const idx = selectedBlock ? t.blocks.findIndex(x=>x.id===selectedBlock)+1 : t.blocks.length;
         t.blocks.splice(idx,0,blk);
-        selectedBlock=blk.id; save(); renderPreview(); renderSettings();
+        selectedBlock=blk.id; save(true); renderPreview(); renderSettings();
         toast(`${BLOCKS[type].label} block added`);
       };
     });
@@ -1402,7 +1498,7 @@ function bindPreview(frame){
         if(act==='down'&&i<t.blocks.length-1) [t.blocks[i+1],t.blocks[i]]=[t.blocks[i],t.blocks[i+1]];
         if(act==='dup'){ const cp=JSON.parse(JSON.stringify(t.blocks[i])); cp.id=uid(); t.blocks.splice(i+1,0,cp); selectedBlock=cp.id; }
         if(act==='del'){ t.blocks.splice(i,1); selectedBlock=null; }
-        save(); renderPreview(); renderSettings();
+        save(true); renderPreview(); renderSettings();
       };
     });
     /* drag & drop reorder */
@@ -1422,7 +1518,7 @@ function bindPreview(frame){
       const [moved]=t.blocks.splice(dragIdx,1);
       let target = above?to:to+1; if(dragIdx<to) target--;
       t.blocks.splice(Math.max(0,Math.min(target,t.blocks.length)),0,moved);
-      dragIdx=null; save(); renderPreview();
+      dragIdx=null; save(true); renderPreview();
     });
   });
   frame.querySelectorAll('.pv-locked').forEach(el=>{
@@ -1449,7 +1545,7 @@ function bindSettings(panel, blk){
     seg.querySelectorAll('button').forEach(b=> b.onclick=()=>{
       blk.props[seg.dataset.seg]=b.dataset.val;
       seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
-      save(); renderPreview();
+      save(true); renderPreview();
     });
   });
   panel.querySelectorAll('[data-upload]').forEach(btn=>{
@@ -1458,7 +1554,7 @@ function bindSettings(panel, blk){
       fi.onchange = ()=>{
         const f=fi.files[0]; if(!f) return;
         const rd=new FileReader();
-        rd.onload = ()=>{ blk.props[btn.dataset.upload]=rd.result; save(); renderPreview(); renderSettings(); toast('Image uploaded & placed ✓'); };
+        rd.onload = ()=>{ blk.props[btn.dataset.upload]=rd.result; save(true); renderPreview(); renderSettings(); toast('Image uploaded & placed ✓'); };
         rd.readAsDataURL(f); fi.value='';
       };
       fi.click();
@@ -1467,7 +1563,7 @@ function bindSettings(panel, blk){
   const del = panel.querySelector('[data-delsel]');
   if(del) del.onclick = ()=>{
     const t=tpl(); t.blocks=t.blocks.filter(b=>b.id!==blk.id); selectedBlock=null;
-    save(); renderPreview(); renderSettings();
+    save(true); renderPreview(); renderSettings();
   };
 }
 
@@ -1497,7 +1593,7 @@ function createTemplate(fromId){
       ]};
   }
   t.updated='Created just now';
-  state.templates.push(t); save();
+  state.templates.push(t); save(true);
   closeModal();
   currentId=t.id; selectedBlock=null; editorTab='content'; view='editor'; render();
   toast(fromId?'Template duplicated — you’re now editing the copy':'New template created');
@@ -1508,7 +1604,20 @@ function duplicateTemplate(id){ createTemplate(id); }
 
   /* ---------- bridge for the rest of the app ---------- */
   let booted = false;
-  function boot(){ if(booted) return; booted = true; render(); }
+  function boot(){ if(booted) return; booted = true; bindKeys(); render(); }
+
+  /* Cmd+Z / Ctrl+Z, only while the Email templates screen is open. */
+  function bindKeys(){
+    document.addEventListener('keydown', e=>{
+      const k = String(e.key).toLowerCase();
+      if(k !== 'z' && k !== 'y') return;
+      if(!(e.metaKey || e.ctrlKey) || e.altKey) return;
+      const root = $('#es-root'); if(!root || root.hidden) return;
+      e.preventDefault();
+      /* ⌘Z undo · ⇧⌘Z redo · Ctrl+Y redo (Windows) */
+      (k === 'y' || e.shiftKey) ? redo() : undo();
+    });
+  }
 
   /* Render one template against a real inquiry record instead of SAMPLE data.
      SAMPLE is a const object, so we swap its properties and put them back. */
@@ -2403,7 +2512,16 @@ function boot(){
   if(refresh) refresh.onclick = () => { render(); toast("Refreshed."); };
 
   /* backup */
-  $("#btnBackup").onclick = runBackup;
+  const bkc = $("#bkConfirm");
+  $("#btnBackup").onclick = () => {
+    if(backingUp) return;
+    if(!DATA.length){ toast("Nothing to back up."); return; }
+    $("#bkcTotal").textContent = DATA.length.toLocaleString();
+    bkc.hidden = false; $("#bkcYes").focus();
+  };
+  $("#bkcNo").onclick = () => bkc.hidden = true;
+  $("#bkcYes").onclick = () => { bkc.hidden = true; runBackup(); };
+  bkc.onclick = e => { if(e.target === bkc) bkc.hidden = true; };
   $("#bkClose").onclick = () => { if(!backingUp) $("#bkModal").hidden = true; };
 
   /* delete all */
@@ -2465,16 +2583,36 @@ function boot(){
       const r = byRef(s.dataset.status);
       const next = s.value;
       r[F.status] = next;
-      const due = EMAIL_FOR[next];
-      if(due && r[F.estate] !== "sent"){
-        r[F.estate] = "pending"; r[F.etpl] = due; r[F.esent] = "";
-        state.queueDismissed = false;
-        toast(`${r[F.ref]} → ${next}. ${due} email queued for review — nothing sent yet.`);
-      } else if(!due && r[F.estate] === "pending"){
-        r[F.estate] = ""; r[F.etpl] = "";
-        toast(`${r[F.ref]} → ${next}. Queued email cancelled.`);
+
+      /* The email column tracks the email for the CURRENT decision, so it has to
+         follow every status change — including a decision that is retracted and
+         then re-made. A record left over from a previous decision is stale: it
+         describes an email that no longer matches where the application stands. */
+      const due  = EMAIL_FOR[next];        // template this status calls for, if any
+      const was  = r[F.estate];            // "" | pending | sent | skipped
+      const wasT = r[F.etpl];
+
+      if(due){
+        if(was === "pending" && wasT === due){
+          toast(`${r[F.ref]} → ${next}`);                    // already queued for this decision
+        } else {
+          if(wasT !== due) r[F.ereason] = "";                // a reason written for another template
+          r[F.estate] = "pending"; r[F.etpl] = due; r[F.esent] = "";
+          state.queueDismissed = false;
+          toast(was === "sent" || was === "skipped"
+            ? `${r[F.ref]} → ${next}. ${due} email queued again — the earlier ${wasT} email no longer matches this status.`
+            : `${r[F.ref]} → ${next}. ${due} email queued for review — nothing sent yet.`);
+        }
       } else {
-        toast(`${r[F.ref]} → ${next}`);
+        /* pending or accepted: no email is queued from the status itself. */
+        if(was){
+          r[F.estate] = ""; r[F.etpl] = ""; r[F.esent] = ""; r[F.ereason] = "";
+          toast(was === "pending"
+            ? `${r[F.ref]} → ${next}. Queued email cancelled.`
+            : `${r[F.ref]} → ${next}. Email tracking reset — a ${wasT} email had already been ${was}.`);
+        } else {
+          toast(`${r[F.ref]} → ${next}`);
+        }
       }
       render();   /* stall cell visibility depends on status */
     }
@@ -2487,6 +2625,7 @@ function boot(){
     if(e.key !== "Escape") return;
     closeDrawer(); $("#noteModal").hidden = true; $("#colPop").hidden = true;
     if(!backingUp) $("#bkModal").hidden = true;
+    $("#bkConfirm").hidden = true;
     $("#wipeModal").hidden = true;
   });
 
