@@ -34,8 +34,9 @@ python3 -m http.server 8000
 ### Inquiries
 
 - Search, and filters for application status, payment, **email state**, event and archive
-- Table / list / card views, 50 rows per page
-- Inline editing of status, stall and payment; internal notes
+- Table / list / card views; 10 rows per page by default, with a Rows selector (10/20/50/100)
+- Inline editing of status and payment; internal notes. Stall assignment unlocks
+  only once an application is accepted, and locks again once an invoice exists
 - Copy emails, export the filtered set as CSV, and a full ZIP backup
   (CSV + browsable HTML + one image per record), written in-browser
 
@@ -97,9 +98,11 @@ This is a front-end prototype. It is convincing, and it does not persist.
 - **Sending is simulated.** *Send* records the email as sent; it delivers nothing.
   Wiring this to a real provider is the remaining work, and the review step is
   where that call belongs.
-- **Stall prices are partly assumed.** Only Mini ($250) came from the live admin
-  UI. Standard ($450) and Flagship ($750) are placeholders in `PRICES` — confirm
-  them against Xero before quoting any revenue figure.
+- **Stall prices are event-scoped upstream.** The values in `PRICES` come from the
+  production `stall_options` table (Mini $250 / Mini–Debut $200, Standard $450 /
+  Standard–Debut $400, Flagship $570 / Flagship–Debut $520). Stalls are priced
+  per event there, and neither seeded event is MEL.01 — the tier names match
+  exactly, but one Xero invoice line would confirm it outright.
 - **Form placeholders are stored as answers.** Some records have values like
   `Select booth type...` where the applicant skipped a dropdown. The table renders
   these as `—`; the underlying data still holds the string.
