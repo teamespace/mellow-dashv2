@@ -207,6 +207,22 @@
   .pill.pay-overdue{background:var(--bad-bg);color:var(--bad-fg)}
   .pill.pay-voided{background:var(--muted);color:var(--muted-foreground)}
   /* static pill — payment states the admin cannot set by hand */
+  /* Withdrawn is a flag, not a status: it rides beside the Application pill so a
+     withdrawn row is recognisable without enabling the optional column. */
+  .wd-mark{
+    display:inline-grid;place-items:center;width:17px;height:17px;margin-left:6px;
+    border:1px solid color-mix(in oklab,var(--bad-fg) 28%,transparent);border-radius:999px;
+    background:var(--bad-bg);color:var(--bad-fg);
+    font-size:11.5px;font-weight:700;line-height:1;vertical-align:middle;cursor:default
+  }
+  .dstatus{display:flex;align-items:center;gap:8px;margin:0 0 2px}
+  .dstatus .spacer{flex:1}
+  .btn-wd{
+    height:26px;padding:0 10px;border:1px solid var(--border);background:var(--background);
+    border-radius:var(--radius-md);font-size:12.5px;font-weight:500;color:var(--muted-foreground)
+  }
+  .btn-wd:hover{background:var(--accent);color:var(--foreground)}
+  .btn-wd.on{background:var(--muted);color:var(--foreground)}
   .tagp{
     display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--radius-md);
     font-size:12px;line-height:16px;font-weight:500
@@ -1659,6 +1675,13 @@ function duplicateTemplate(id){ createTemplate(id); }
 const EXTRA = ["Email state","Email template","Email reason","Email sent at"];
 EXTRA.forEach(n => { if(COLS.indexOf(n) === -1) COLS.push(n); });
 
+/* Withdrawal is recorded as a timestamp, not a boolean: the presence of a date
+   IS the flag, so there is no second field that can drift out of step with it.
+   Same shape as the existing "Archived at". It deliberately sits outside the
+   status machine, so marking a withdrawal cannot queue an email, touch the
+   invoice or change the stall — the status underneath is left exactly as it was. */
+if(COLS.indexOf("Withdrawn at") === -1) COLS.push("Withdrawn at");
+
 const C = {}; COLS.forEach((n,i)=>C[n]=i);
 
 /* Existing records keep whatever the export said. Nothing here backfills an
@@ -1690,7 +1713,7 @@ const F = {
   before:C["Applied before"], ev:C["Event"], status:C["Status"], stall:C["Stall assigned"],
   pay:C["Payment status"], inv:C["Invoice URL"], invId:C["Xero invoice ID"], paid:C["Paid at"],
   notes:C["Internal notes"], sub:C["Submitted at"], dec:C["Decided at"], upd:C["Updated at"],
-  arch:C["Archived at"], by:C["Decided by"],
+  arch:C["Archived at"], by:C["Decided by"], wd:C["Withdrawn at"],
   a2fn:C["Second artist first name"], a2ln:C["Second artist last name"],
   a2em:C["Second artist email"], a2brand:C["Second artist brand name"],
   a2ig:C["Second artist instagram"], a2bio:C["Second artist bio"],
@@ -2011,7 +2034,7 @@ const COLDEFS = [
   { key:"sub", w:100, label:"Submitted", def:true, sort:F.sub,
     cell:r=>`<td class="muted">${fmtDate(r[F.sub])}</td>` },
 
-  { key:"status", w:120, label:"Application", def:true, sort:F.status,
+  { key:"status", w:140, label:"Application", def:true, sort:F.status,
     cell:r=>`<td>${statusPill(r)}</td>` },
 
   { key:"stall", w:168, label:"Stall", def:true,
@@ -2022,6 +2045,13 @@ const COLDEFS = [
 
   { key:"email", w:116, label:"Email", def:true, sort:F.estate,
     cell:r=>`<td>${emailCell(r)}</td>` },
+
+  /* Off by default — the marker beside the Application pill carries the signal,
+     this column carries the date for anyone who wants to scan or sort by it. */
+  { key:"withdraw", w:122, label:"Withdraw", sort:F.wd,
+    cell:r=>`<td>${r[F.wd]
+      ? `<span class="tagp bad" title="Withdrawn ${esc(fmtDateTime(r[F.wd]))}">Withdrawn</span>`
+      : `<span class="muted">—</span>`}</td>` },
 
   { key:"share", w:86, label:"Sharing",
     cell:r=>`<td class="muted">${r[F.share]==="yes"?"yes":"no"}</td>` },
@@ -2116,13 +2146,20 @@ function igLink(v){
 const igHandle = v => String(v||"").replace(/^'+/,"").replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/\/$/,"") || "—";
 
 /* ---------- cells ---------- */
+function withdrawMark(r){
+  if(!r[F.wd]) return "";
+  return `<span class="wd-mark" role="img" aria-label="Withdrawn"` +
+         ` title="Withdrawn ${esc(fmtDateTime(r[F.wd]))} — status, stall, invoice and email left as they were">!</span>`;
+}
+
 function statusPill(r, plain){
   const s = r[F.status];
   const lbl = s.charAt(0).toUpperCase()+s.slice(1);
-  if(plain) return `<span class="pill st-${esc(s)}" style="padding:0 9px">${esc(lbl)}</span>`;
+  const mark = withdrawMark(r);
+  if(plain) return `<span class="pill st-${esc(s)}" style="padding:0 9px">${esc(lbl)}</span>${mark}`;
   return `<span class="pill-wrap"><select class="pill st-${esc(s)}" data-status="${esc(r[F.ref])}">${
     STATUSES.map(v=>`<option value="${v}"${v===s?" selected":""}>${v.charAt(0).toUpperCase()+v.slice(1)}</option>`).join("")
-  }</select><span class="caret"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span></span>`;
+  }</select><span class="caret"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span></span>${mark}`;
 }
 /* Stall assignment unlocks only once the application is accepted, and locks
    again once the invoice has been sent. Mirrors StallCell in the production
@@ -2161,6 +2198,8 @@ function filtered(){
   return DATA.filter(r=>{
     if(state.archive==="active" && r[F.arch]) return false;
     if(state.archive==="archived" && !r[F.arch]) return false;
+    if(state.archive==="withdrawn" && !r[F.wd]) return false;
+    if(state.archive==="notwithdrawn" && r[F.wd]) return false;
     if(state.status && r[F.status]!==state.status) return false;
     if(state.pay && r[F.pay]!==state.pay) return false;
     if(state.email){
@@ -2364,7 +2403,9 @@ function openDrawer(ref){
         <div class="sm">${esc(r[F.fn])} ${esc(r[F.ln])} · ${esc(r[F.ref])}</div></div>
       <button class="icon-btn" id="drawerClose"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </div>
-    ${statusPill(r, true)}
+    <div class="dstatus">${statusPill(r, true)}<span class="spacer"></span>${
+      r[F.wd] ? `<button class="btn-wd on" id="wdToggle">Undo withdrawal</button>`
+              : `<button class="btn-wd" id="wdToggle">Mark withdrawn</button>`}</div>
     ${commsHTML(r)}
     <div class="dsec"><h4>Applicant</h4><dl class="dl">
       ${rowRaw("Email", mailLink(r[F.em]))}${rowRaw("Instagram", igLink(r[F.ig]))}${rowRaw("Website", webLink(r[F.web]))}
@@ -2381,12 +2422,27 @@ function openDrawer(ref){
     </dl></div>
     <div class="dsec"><h4>Admin</h4><dl class="dl">
       ${row("Submitted", r[F.sub])}${row("Decided", r[F.dec])}${row("Decided by", r[F.by])}
+      ${row("Withdrawn", r[F.wd])}
       ${row("Payment", PAY_LABEL[r[F.pay]])}${row("Paid at", r[F.paid])}
       ${rowRaw("Xero invoice", r[F.inv] ? extLink(r[F.inv], r[F.invId] || "View invoice") : esc(r[F.invId]||""))}${row("Internal note", r[F.notes])}
     </dl></div>
     ${second}`;
   $("#drawer").hidden = false; $("#drawerVeil").hidden = false;
   $("#drawerClose").onclick = closeDrawer;
+
+  /* Recordkeeping only. Nothing else on the record is touched, by design. */
+  const wd = $("#wdToggle");
+  if(wd) wd.onclick = () => {
+    if(r[F.wd]){
+      r[F.wd] = "";
+      toast(`${r[F.ref]} — withdrawal cleared.`);
+    } else {
+      r[F.wd] = nowStamp();
+      toast(`${r[F.ref]} marked withdrawn. Status, stall, invoice and email are unchanged.`);
+    }
+    render(); openDrawer(ref);
+  };
+
   bindComms(r);
 }
 function closeDrawer(){ $("#drawer").hidden = true; $("#drawerVeil").hidden = true; }
@@ -2483,7 +2539,9 @@ function boot(){
                      ["skipped","Email: skipped"],["__none__","Email: not tracked"]], "");
   const events = [...new Set(RAW.map(r=>r[F.ev]))];
   opt($("#fEvent"), [["","All event"]].concat(events.map(e=>[e,e])), "");
-  opt($("#fArchive"), [["active","Active"],["archived","Archived"],["all","All"]], "active");
+  opt($("#fArchive"), [["active","Active"],["archived","Archived"],
+                       ["withdrawn","Withdrawn"],["notwithdrawn","Not withdrawn"],
+                       ["all","All"]], "active");
 
   $("#q").oninput = e => { state.q = e.target.value; state.page = 0; render(); };
   $("#fStatus").onchange = e => { state.status = e.target.value; state.page = 0; render(); };
