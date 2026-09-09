@@ -333,6 +333,11 @@
   .dl{display:grid;grid-template-columns:132px 1fr;gap:8px 14px;margin:0;font-size:14px}
   .dl dt{color:var(--muted-foreground)}
   .dl dd{margin:0;overflow-wrap:anywhere}
+  .dl dd a.dlink{color:var(--foreground);text-decoration:underline;text-underline-offset:2px;
+    text-decoration-color:color-mix(in oklab,var(--foreground) 35%,transparent);border-radius:3px}
+  .dl dd a.dlink:hover{text-decoration-color:var(--foreground)}
+  .dl dd a.dlink:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+  .dl dd a.dlink .ext{font-size:11px;opacity:.5;margin-left:3px;text-decoration:none;display:inline-block}
 
   /* ---------- review & send ---------- */
   .dsend{
@@ -2058,6 +2063,56 @@ const shownCols = () => COLDEFS.filter(c => visibleCols.indexOf(c.key) !== -1);
 
 /* form placeholders were saved as if they were answers — treat them as blank */
 const clean = v => (/^\s*select/i.test(String(v||"")) ? "—" : (v || "—"));
+
+/* ---------- clickable contact fields in the detail drawer ----------
+   The export stores these in several shapes: Instagram as a bare handle, as a
+   leading-apostrophe '@handle, or as a full profile URL; Website with or without
+   a scheme, and literal "N/A" on 104 rows. Each builder returns an anchor when it
+   can produce a real destination and escaped plain text when it cannot, so a
+   value is never silently dropped or turned into a broken link. */
+const DEAD_VALUE = /^\s*(n\/?a|none|nil|tbc|-+|—)\s*$/i;
+const extLink = (href, label) =>
+  `<a class="dlink" href="${esc(href)}" target="_blank" rel="noopener noreferrer"` +
+  ` title="${esc(href)}">${esc(label)}<span class="ext" aria-hidden="true">↗</span></a>`;
+
+function mailLink(v){
+  const t = String(v||"").trim();
+  if(!t || DEAD_VALUE.test(t) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)) return esc(t);
+  return `<a class="dlink" href="mailto:${esc(t)}">${esc(t)}</a>`;
+}
+
+function webLink(v){
+  const t = String(v||"").trim().replace(/^['"\s]+/, "");
+  if(!t || DEAD_VALUE.test(t) || /^\s*select/i.test(t)) return esc(t);
+  const href = /^https?:\/\//i.test(t) ? t : "https://" + t.replace(/^\/+/, "");
+  let ok = false;
+  try{ const u = new URL(href); ok = /^https?:$/.test(u.protocol) && /\./.test(u.hostname); }catch(e){}
+  return ok ? extLink(href, t) : esc(t);
+}
+
+function igHref(h){ return "https://www.instagram.com/" + h; }
+
+function igLink(v){
+  const t = String(v||"").trim().replace(/^['"\s]+/, "");
+  if(!t || DEAD_VALUE.test(t)) return esc(t);
+  const m = t.match(/^(?:https?:\/\/)?(?:www\.)?instagram\.com\/([^/?#]+)/i);
+  const one = (m ? m[1] : t).replace(/^@/, "").replace(/[/.]+$/, "");
+  if(/^[A-Za-z0-9._]{1,30}$/.test(one)) return extLink(igHref(one), "@" + one);
+
+  /* Ten records list two or more handles, or bury one in a sentence. Link each
+     @handle where it sits and leave the surrounding words as plain text, rather
+     than turning the whole value into one wrong link. */
+  const re = /@\s*([A-Za-z0-9._]{2,30})/g;
+  let out = "", last = 0, found = false, mm;
+  while((mm = re.exec(t)) !== null){
+    const h = mm[1].replace(/[.]+$/, "");
+    if(!h) continue;
+    out += esc(t.slice(last, mm.index)) + extLink(igHref(h), "@" + h);
+    last = mm.index + mm[0].length;
+    found = true;
+  }
+  return found ? out + esc(t.slice(last)) : esc(t);
+}
 const igHandle = v => String(v||"").replace(/^'+/,"").replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/\/$/,"") || "—";
 
 /* ---------- cells ---------- */
@@ -2297,10 +2352,11 @@ function commsHTML(r){
 function openDrawer(ref){
   const r = byRef(ref); if(!r) return;
   const row = (k,v)=> v ? `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>` : "";
+  const rowRaw = (k,html)=> html ? `<dt>${esc(k)}</dt><dd>${html}</dd>` : "";
   const second = r[F.a2em] ? `
     <div class="dsec"><h4>Second artist (shared stall)</h4><dl class="dl">
-      ${row("Name", r[F.a2fn]+" "+r[F.a2ln])}${row("Email", r[F.a2em])}${row("Brand", r[F.a2brand])}
-      ${row("Instagram", r[F.a2ig])}${row("Category", r[F.a2cat])}${row("Products", r[F.a2prod])}${row("Bio", r[F.a2bio])}
+      ${row("Name", r[F.a2fn]+" "+r[F.a2ln])}${rowRaw("Email", mailLink(r[F.a2em]))}${row("Brand", r[F.a2brand])}
+      ${rowRaw("Instagram", igLink(r[F.a2ig]))}${row("Category", r[F.a2cat])}${row("Products", r[F.a2prod])}${row("Bio", r[F.a2bio])}
     </dl></div>` : "";
   $("#drawer").innerHTML = `
     <div class="dh">
@@ -2311,7 +2367,7 @@ function openDrawer(ref){
     ${statusPill(r, true)}
     ${commsHTML(r)}
     <div class="dsec"><h4>Applicant</h4><dl class="dl">
-      ${row("Email", r[F.em])}${row("Instagram", r[F.ig])}${row("Website", r[F.web])}
+      ${rowRaw("Email", mailLink(r[F.em]))}${rowRaw("Instagram", igLink(r[F.ig]))}${rowRaw("Website", webLink(r[F.web]))}
       ${row("Applied before", r[F.before])}${row("Insurance", r[F.ins])}
     </dl></div>
     <div class="dsec"><h4>Practice</h4><dl class="dl">
@@ -2326,7 +2382,7 @@ function openDrawer(ref){
     <div class="dsec"><h4>Admin</h4><dl class="dl">
       ${row("Submitted", r[F.sub])}${row("Decided", r[F.dec])}${row("Decided by", r[F.by])}
       ${row("Payment", PAY_LABEL[r[F.pay]])}${row("Paid at", r[F.paid])}
-      ${row("Xero invoice", r[F.invId])}${row("Internal note", r[F.notes])}
+      ${rowRaw("Xero invoice", r[F.inv] ? extLink(r[F.inv], r[F.invId] || "View invoice") : esc(r[F.invId]||""))}${row("Internal note", r[F.notes])}
     </dl></div>
     ${second}`;
   $("#drawer").hidden = false; $("#drawerVeil").hidden = false;
