@@ -29,12 +29,38 @@ falls back to generated placeholder images instead of real uploads:
 python3 -m http.server 8000
 ```
 
+## Cloudflare demo deployment
+
+The demo at `https://dev.elx.onl/mellowdashv2/` is deployed through the
+path-isolated Worker in `cloudflare/`. Its routes match only `/mellowdashv2`
+and `/mellowdashv2/*`; the existing `dev-elx` Worker remains responsible for
+authentication and every other path on the hostname.
+
+Generate the private deployment artifact with the current live/approved CSV:
+
+```bash
+python3 build_dashboard.py path/to/inquiries-export.csv cloudflare/public/mellowdashv2/index.html
+```
+
+Then validate and deploy it with the checked-in configuration:
+
+```bash
+npx wrangler deploy --dry-run --config cloudflare/wrangler.jsonc
+npx wrangler deploy --config cloudflare/wrangler.jsonc
+```
+
+`cloudflare/public/` is ignored because the generated HTML embeds applicant
+data. Never commit that directory, a CSV export, login credentials, or API
+tokens.
+
 ## What's in it
 
 ### Inquiries
 
 - Search, and filters for application status, payment, **email state**, event and archive
 - Table / list / card views; 10 rows per page by default, with a Rows selector (10/20/50/100)
+- Bulk-select submissions in the table (including the current page), then apply
+  any existing application status or delete only the selected records after confirmation
 - Inline editing of status and payment; internal notes. Stall assignment unlocks
   only once an application is accepted, and locks again once an invoice exists
 - Copy emails, export the filtered set as CSV, and a full ZIP backup

@@ -148,6 +148,17 @@
   .btn.danger:hover{background:oklch(93.6% .032 17.717/.45)}
   .toolbar .spacer{flex:1}
 
+  .bulkbar{
+    display:flex;align-items:center;gap:8px;margin:12px 0 0;padding:10px 12px;
+    border:1px solid var(--border);border-radius:var(--radius-md);background:var(--muted);
+    font-size:14px
+  }
+  .bulkbar[hidden]{display:none}
+  .bulkbar .spacer{flex:1}
+  .bulkbar .bulk-count{font-variant-numeric:tabular-nums}
+  .bulkbar .bulk-count b{font-weight:600}
+  .bulkbar .sel select{background:var(--background);min-width:148px}
+
   .views{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
   .views button{
     display:grid;place-items:center;width:32px;height:30px;color:var(--muted-foreground);border-radius:0
@@ -177,10 +188,26 @@
   tbody tr:last-child td{border-bottom:0}
   tbody tr.rowlink{cursor:pointer;transition:background-color .12s}
   tbody tr.rowlink:hover{background:oklch(97% 0 0/.6)}
+  tbody tr.rowlink.is-selected{background:var(--muted)}
   tbody tr.rowlink:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
   tbody tr.rowlink .chev{opacity:0;color:var(--muted-foreground);transition:opacity .12s}
   tbody tr.rowlink:hover .chev,tbody tr.rowlink:focus-visible .chev{opacity:1}
   td.chev-cell{text-align:right;padding-right:10px}
+  th.select-cell,td.select-cell{text-align:center;padding-left:10px;padding-right:6px;overflow:visible}
+  .row-check{
+    appearance:none;width:15px;height:15px;margin:0;border:1px solid var(--input);
+    border-radius:4px;background:var(--background);display:inline-grid;place-content:center;
+    vertical-align:middle;cursor:pointer
+  }
+  .row-check::before{
+    content:"";width:8px;height:8px;transform:scale(0);transition:transform .08s ease;
+    background:var(--primary);clip-path:polygon(14% 44%,0 59%,38% 100%,100% 20%,84% 5%,37% 68%)
+  }
+  .row-check:checked{border-color:var(--primary)}
+  .row-check:checked::before{transform:scale(1)}
+  .row-check:indeterminate{border-color:var(--primary);background:var(--primary)}
+  .row-check:indeterminate::before{clip-path:none;width:7px;height:1.5px;background:var(--primary-foreground);transform:scale(1)}
+  .row-check:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
   td.muted{color:var(--muted-foreground)}
   .ref{font-variant-numeric:tabular-nums;font-weight:500}
   .lnk{color:var(--foreground);text-decoration:none}
@@ -758,9 +785,9 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="6" rx="1.6"/><path d="M5 10v8.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V10M10 14h4"/></svg>
             Backup data
           </button>
-          <button class="btn danger" id="btnWipe">
+          <button class="btn danger" id="btnWipe" title="Select submissions to delete" disabled>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6.5h16M9.5 6.5V4.8A1.3 1.3 0 0 1 10.8 3.5h2.4a1.3 1.3 0 0 1 1.3 1.3v1.7"/><path d="M6.5 6.5 7.4 20a1.4 1.4 0 0 0 1.4 1.3h6.4a1.4 1.4 0 0 0 1.4-1.3l.9-13.5"/><path d="M10 10.5v7M14 10.5v7"/></svg>
-            Delete all data
+            Delete
           </button>
 
           <span class="spacer"></span>
@@ -769,6 +796,14 @@
             <button data-view="list" title="List"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg></button>
             <button data-view="grid" title="Grid"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13" width="7.5" height="7.5" rx="1.6"/></svg></button>
           </span>
+        </div>
+
+        <div class="bulkbar" id="bulkBar" hidden>
+          <span class="bulk-count"><b id="bulkCount">0</b> submissions selected</span>
+          <span class="spacer"></span>
+          <span class="sel"><select id="bulkStatus" aria-label="Status to apply to selected submissions"></select><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></span>
+          <button class="btn primary" id="bulkApply" disabled>Apply status</button>
+          <button class="btn" id="bulkClear">Clear</button>
         </div>
 
         <div id="view"></div>
@@ -806,30 +841,32 @@
   </div>
 </div>
 
-<!-- delete-all warning -->
+<!-- delete-selected warning -->
 <div class="veil" id="wipeModal" hidden>
   <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="wipeTitle">
     <h2 id="wipeTitle">
       <span class="warn-mark">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3.5 1.8 20.5h20.4L12 3.5Z"/><path d="M12 9.5v5M12 17.6v.1"/></svg>
       </span>
-      Delete all data?
+      <span id="wipeTitleText">Delete selected submissions?</span>
     </h2>
-    <p>You are about to permanently erase every artist submission in <b>Mellow Art &amp; Stationery Fair - MEL.01</b>.</p>
+    <p id="wipeSummary">You are about to permanently delete selected submissions.</p>
     <div class="callout">
-      <ul>
-        <li><b id="wipeCount">0</b> applications, including decisions and internal notes</li>
-        <li><b id="wipeInv">0</b> Xero invoice links and payment records</li>
-        <li>All uploaded portfolio images</li>
+      <ul id="wipeDetails">
+        <li>The selected application records, decisions and internal notes will be removed</li>
+        <li><b id="wipeInv">0</b> related invoice and payment records will be removed</li>
+        <li>All other submissions will remain unchanged</li>
       </ul>
     </div>
-    <p><b>This cannot be undone.</b> Back up first if you have not already.</p>
-    <label class="type-lbl">Type <b>DELETE</b> to confirm</label>
-    <input type="text" id="wipeType" placeholder="DELETE" autocomplete="off" spellcheck="false">
+    <p id="wipeWarning"><b>This cannot be undone.</b> Review your selection before continuing.</p>
+    <div id="wipeTypeWrap" hidden>
+      <label class="type-lbl">Type <b>DELETE</b> to confirm</label>
+      <input type="text" id="wipeType" placeholder="DELETE" autocomplete="off" spellcheck="false">
+    </div>
     <div class="modal-actions">
-      <button class="btn-ghost" id="wipeBackupFirst">Back up first</button>
+      <button class="btn-ghost" id="wipeBackupFirst" hidden>Back up first</button>
       <button class="btn-ghost" id="wipeCancel">Cancel</button>
-      <button class="btn-solid" id="wipeGo" disabled>Delete everything</button>
+      <button class="btn-solid" id="wipeGo">Delete submissions</button>
     </div>
   </div>
 </div>
@@ -862,6 +899,19 @@
     <div class="prog-note" id="bkNote">Starting…</div>
     <div class="modal-actions">
       <button class="btn-ghost" id="bkClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- bulk status confirmation -->
+<div class="veil" id="bulkConfirm" hidden>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="bulkConfirmTitle">
+    <h2 id="bulkConfirmTitle">Update selected submissions?</h2>
+    <p id="bulkConfirmText"></p>
+    <div class="callout" id="bulkConfirmNote"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="bulkCancel">Cancel</button>
+      <button class="btn-primary" id="bulkConfirmGo">Apply status</button>
     </div>
   </div>
 </div>
@@ -1758,7 +1808,7 @@ const REASON_PRESETS = {
 
 const state = { q:"", status:"", pay:"", email:"", event:"", archive:"active",
                 sort:{key:F.sub, dir:-1}, page:0, size:10, view:"table",
-                queueDismissed:false };
+                queueDismissed:false, selected:new Set(), bulkStatus:"" };
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
@@ -1777,6 +1827,37 @@ function opt(sel, items, val){
 }
 const byRef = ref => DATA.find(r=>r[F.ref]===ref);
 const nowStamp = () => new Date().toISOString().slice(0,19).replace("T"," ");
+
+/* One transition path for both the inline status control and bulk actions.
+   This keeps email review/reset behaviour identical regardless of entry point. */
+function applyStatus(r, next, notify=true){
+  if(!r || STATUSES.indexOf(next) === -1) return false;
+  r[F.status] = next;
+
+  const due  = EMAIL_FOR[next];
+  const was  = r[F.estate];
+  const wasT = r[F.etpl];
+  let message = `${r[F.ref]} → ${next}`;
+
+  if(due){
+    if(was !== "pending" || wasT !== due){
+      if(wasT !== due) r[F.ereason] = "";
+      r[F.estate] = "pending"; r[F.etpl] = due; r[F.esent] = "";
+      state.queueDismissed = false;
+      message = was === "sent" || was === "skipped"
+        ? `${r[F.ref]} → ${next}. ${due} email queued again — the earlier ${wasT} email no longer matches this status.`
+        : `${r[F.ref]} → ${next}. ${due} email queued for review — nothing sent yet.`;
+    }
+  } else if(was){
+    r[F.estate] = ""; r[F.etpl] = ""; r[F.esent] = ""; r[F.ereason] = "";
+    message = was === "pending"
+      ? `${r[F.ref]} → ${next}. Queued email cancelled.`
+      : `${r[F.ref]} → ${next}. Email tracking reset — a ${wasT} email had already been ${was}.`;
+  }
+
+  if(notify) toast(message);
+  return true;
+}
 
 /* ---------- CSV ---------- */
 function csvCell(v){
@@ -2220,6 +2301,8 @@ const pendingCount = () => DATA.filter(r=>r[F.estate]==="pending").length;
 /* ---------- render ---------- */
 function render(){
   const rows = filtered();
+  const matchingRefs = new Set(rows.map(r=>r[F.ref]));
+  [...state.selected].forEach(ref=>{ if(!matchingRefs.has(ref)) state.selected.delete(ref); });
   const pages = Math.max(1, Math.ceil(rows.length/state.size));
   if(state.page >= pages) state.page = pages-1;
   const slice = rows.slice(state.page*state.size, state.page*state.size+state.size);
@@ -2231,17 +2314,20 @@ function render(){
     host.innerHTML = `<div class="empty"><b>No matching submissions</b>Try a different search or filter.</div>`;
   } else if(state.view==="table"){
     const cols = shownCols();
-    const head = cols.map(c=>{
+    const selectedOnPage = slice.filter(r=>state.selected.has(r[F.ref])).length;
+    const head = `<th class="select-cell"><input class="row-check" type="checkbox" id="selectPage" aria-label="Select all submissions on this page"${slice.length && selectedOnPage===slice.length?" checked":""}></th>` + cols.map(c=>{
       const k = c.sort;
       const on = k!=null && k===state.sort.key;
       return `<th class="${k!=null?"sortable":""} ${on?"sorted":""}" ${k!=null?`data-sort="${k}"`:""}>${esc(c.label)}${
         k!=null?`<span class="arw">${on?(state.sort.dir>0?"↑":"↓"):"⇅"}</span>`:""}</th>`;
     }).join("") + `<th></th><th></th>`;
-    const group = cols.map(c=>`<col style="width:${c.w}px">`).join("")
+    const group = `<col style="width:40px">` + cols.map(c=>`<col style="width:${c.w}px">`).join("")
                 + `<col style="width:44px"><col style="width:24px">`;
     host.innerHTML = `<div class="tablewrap"><div class="tablescroll"><table><colgroup>${group}</colgroup>` +
       `<thead><tr>${head}</tr></thead><tbody>${
       slice.map(r=>rowHTML(r, cols)).join("")}</tbody></table></div></div>`;
+    const selectPage = $("#selectPage");
+    if(selectPage) selectPage.indeterminate = selectedOnPage>0 && selectedOnPage<slice.length;
   } else if(state.view==="list"){
     host.innerHTML = `<div class="list">${slice.map(r=>`
       <div class="row" data-open="${esc(r[F.ref])}">
@@ -2269,15 +2355,30 @@ function render(){
   $("#first").disabled = $("#prev").disabled = state.page===0;
   $("#last").disabled = $("#next").disabled = state.page>=pages-1;
   renderQueueBar();
+  renderBulkBar();
 }
 
 function rowHTML(r, cols){
   const hasNote = !!r[F.notes];
-  return `<tr class="rowlink" tabindex="0" data-open="${esc(r[F.ref])}">${
+  const selected = state.selected.has(r[F.ref]);
+  return `<tr class="rowlink${selected?" is-selected":""}" tabindex="0" data-open="${esc(r[F.ref])}">
+    <td class="select-cell"><input class="row-check" type="checkbox" data-select-ref="${esc(r[F.ref])}" aria-label="Select ${esc(r[F.brand])}"${selected?" checked":""}></td>${
     cols.map(c=>c.cell(r)).join("")
   }<td><button class="note-btn ${hasNote?"has":""}" data-note="${esc(r[F.ref])}" title="${hasNote?"Internal note: "+esc(r[F.notes]):"Add internal note"}">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5" fill="none" stroke="#fff"/></svg>
     </button></td><td class="chev-cell"><span class="chev">›</span></td></tr>`;
+}
+
+function renderBulkBar(){
+  const n = state.selected.size;
+  const bar = $("#bulkBar");
+  bar.hidden = state.view !== "table" || n === 0;
+  $("#bulkCount").textContent = n.toLocaleString();
+  $("#bulkStatus").value = state.bulkStatus;
+  $("#bulkApply").disabled = !state.bulkStatus || n === 0;
+  const del = $("#btnWipe");
+  del.disabled = n === 0;
+  del.title = n ? `Delete ${n.toLocaleString()} selected submission${n===1?"":"s"}` : "Select submissions to delete";
 }
 
 function renderQueueBar(){
@@ -2534,6 +2635,7 @@ function showScreen(name){
    ============================================================ */
 function boot(){
   opt($("#fStatus"), [["","All application"]].concat(STATUSES.map(s=>[s, s.charAt(0).toUpperCase()+s.slice(1)])), "");
+  opt($("#bulkStatus"), [["","Change status…"]].concat(STATUSES.map(s=>[s, s.charAt(0).toUpperCase()+s.slice(1)])), "");
   opt($("#fPay"), [["","All payment"]].concat(PAYS.map(p=>[p, PAY_LABEL[p]])), "");   /* all six states */
   opt($("#fEmail"), [["","All email"],["pending","Email: pending review"],["sent","Email: sent"],
                      ["skipped","Email: skipped"],["__none__","Email: not tracked"]], "");
@@ -2568,9 +2670,45 @@ function boot(){
 
   $("#views").onclick = e => {
     const b = e.target.closest("button[data-view]"); if(!b) return;
-    state.view = b.dataset.view; state.page = 0;
+    state.view = b.dataset.view; state.page = 0; state.selected.clear(); state.bulkStatus = "";
     [...$("#views").children].forEach(x=>x.classList.toggle("on", x===b));
     render();
+  };
+
+  /* bulk status controls */
+  let pendingBulkStatus = "";
+  $("#bulkStatus").onchange = e => {
+    state.bulkStatus = e.target.value;
+    $("#bulkApply").disabled = !state.bulkStatus || state.selected.size === 0;
+  };
+  $("#bulkClear").onclick = () => {
+    state.selected.clear(); state.bulkStatus = ""; render();
+  };
+  $("#bulkApply").onclick = () => {
+    if(!state.bulkStatus || !state.selected.size) return;
+    pendingBulkStatus = state.bulkStatus;
+    const label = pendingBulkStatus.charAt(0).toUpperCase()+pendingBulkStatus.slice(1);
+    $("#bulkConfirmText").textContent = `Change ${state.selected.size.toLocaleString()} selected submission${state.selected.size===1?"":"s"} to ${label}?`;
+    $("#bulkConfirmNote").textContent = EMAIL_FOR[pendingBulkStatus]
+      ? `${EMAIL_FOR[pendingBulkStatus]} emails will be queued for individual review. Nothing will be sent automatically.`
+      : "Existing email tracking will be reset when it no longer matches the new status, following the current workflow.";
+    $("#bulkConfirmGo").textContent = `Apply ${label}`;
+    $("#bulkConfirm").hidden = false;
+    $("#bulkCancel").focus();
+  };
+  const closeBulkConfirm = () => { $("#bulkConfirm").hidden = true; pendingBulkStatus = ""; };
+  $("#bulkCancel").onclick = closeBulkConfirm;
+  $("#bulkConfirm").onclick = e => { if(e.target.id === "bulkConfirm") closeBulkConfirm(); };
+  $("#bulkConfirmGo").onclick = () => {
+    if(!pendingBulkStatus) return;
+    const rows = [...state.selected].map(byRef).filter(Boolean);
+    const next = pendingBulkStatus;
+    rows.forEach(r=>applyStatus(r, next, false));
+    $("#bulkConfirm").hidden = true;
+    state.selected.clear(); state.bulkStatus = ""; pendingBulkStatus = "";
+    render();
+    const label = next.charAt(0).toUpperCase()+next.slice(1);
+    toast(`${rows.length.toLocaleString()} submission${rows.length===1?"":"s"} changed to ${label}.`);
   };
 
   /* queue bar */
@@ -2638,24 +2776,56 @@ function boot(){
   bkc.onclick = e => { if(e.target === bkc) bkc.hidden = true; };
   $("#bkClose").onclick = () => { if(!backingUp) $("#bkModal").hidden = true; };
 
-  /* delete all */
+  /* delete selected */
   const wipe = $("#wipeModal");
+  let wipeAll = false;
   $("#btnWipe").onclick = () => {
-    if(!DATA.length){ toast("There is no data to delete."); return; }
-    $("#wipeCount").textContent = DATA.length.toLocaleString();
-    $("#wipeInv").textContent = DATA.filter(r=>r[F.inv]).length.toLocaleString();
-    $("#wipeType").value = ""; $("#wipeGo").disabled = true;
-    wipe.hidden = false; $("#wipeType").focus();
+    const rows = [...state.selected].map(byRef).filter(Boolean);
+    if(!rows.length) return;
+    const n = rows.length;
+    const inv = rows.filter(r=>r[F.inv] || r[F.invId] || r[F.pay] !== "none").length;
+    wipeAll = n === DATA.length;
+
+    if(wipeAll){
+      $("#wipeTitleText").textContent = "Delete all data?";
+      $("#wipeSummary").textContent = "You are about to permanently erase every artist submission in Mellow Art & Stationery Fair - MEL.01.";
+      $("#wipeDetails").innerHTML = `<li><b>${n.toLocaleString()}</b> applications, including decisions and internal notes</li>` +
+        `<li><b>${inv.toLocaleString()}</b> Xero invoice links and payment records</li>` +
+        `<li>All uploaded portfolio images</li>`;
+      $("#wipeWarning").innerHTML = "<b>This cannot be undone.</b> Back up first if you have not already.";
+      $("#wipeTypeWrap").hidden = false;
+      $("#wipeBackupFirst").hidden = false;
+      $("#wipeType").value = "";
+      $("#wipeGo").textContent = "Delete everything";
+      $("#wipeGo").disabled = true;
+      wipe.hidden = false; $("#wipeType").focus();
+    } else {
+      $("#wipeTitleText").textContent = "Delete selected submissions?";
+      $("#wipeSummary").textContent = `You are about to permanently delete ${n.toLocaleString()} selected submission${n===1?"":"s"}.`;
+      $("#wipeDetails").innerHTML = `<li>The selected application records, decisions and internal notes will be removed</li>` +
+        `<li><b>${inv.toLocaleString()}</b> related invoice and payment records will be removed</li>` +
+        `<li>All other submissions will remain unchanged</li>`;
+      $("#wipeWarning").innerHTML = "<b>This cannot be undone.</b> Review your selection before continuing.";
+      $("#wipeTypeWrap").hidden = true;
+      $("#wipeBackupFirst").hidden = true;
+      $("#wipeGo").textContent = `Delete ${n.toLocaleString()} submission${n===1?"":"s"}`;
+      $("#wipeGo").disabled = false;
+      wipe.hidden = false; $("#wipeCancel").focus();
+    }
   };
   $("#wipeType").oninput = e => { $("#wipeGo").disabled = e.target.value.trim().toUpperCase() !== "DELETE"; };
-  $("#wipeCancel").onclick = () => wipe.hidden = true;
-  $("#wipeBackupFirst").onclick = () => { wipe.hidden = true; runBackup(); };
+  $("#wipeCancel").onclick = () => { wipe.hidden = true; wipeAll = false; };
+  $("#wipeBackupFirst").onclick = () => { wipe.hidden = true; wipeAll = false; runBackup(); };
   $("#wipeGo").onclick = () => {
-    const n = DATA.length;
-    DATA = []; wipe.hidden = true; state.page = 0; render();
-    toast(`Deleted ${n.toLocaleString()} submissions.`);
+    if(wipeAll && $("#wipeType").value.trim().toUpperCase() !== "DELETE") return;
+    const refs = new Set(state.selected);
+    const before = DATA.length;
+    DATA = DATA.filter(r=>!refs.has(r[F.ref]));
+    const n = before - DATA.length;
+    wipe.hidden = true; wipeAll = false; state.selected.clear(); state.bulkStatus = ""; render();
+    toast(`Deleted ${n.toLocaleString()} selected submission${n===1?"":"s"}.`);
   };
-  wipe.onclick = e => { if(e.target === wipe) wipe.hidden = true; };
+  wipe.onclick = e => { if(e.target === wipe){ wipe.hidden = true; wipeAll = false; } };
 
   /* note editor */
   let noteRef = null;
@@ -2679,7 +2849,7 @@ function boot(){
       render(); return; }
 
     /* inline controls keep their own behaviour */
-    if(e.target.closest("select, .pill-wrap, a[href]")) return;
+    if(e.target.closest("select, input[type=checkbox], .pill-wrap, a[href]")) return;
 
     const open = e.target.closest("[data-open]");
     if(open){ e.preventDefault(); openDrawer(open.dataset.open); }
@@ -2693,41 +2863,20 @@ function boot(){
 
   $("#view").addEventListener("change", e => {
     const s = e.target;
-    if(s.dataset.status){
+    if(s.id === "selectPage"){
+      const rows = filtered();
+      const pageRows = rows.slice(state.page*state.size, state.page*state.size+state.size);
+      pageRows.forEach(r=> s.checked ? state.selected.add(r[F.ref]) : state.selected.delete(r[F.ref]));
+      render();
+    }
+    else if(s.dataset.selectRef){
+      if(s.checked) state.selected.add(s.dataset.selectRef);
+      else state.selected.delete(s.dataset.selectRef);
+      render();
+    }
+    else if(s.dataset.status){
       const r = byRef(s.dataset.status);
-      const next = s.value;
-      r[F.status] = next;
-
-      /* The email column tracks the email for the CURRENT decision, so it has to
-         follow every status change — including a decision that is retracted and
-         then re-made. A record left over from a previous decision is stale: it
-         describes an email that no longer matches where the application stands. */
-      const due  = EMAIL_FOR[next];        // template this status calls for, if any
-      const was  = r[F.estate];            // "" | pending | sent | skipped
-      const wasT = r[F.etpl];
-
-      if(due){
-        if(was === "pending" && wasT === due){
-          toast(`${r[F.ref]} → ${next}`);                    // already queued for this decision
-        } else {
-          if(wasT !== due) r[F.ereason] = "";                // a reason written for another template
-          r[F.estate] = "pending"; r[F.etpl] = due; r[F.esent] = "";
-          state.queueDismissed = false;
-          toast(was === "sent" || was === "skipped"
-            ? `${r[F.ref]} → ${next}. ${due} email queued again — the earlier ${wasT} email no longer matches this status.`
-            : `${r[F.ref]} → ${next}. ${due} email queued for review — nothing sent yet.`);
-        }
-      } else {
-        /* pending or accepted: no email is queued from the status itself. */
-        if(was){
-          r[F.estate] = ""; r[F.etpl] = ""; r[F.esent] = ""; r[F.ereason] = "";
-          toast(was === "pending"
-            ? `${r[F.ref]} → ${next}. Queued email cancelled.`
-            : `${r[F.ref]} → ${next}. Email tracking reset — a ${wasT} email had already been ${was}.`);
-        } else {
-          toast(`${r[F.ref]} → ${next}`);
-        }
-      }
+      applyStatus(r, s.value);
       render();   /* stall cell visibility depends on status */
     }
     else if(s.dataset.pay){ const r = byRef(s.dataset.pay); r[F.pay] = s.value; render(); }
@@ -2741,6 +2890,7 @@ function boot(){
     if(!backingUp) $("#bkModal").hidden = true;
     $("#bkConfirm").hidden = true;
     $("#wipeModal").hidden = true;
+    $("#bulkConfirm").hidden = true;
   });
 
   showScreen("inquiries");

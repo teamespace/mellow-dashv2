@@ -2,6 +2,11 @@
 # It embeds every applicant record, so it never belongs in the repo.
 mellow-dashv2.html
 
+# Cloudflare deploy output. This contains the live applicant dataset and is
+# generated immediately before deploy; never commit it.
+cloudflare/public/
+cloudflare/.preview-wrangler.json
+
 # Applicant data and uploaded documents.
 *.csv
 *.pdf

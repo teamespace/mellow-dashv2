@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developers.cloudflare.com/workers/wrangler/config-schema.json",
+  "name": "mellow-dashv2-overlay",
+  "main": "./worker.js",
+  "compatibility_date": "2026-09-11",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "dev.elx.onl/mellowdashv2",
+      "zone_name": "elx.onl"
+    },
+    {
+      "pattern": "dev.elx.onl/mellowdashv2/*",
+      "zone_name": "elx.onl"
+    }
+  ],
+  "services": [
+    {
+      "binding": "DEV_ELX",
+      "service": "dev-elx"
+    }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
