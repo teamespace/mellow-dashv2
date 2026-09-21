@@ -60,9 +60,12 @@ tokens.
 - Search, and filters for application status, payment, **email state**, event and archive
 - Table / list / card views; 10 rows per page by default, with a Rows selector (10/20/50/100)
 - Bulk-select submissions in the table (including the current page), then apply
-  any existing application status or delete only the selected records after confirmation
-- Inline editing of status and payment; internal notes. Stall assignment unlocks
-  only once an application is accepted, and locks again once an invoice exists
+  an application status or delete only the selected records after confirmation
+- Inline status editing and internal notes. `Withdrawn` is part of the application
+  status flow rather than a separate dashboard flag
+- Accepted submissions unlock `Assign stall`; `Send invoice` appears in Payment
+  only after an available stall is selected. Other statuses expose `Send email`
+  directly in Payment
 - Copy emails, export the filtered set as CSV, and a full ZIP backup
   (CSV + browsable HTML + one image per record), written in-browser
 
@@ -70,7 +73,7 @@ tokens.
 fits a 1280px window with no horizontal scrolling. The *Columns* button opens a
 picker for seven more (insurance, applied-before, secondary category, Instagram,
 invoice, decided date, sharing); the choice is saved per browser. Reference is
-always shown. Everything else lives in the detail panel.
+always shown. Everything else lives in the centered submission modal.
 
 **Rows open on click.** Hovering a row highlights it and shows a `›` affordance;
 clicking anywhere that isn't an inline control opens the full record. Rows are
@@ -87,33 +90,38 @@ same workspace under the *Branding* tab.
 
 Templates persist to `localStorage` under `mellowDashV2.email`.
 
-## Status changes no longer send email
+## Status, stall and send flow
 
-Previously, moving an application to **Waitlist** or **Rejected** was coupled to
-sending the corresponding email. These are now two separate steps.
+Status changes and send actions are separate and intentionally visible in the
+table rather than hidden in the submission modal. Closed Application and Payment
+controls remain colour-coded badges, while their opened option panels use one
+neutral white treatment. Rejected is red while Withdrawn is violet so they remain
+distinguishable.
 
-1. **Change the status.** The record is updated immediately and an email is
-   *queued*, not sent. A banner reports how many are waiting.
-2. **Review it.** Open the record. The panel shows the exact template that will
-   go out, the merged subject line, and a live preview rendered with that
-   applicant's real details — the same template you edit under *Email templates*.
-3. **Send, or don't.** *Send* records it as sent, with a timestamp. *Don't send*
-   marks it skipped. Reverting the status before sending cancels the queued email.
+1. **Pending, Waitlisted, Rejected or Withdrawn.** Payment shows *Send email*.
+   Changing to one of these statuses prepares the matching status email, and the
+   button opens a compact confirmation before recording it as sent.
+2. **Accepted, no stall.** Stall shows *Assign stall* and Payment says
+   *Assign stall first*. Every configured stall option remains available because
+   capacity and duplicate-assignment rules have not been formally defined yet.
+3. **Accepted, stall assigned.** Payment shows *Send invoice*. Confirming it
+   changes payment to *Awaiting payment* and records the Approval / invoice email
+   as sent.
+4. **Leaving Accepted.** If a stall is assigned, a confirmation explains that it
+   will be released. Existing invoice and payment history is preserved.
 
-The review step also captures the **reason** shown to the applicant, filling the
-`{{reason}}` merge tag that the Rejection template has always referenced but that
-the data never populated. Presets are offered per template; leaving it blank drops
-the paragraph rather than sending an empty gap.
+Bulk email and invoice sending are deliberately not included. Email and invoice
+actions remain explicit per-row actions with confirmation.
 
-Accepted applications are unchanged — that email stays tied to invoice sending.
+The centered submission modal is informational only; it contains no email queue,
+reason editor or template preview.
 
 Four columns carry this workflow and are included in CSV exports:
 `Email state`, `Email template`, `Email reason`, `Email sent at`.
 
-**Existing records are not backfilled.** Every application decided before this
-flow existed shows *Not tracked* and never enters the send queue — the app makes
-no assumption about whether those artists were already emailed. Any single record
-can be queued by hand from its detail panel.
+Existing records with no email tracking can still use the direct *Send email*
+button. A matching sent state prevents an accidental duplicate until the status
+changes again.
 
 ## Known limits
 
@@ -121,9 +129,11 @@ This is a front-end prototype. It is convincing, and it does not persist.
 
 - **No backend.** Every edit — status, stall, payment, notes, email state — lives
   in memory and is lost on reload. Use *Backup data* before closing the tab.
-- **Sending is simulated.** *Send* records the email as sent; it delivers nothing.
-  Wiring this to a real provider is the remaining work, and the review step is
-  where that call belongs.
+- **Sending is simulated.** *Send email* and *Send invoice* update in-memory state;
+  they deliver nothing. Each send confirmation states this before the action is recorded.
+- **Stall capacity is not enforced.** Every configured option is shown for every
+  accepted submission, so multiple submissions can choose the same stall type.
+  Add capacity or inventory rules only after the operational mechanism is confirmed.
 - **Stall prices are event-scoped upstream.** The values in `PRICES` come from the
   production `stall_options` table (Mini $250 / Mini–Debut $200, Standard $450 /
   Standard–Debut $400, Flagship $570 / Flagship–Debut $520). Stalls are priced

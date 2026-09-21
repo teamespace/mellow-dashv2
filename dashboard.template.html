@@ -38,6 +38,7 @@
     --ok-bg:#dcfce7;   --ok-fg:#008236;   /* green-100  / green-700  */
     --warn-bg:#fef9c2; --warn-fg:#894b00;  /* yellow-100 / yellow-800 */
     --bad-bg:#ffe2e2;  --bad-fg:#c10007;   /* red-100    / red-700    */
+    --withdrawn-bg:#ede9fe; --withdrawn-fg:#6d28d9; /* violet-100 / violet-700 */
 
     --radius:.625rem;                     /* 10px */
     --radius-sm:calc(var(--radius) * .6); /* 6px  */
@@ -158,6 +159,8 @@
   .bulkbar .bulk-count{font-variant-numeric:tabular-nums}
   .bulkbar .bulk-count b{font-weight:600}
   .bulkbar .sel select{background:var(--background);min-width:148px}
+  .bulkbar #bulkClear{border-color:transparent;background:transparent;color:var(--muted-foreground)}
+  .bulkbar #bulkClear:hover{background:var(--accent);color:var(--foreground)}
 
   .views{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
   .views button{
@@ -217,22 +220,39 @@
   .stack .trunc,.trunc-cell,.trunc{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 
   /* ---------- status / payment selects ---------- */
-  .pill-wrap{position:relative;display:inline-flex;max-width:100%}
+  .pill-wrap{position:relative;display:inline-flex;align-items:center;max-width:100%}
   .pill{
-    appearance:none;border:0;border-radius:var(--radius-md);height:28px;
+    appearance:none;border:0;border-radius:var(--radius-md);height:28px;display:inline-flex;align-items:center;gap:6px;
     padding:0 26px 0 10px;font-size:14px;font-weight:400;outline:none;cursor:pointer;
     max-width:100%;text-overflow:ellipsis
   }
   .pill-wrap .caret{position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.7}
+  .state-trigger{padding-right:9px;white-space:nowrap}
+  .state-trigger svg{opacity:.7;flex:0 0 auto}
+  .state-trigger:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
   .pill.st-pending{background:var(--muted);color:var(--muted-foreground)}
   .pill.st-accepted{background:var(--ok-bg);color:var(--ok-fg)}
   .pill.st-waitlisted{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.st-rejected{background:var(--bad-bg);color:var(--bad-fg)}
+  .pill.st-withdrawn{background:var(--withdrawn-bg);color:var(--withdrawn-fg)}
   .pill.pay-invoicing{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.pay-awaiting_payment{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.pay-paid{background:var(--ok-bg);color:var(--ok-fg)}
   .pill.pay-overdue{background:var(--bad-bg);color:var(--bad-fg)}
   .pill.pay-voided{background:var(--muted);color:var(--muted-foreground)}
+  .state-menu{
+    position:fixed;z-index:110;min-width:168px;padding:4px;background:var(--popover);
+    border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-pop)
+  }
+  .state-menu[hidden]{display:none}
+  .state-menu button{
+    width:100%;min-height:32px;display:flex;align-items:center;gap:10px;padding:6px 9px;
+    border-radius:var(--radius-sm);background:var(--popover);color:var(--foreground);
+    font-size:14px;text-align:left;white-space:nowrap
+  }
+  .state-menu button:hover,.state-menu button:focus-visible{background:var(--accent);outline:none}
+  .state-menu button[aria-selected="true"]{font-weight:500}
+  .state-menu .check{width:14px;color:var(--foreground);flex:0 0 14px}
   /* static pill — payment states the admin cannot set by hand */
   /* Withdrawn is a flag, not a status: it rides beside the Application pill so a
      withdrawn row is recognisable without enabling the optional column. */
@@ -265,6 +285,14 @@
   }
   .stall-sel:hover{background:var(--accent)}
   .dash{color:var(--muted-foreground)}
+  .cell-action{
+    height:28px;padding:0 10px;border:1px solid var(--border);border-radius:var(--radius-md);
+    background:var(--background);font-size:12.5px;font-weight:500;white-space:nowrap
+  }
+  .cell-action:hover{background:var(--accent)}
+  .cell-action.primary{background:var(--primary);border-color:var(--primary);color:var(--primary-foreground)}
+  .cell-action.primary:hover{background:color-mix(in oklab,var(--primary) 88%,transparent)}
+  .cell-action:disabled{opacity:.55;pointer-events:none}
   .note-btn{
     display:grid;place-items:center;width:32px;height:32px;border-radius:var(--radius-md);
     color:var(--muted-foreground)
@@ -284,19 +312,6 @@
   .em-skipped{background:var(--muted);color:var(--muted-foreground)}
   .em-none{color:var(--muted-foreground)}
   .em-none::before{display:none}
-
-  .queue-bar{
-    display:flex;align-items:center;gap:10px;margin:16px 0 0;padding:12px 14px;
-    border:1px solid var(--border);background:var(--muted);border-radius:var(--radius-md);font-size:14px
-  }
-  .queue-bar[hidden]{display:none}
-  .queue-bar b{font-weight:600}
-  .queue-bar .spacer{flex:1}
-  .queue-bar button{
-    height:28px;padding:0 10px;border:1px solid var(--border);background:var(--background);
-    border-radius:var(--radius-sm);font-size:13px;font-weight:500
-  }
-  .queue-bar button:hover{background:var(--accent)}
 
   /* ---------- footer / pagination ---------- */
   .footbar{
@@ -355,19 +370,14 @@
   }
   .empty b{display:block;color:var(--foreground);font-size:14px;font-weight:600;margin-bottom:4px}
 
-  /* ---------- drawer (shadcn Sheet) ---------- */
-  .drawer-veil{position:fixed;inset:0;z-index:70;background:rgb(0 0 0/.10)}
-  @supports (backdrop-filter:blur(1px)){.drawer-veil{backdrop-filter:blur(4px)}}
-  .drawer{
-    position:fixed;top:0;right:0;bottom:0;width:480px;max-width:92vw;z-index:71;
-    background:var(--popover);border-left:1px solid var(--border);
-    box-shadow:0 10px 15px -3px rgb(0 0 0/.1),0 4px 6px -4px rgb(0 0 0/.1);
-    overflow-y:auto;padding:16px
+  /* ---------- submission details ---------- */
+  .modal.profile-modal{
+    max-width:760px;max-height:calc(100vh - 32px);overflow-y:auto;padding:20px
   }
-  .drawer .dh{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
-  .drawer .dh h2{font-size:16px;line-height:24px;font-weight:500;margin:0}
-  .drawer .dh .sm{font-size:13px;color:var(--muted-foreground);margin-top:3px}
-  .drawer .dh .icon-btn{margin-left:auto;flex:0 0 28px}
+  .profile-modal .dh{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+  .profile-modal .dh h2{font-size:16px;line-height:24px;font-weight:500;margin:0}
+  .profile-modal .dh .sm{font-size:13px;color:var(--muted-foreground);margin-top:3px}
+  .profile-modal .dh .icon-btn{margin-left:auto;flex:0 0 28px}
   .dsec{border-top:1px solid var(--border);padding-top:16px;margin-top:16px}
   .dsec h4{
     font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;
@@ -381,69 +391,6 @@
   .dl dd a.dlink:hover{text-decoration-color:var(--foreground)}
   .dl dd a.dlink:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
   .dl dd a.dlink .ext{font-size:11px;opacity:.5;margin-left:3px;text-decoration:none;display:inline-block}
-
-  /* ---------- review & send ---------- */
-  .dsend{
-    border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;
-    margin:16px 0 0;background:var(--card)
-  }
-  .dsend.is-pending{border-color:oklch(88% .06 100);background:oklch(98.8% .022 103)}
-  .dsend h4{
-    display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;
-    text-transform:none;letter-spacing:normal;color:var(--foreground);margin:0 0 12px
-  }
-  .dsend .subj{
-    font-size:14px;background:var(--background);border:1px solid var(--border);
-    border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;line-height:1.5
-  }
-  .dsend .subj span{
-    color:var(--muted-foreground);display:block;font-size:11px;text-transform:uppercase;
-    letter-spacing:.06em;margin-bottom:4px
-  }
-  .dsend label.fl{display:block;font-size:13px;color:var(--muted-foreground);margin:0 0 6px}
-  .dsend label.fl small{font-size:12px}
-  .dsend textarea{
-    width:100%;border:1px solid var(--input);border-radius:var(--radius-sm);padding:8px 10px;
-    font:inherit;font-size:14px;resize:vertical;min-height:70px;background:var(--background);outline:none
-  }
-  .dsend textarea:focus{border-color:var(--ring);box-shadow:0 0 0 3px oklch(70.8% 0 0/.2)}
-  .presets{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
-  .presets button{
-    border:1px solid var(--border);background:var(--background);border-radius:999px;
-    padding:4px 10px;font-size:12px;color:var(--muted-foreground)
-  }
-  .presets button:hover{background:var(--accent);color:var(--foreground)}
-  .dsend .acts{display:flex;gap:8px;align-items:center;margin-top:14px}
-  .dsend .acts .spacer{flex:1}
-  .btn-send{
-    height:28px;padding:0 10px;border-radius:var(--radius-md);
-    background:var(--primary);color:var(--primary-foreground);font-size:12.8px;font-weight:500
-  }
-  .btn-send:hover{background:color-mix(in oklab,var(--primary) 80%,transparent)}
-  .btn-send:active,.btn-skip:active{transform:translateY(1px)}
-  .btn-skip{
-    height:28px;padding:0 10px;border:1px solid var(--border);background:var(--background);
-    border-radius:var(--radius-md);font-size:12.8px;font-weight:500;color:var(--foreground)
-  }
-  .btn-skip:hover{background:var(--accent)}
-  .sim-note{
-    font-size:12px;color:var(--muted-foreground);line-height:1.6;margin-top:12px;
-    padding-top:12px;border-top:1px solid var(--border)
-  }
-  .sent-line{font-size:14px;color:var(--muted-foreground);line-height:1.6}
-  .sent-line b{color:var(--foreground);font-weight:500}
-  .prev-head{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted-foreground);margin:4px 0 6px}
-  .prev-head .spacer{flex:1}
-  .prev-head button{
-    border:1px solid var(--border);background:var(--background);border-radius:var(--radius-sm);
-    padding:3px 9px;font-size:12px;color:var(--muted-foreground)
-  }
-  .prev-head button:hover{background:var(--accent)}
-  iframe.prev{
-    width:100%;height:340px;border:1px solid var(--border);border-radius:var(--radius-sm);
-    background:var(--background);display:block
-  }
-  iframe.prev.collapsed{height:0;border-width:0}
 
   /* ---------- modals (shadcn Dialog) ---------- */
   .veil{
@@ -752,18 +699,10 @@
         <h1>Artist submissions</h1>
         <p class="lede">Review applications, assign stalls, and trigger Xero invoices.</p>
 
-        <div class="queue-bar" id="queueBar" hidden>
-          <b id="queueCount">0</b>
-          <span id="queueText">applications are waiting for an email.</span>
-          <span class="spacer"></span>
-          <button id="queueGo">Review queue</button>
-          <button id="queueDismiss">Dismiss</button>
-        </div>
-
         <div class="toolbar">
           <label class="search">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input id="q" type="search" placeholder="Search name or email…" autocomplete="off">
+            <input id="q" type="search" placeholder="Search name, email, brand or notes…" autocomplete="off">
           </label>
 
           <span class="sel"><select id="fStatus"></select><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></span>
@@ -803,7 +742,7 @@
           <span class="spacer"></span>
           <span class="sel"><select id="bulkStatus" aria-label="Status to apply to selected submissions"></select><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></span>
           <button class="btn primary" id="bulkApply" disabled>Apply status</button>
-          <button class="btn" id="bulkClear">Clear</button>
+          <button class="btn" id="bulkClear">Clear selection</button>
         </div>
 
         <div id="view"></div>
@@ -916,6 +855,19 @@
   </div>
 </div>
 
+<!-- direct row action confirmation -->
+<div class="veil" id="actionConfirm" hidden>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="actionConfirmTitle">
+    <h2 id="actionConfirmTitle">Confirm action</h2>
+    <p id="actionConfirmText"></p>
+    <div class="callout" id="actionConfirmNote"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="actionCancel">Cancel</button>
+      <button class="btn-primary" id="actionConfirmGo">Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- note editor -->
 <div class="veil" id="noteModal" hidden>
   <div class="modal">
@@ -929,8 +881,10 @@
   </div>
 </div>
 
-<div class="drawer-veil" id="drawerVeil" hidden></div>
-<aside class="drawer" id="drawer" hidden></aside>
+<div class="veil" id="profileModal" hidden>
+  <div class="modal profile-modal" id="profileModalContent" role="dialog" aria-modal="true" aria-labelledby="profileTitle"></div>
+</div>
+<div class="state-menu" id="stateMenu" role="listbox" hidden></div>
 <div class="toast" id="toast" hidden></div>
 
 
@@ -1725,18 +1679,15 @@ function duplicateTemplate(id){ createTemplate(id); }
 const EXTRA = ["Email state","Email template","Email reason","Email sent at"];
 EXTRA.forEach(n => { if(COLS.indexOf(n) === -1) COLS.push(n); });
 
-/* Withdrawal is recorded as a timestamp, not a boolean: the presence of a date
-   IS the flag, so there is no second field that can drift out of step with it.
-   Same shape as the existing "Archived at". It deliberately sits outside the
-   status machine, so marking a withdrawal cannot queue an email, touch the
-   invoice or change the stall — the status underneath is left exactly as it was. */
+/* Keep the legacy timestamp column for exports and transition history. In the
+   dashboard, withdrawal now lives in the application status machine. */
 if(COLS.indexOf("Withdrawn at") === -1) COLS.push("Withdrawn at");
 
 const C = {}; COLS.forEach((n,i)=>C[n]=i);
 
 /* Existing records keep whatever the export said. Nothing here backfills an
    email state onto a decision that was made before this flow existed — those
-   rows stay "not tracked" and never enter the send queue. */
+   rows stay "not tracked" until an explicit per-row send action is used. */
 let DATA = RAW.map(r => {
   const row = r.slice();
   while(row.length < COLS.length) row.push("");
@@ -1771,7 +1722,7 @@ const F = {
   estate:C["Email state"], etpl:C["Email template"], ereason:C["Email reason"], esent:C["Email sent at"]
 };
 
-const STATUSES = ["pending","accepted","waitlisted","rejected"];
+const STATUSES = ["pending","accepted","waitlisted","rejected","withdrawn"];
 
 /* Payment machine: none -> invoicing -> awaiting_payment -> paid, plus
    overdue / voided. `none` and `invoicing` are driven by the invoice job and
@@ -1788,27 +1739,18 @@ const PAY_TONE = {
   paid:"ok", overdue:"bad", voided:"grey"
 };
 
-/* ---- email workflow ----
-   Changing a status to waitlisted/rejected queues an email for review.
-   It never sends one. Sending is a separate, explicit action in the drawer. */
-const EMAIL_FOR   = { rejected:"Rejection", waitlisted:"Waitlist" };
-const EMAIL_LABEL = { "":"Not tracked", pending:"Pending review", sent:"Sent", skipped:"Skipped" };
-const REASON_PRESETS = {
-  Rejection: [
-    "This round was extremely competitive for the {{primaryCategory}} category.",
-    "We received more applications than we have stalls for this event.",
-    "We are balancing the floor across mediums and could not fit your practice this round.",
-    "We could not verify current public liability insurance for your stall."
-  ],
-  Waitlist: [
-    "Your application impressed us, but the {{primaryCategory}} category is currently full.",
-    "We are holding a stall of your preferred size in case a spot opens up."
-  ]
+/* Every non-accepted status has an email action. Status changes prepare the
+   matching message; sending remains explicit and is simulated in this demo. */
+const EMAIL_FOR   = {
+  pending:"Application received",
+  waitlisted:"Waitlist",
+  rejected:"Rejection",
+  withdrawn:"Withdrawal confirmation"
 };
-
+const EMAIL_LABEL = { "":"Not tracked", pending:"Ready to send", sent:"Sent", skipped:"Skipped" };
 const state = { q:"", status:"", pay:"", email:"", event:"", archive:"active",
                 sort:{key:F.sub, dir:-1}, page:0, size:10, view:"table",
-                queueDismissed:false, selected:new Set(), bulkStatus:"" };
+                selected:new Set(), bulkStatus:"" };
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
@@ -1828,11 +1770,25 @@ function opt(sel, items, val){
 const byRef = ref => DATA.find(r=>r[F.ref]===ref);
 const nowStamp = () => new Date().toISOString().slice(0,19).replace("T"," ");
 
+/* Legacy exports used a separate Withdrawn-at flag. Normalise those rows into
+   the new status model and release their stall in this in-memory prototype. */
+DATA.forEach(r=>{
+  if(r[F.wd]){
+    r[F.status] = "withdrawn";
+    r[F.stall] = "";
+  }
+});
+
 /* One transition path for both the inline status control and bulk actions.
    This keeps email review/reset behaviour identical regardless of entry point. */
 function applyStatus(r, next, notify=true){
   if(!r || STATUSES.indexOf(next) === -1) return false;
+  const previous = r[F.status];
+  const releasedStall = previous === "accepted" && next !== "accepted" ? r[F.stall] : "";
   r[F.status] = next;
+  if(releasedStall) r[F.stall] = "";
+  if(next === "withdrawn") r[F.wd] = r[F.wd] || nowStamp();
+  else r[F.wd] = "";
 
   const due  = EMAIL_FOR[next];
   const was  = r[F.estate];
@@ -1843,19 +1799,38 @@ function applyStatus(r, next, notify=true){
     if(was !== "pending" || wasT !== due){
       if(wasT !== due) r[F.ereason] = "";
       r[F.estate] = "pending"; r[F.etpl] = due; r[F.esent] = "";
-      state.queueDismissed = false;
       message = was === "sent" || was === "skipped"
-        ? `${r[F.ref]} → ${next}. ${due} email queued again — the earlier ${wasT} email no longer matches this status.`
-        : `${r[F.ref]} → ${next}. ${due} email queued for review — nothing sent yet.`;
+        ? `${r[F.ref]} → ${next}. ${due} email is ready to send again — the earlier ${wasT} email no longer matches this status.`
+        : `${r[F.ref]} → ${next}. ${due} email is ready to send — nothing sent yet.`;
     }
   } else if(was){
     r[F.estate] = ""; r[F.etpl] = ""; r[F.esent] = ""; r[F.ereason] = "";
     message = was === "pending"
-      ? `${r[F.ref]} → ${next}. Queued email cancelled.`
+      ? `${r[F.ref]} → ${next}. Pending email action cleared.`
       : `${r[F.ref]} → ${next}. Email tracking reset — a ${wasT} email had already been ${was}.`;
   }
 
+  if(releasedStall) message += ` Stall ${releasedStall} released.`;
+
   if(notify) toast(message);
+  return true;
+}
+
+function emailDue(r){ return EMAIL_FOR[r[F.status]] || ""; }
+function markEmailSent(r){
+  const due = emailDue(r);
+  if(!due) return false;
+  r[F.etpl] = due;
+  r[F.estate] = "sent";
+  r[F.esent] = nowStamp();
+  return true;
+}
+function markInvoiceSent(r){
+  if(!r || r[F.status] !== "accepted" || !r[F.stall] || r[F.pay] !== "none") return false;
+  r[F.pay] = "awaiting_payment";
+  r[F.etpl] = "Approval / invoice";
+  r[F.estate] = "sent";
+  r[F.esent] = nowStamp();
   return true;
 }
 
@@ -2078,6 +2053,7 @@ function backupHTML(stamp){
  .st-accepted{background:#DCF5E3;color:#1B6B3A}
  .st-waitlisted{background:#FDF3D3;color:#7A5A08}
  .st-rejected{background:#FBE0E0;color:#9B2323}
+ .st-withdrawn{background:#EDE9FE;color:#6D28D9}
  .st-pending{background:#F2F2F2;color:#5F5F5F}
 </style></head><body>
 <h1>Mellow Admin — data backup</h1>
@@ -2127,13 +2103,6 @@ const COLDEFS = [
   { key:"email", w:116, label:"Email", def:true, sort:F.estate,
     cell:r=>`<td>${emailCell(r)}</td>` },
 
-  /* Off by default — the marker beside the Application pill carries the signal,
-     this column carries the date for anyone who wants to scan or sort by it. */
-  { key:"withdraw", w:122, label:"Withdraw", sort:F.wd,
-    cell:r=>`<td>${r[F.wd]
-      ? `<span class="tagp bad" title="Withdrawn ${esc(fmtDateTime(r[F.wd]))}">Withdrawn</span>`
-      : `<span class="muted">—</span>`}</td>` },
-
   { key:"share", w:86, label:"Sharing",
     cell:r=>`<td class="muted">${r[F.share]==="yes"?"yes":"no"}</td>` },
 
@@ -2175,7 +2144,7 @@ const shownCols = () => COLDEFS.filter(c => visibleCols.indexOf(c.key) !== -1);
 /* form placeholders were saved as if they were answers — treat them as blank */
 const clean = v => (/^\s*select/i.test(String(v||"")) ? "—" : (v || "—"));
 
-/* ---------- clickable contact fields in the detail drawer ----------
+/* ---------- clickable contact fields in the submission modal ----------
    The export stores these in several shapes: Instagram as a bare handle, as a
    leading-apostrophe '@handle, or as a full profile URL; Website with or without
    a scheme, and literal "N/A" on 104 rows. Each builder returns an anchor when it
@@ -2227,20 +2196,11 @@ function igLink(v){
 const igHandle = v => String(v||"").replace(/^'+/,"").replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/\/$/,"") || "—";
 
 /* ---------- cells ---------- */
-function withdrawMark(r){
-  if(!r[F.wd]) return "";
-  return `<span class="wd-mark" role="img" aria-label="Withdrawn"` +
-         ` title="Withdrawn ${esc(fmtDateTime(r[F.wd]))} — status, stall, invoice and email left as they were">!</span>`;
-}
-
 function statusPill(r, plain){
   const s = r[F.status];
   const lbl = s.charAt(0).toUpperCase()+s.slice(1);
-  const mark = withdrawMark(r);
-  if(plain) return `<span class="pill st-${esc(s)}" style="padding:0 9px">${esc(lbl)}</span>${mark}`;
-  return `<span class="pill-wrap"><select class="pill st-${esc(s)}" data-status="${esc(r[F.ref])}">${
-    STATUSES.map(v=>`<option value="${v}"${v===s?" selected":""}>${v.charAt(0).toUpperCase()+v.slice(1)}</option>`).join("")
-  }</select><span class="caret"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span></span>${mark}`;
+  if(plain) return `<span class="pill st-${esc(s)}" style="padding:0 9px">${esc(lbl)}</span>`;
+  return `<span class="pill-wrap"><button class="pill st-${esc(s)} state-trigger" type="button" data-state-menu="status" data-state-ref="${esc(r[F.ref])}" aria-haspopup="listbox" aria-expanded="false" aria-label="Application status: ${esc(lbl)}">${esc(lbl)}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button></span>`;
 }
 /* Stall assignment unlocks only once the application is accepted, and locks
    again once the invoice has been sent. Mirrors StallCell in the production
@@ -2249,22 +2209,30 @@ function stallCell(r){
   if(r[F.status] !== "accepted") return `<span class="dash">—</span>`;
   const stall = r[F.stall];
   const locked = r[F.pay] !== "none";
+  const choices = STALLS;
   const title = locked ? "Locked once the invoice is sent"
                        : (stall ? `${stall} — ${money(PRICES[stall]||0)}` : "Assign stall");
   return `<span class="pill-wrap"><select class="stall-sel" data-stall="${esc(r[F.ref])}"${
     locked?" disabled":""} title="${esc(title)}">${
     (stall?"":`<option value="" selected>Assign stall</option>`) +
-    STALLS.map(v=>`<option value="${esc(v)}"${v===stall?" selected":""}>${esc(v)} — ${money(PRICES[v])}</option>`).join("")
+    choices.map(v=>`<option value="${esc(v)}"${v===stall?" selected":""}>${esc(v)} — ${money(PRICES[v])}</option>`).join("")
   }</select><span class="caret"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></span></span>`;
 }
 function payCell(r){
+  if(r[F.status] !== "accepted"){
+    const due = emailDue(r);
+    if(!due) return `<span class="dash">—</span>`;
+    const sent = r[F.estate] === "sent" && r[F.etpl] === due;
+    return `<button class="cell-action${sent?"":" primary"}" data-email-action="${esc(r[F.ref])}"${sent?" disabled":""}` +
+      ` title="${sent?esc(due+" email already sent"):"Send "+esc(due)+" email"}">${sent?"Email sent":"Send email"}</button>`;
+  }
+  if(!r[F.stall]) return `<span class="muted">Assign stall first</span>`;
   const pay = r[F.pay];
+  if(pay === "none") return `<button class="cell-action primary" data-invoice-action="${esc(r[F.ref])}">Send invoice</button>`;
   if(pay === "none" || pay === "invoicing")
     return `<span class="tagp ${esc(PAY_TONE[pay])}">${esc(PAY_LABEL[pay])}</span>`;
   const opts = MANUAL_PAYS.indexOf(pay) === -1 ? [pay].concat(MANUAL_PAYS) : MANUAL_PAYS;
-  return `<span class="pill-wrap"><select class="pill pay-${esc(pay)}" data-pay="${esc(r[F.ref])}">${
-    opts.map(v=>`<option value="${v}"${v===pay?" selected":""}>${PAY_LABEL[v]}</option>`).join("")
-  }</select><span class="caret"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span></span>`;
+  return `<span class="pill-wrap"><button class="pill pay-${esc(pay)} state-trigger" type="button" data-state-menu="payment" data-state-ref="${esc(r[F.ref])}" data-state-options="${esc(opts.join(","))}" aria-haspopup="listbox" aria-expanded="false" aria-label="Payment status: ${esc(PAY_LABEL[pay])}">${esc(PAY_LABEL[pay])}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button></span>`;
 }
 function emailCell(r){
   const st = r[F.estate];
@@ -2279,8 +2247,6 @@ function filtered(){
   return DATA.filter(r=>{
     if(state.archive==="active" && r[F.arch]) return false;
     if(state.archive==="archived" && !r[F.arch]) return false;
-    if(state.archive==="withdrawn" && !r[F.wd]) return false;
-    if(state.archive==="notwithdrawn" && r[F.wd]) return false;
     if(state.status && r[F.status]!==state.status) return false;
     if(state.pay && r[F.pay]!==state.pay) return false;
     if(state.email){
@@ -2289,17 +2255,16 @@ function filtered(){
     }
     if(state.event && r[F.ev]!==state.event) return false;
     if(!q) return true;
-    return (r[F.fn]+" "+r[F.ln]+" "+r[F.em]+" "+r[F.brand]+" "+r[F.ref]).toLowerCase().includes(q);
+    return (r[F.fn]+" "+r[F.ln]+" "+r[F.em]+" "+r[F.brand]+" "+r[F.ref]+" "+r[F.notes]).toLowerCase().includes(q);
   }).sort((a,b)=>{
     const k = state.sort.key;
     const x=(a[k]||"").toString().toLowerCase(), y=(b[k]||"").toString().toLowerCase();
     return x<y ? -state.sort.dir : x>y ? state.sort.dir : 0;
   });
 }
-const pendingCount = () => DATA.filter(r=>r[F.estate]==="pending").length;
-
 /* ---------- render ---------- */
 function render(){
+  closeStateMenu();
   const rows = filtered();
   const matchingRefs = new Set(rows.map(r=>r[F.ref]));
   [...state.selected].forEach(ref=>{ if(!matchingRefs.has(ref)) state.selected.delete(ref); });
@@ -2354,7 +2319,6 @@ function render(){
   $("#pageInfo").textContent = `Page ${state.page+1} of ${pages}`;
   $("#first").disabled = $("#prev").disabled = state.page===0;
   $("#last").disabled = $("#next").disabled = state.page>=pages-1;
-  renderQueueBar();
   renderBulkBar();
 }
 
@@ -2376,120 +2340,53 @@ function renderBulkBar(){
   $("#bulkCount").textContent = n.toLocaleString();
   $("#bulkStatus").value = state.bulkStatus;
   $("#bulkApply").disabled = !state.bulkStatus || n === 0;
+  $("#bulkApply").textContent = state.bulkStatus
+    ? `Apply ${state.bulkStatus.charAt(0).toUpperCase()+state.bulkStatus.slice(1)}`
+    : "Apply status";
   const del = $("#btnWipe");
   del.disabled = n === 0;
   del.title = n ? `Delete ${n.toLocaleString()} selected submission${n===1?"":"s"}` : "Select submissions to delete";
 }
 
-function renderQueueBar(){
-  const n = pendingCount();
-  const bar = $("#queueBar");
-  bar.hidden = n===0 || state.queueDismissed;
-  if(n){
-    $("#queueCount").textContent = n;
-    $("#queueText").textContent = n===1
-      ? "application is waiting for an email to be reviewed and sent."
-      : "applications are waiting for an email to be reviewed and sent.";
-  }
+let pendingAction = null;
+function openEmailAction(r){
+  const due = emailDue(r); if(!due) return;
+  pendingAction = {type:"email", ref:r[F.ref]};
+  $("#actionConfirmTitle").textContent = "Send email?";
+  $("#actionConfirmText").textContent = `Send the ${due} email to ${r[F.fn]} ${r[F.ln]}?`;
+  $("#actionConfirmNote").textContent = "Prototype mode — this only records the email as sent. No email will be delivered.";
+  $("#actionConfirmGo").textContent = "Send email";
+  $("#actionConfirm").hidden = false;
+  $("#actionCancel").focus();
+}
+function openInvoiceAction(r){
+  pendingAction = {type:"invoice", ref:r[F.ref]};
+  $("#actionConfirmTitle").textContent = "Send invoice?";
+  $("#actionConfirmText").textContent = `Send the invoice for ${r[F.stall]} (${money(PRICES[r[F.stall]]||0)}) to ${r[F.fn]} ${r[F.ln]}?`;
+  $("#actionConfirmNote").textContent = "Prototype mode — this changes payment to Awaiting payment and records the approval/invoice email as sent. Nothing is delivered.";
+  $("#actionConfirmGo").textContent = "Send invoice";
+  $("#actionConfirm").hidden = false;
+  $("#actionCancel").focus();
+}
+function openStatusReleaseAction(r, next){
+  pendingAction = {type:"status", ref:r[F.ref], next};
+  const label = next.charAt(0).toUpperCase()+next.slice(1);
+  $("#actionConfirmTitle").textContent = "Release stall and change status?";
+  $("#actionConfirmText").textContent = `${r[F.ref]} is assigned to ${r[F.stall]}. Change the application to ${label}?`;
+  $("#actionConfirmNote").textContent = `The ${r[F.stall]} stall will become available again. Existing invoice and payment history will be preserved.`;
+  $("#actionConfirmGo").textContent = `Release stall and apply ${label}`;
+  $("#actionConfirm").hidden = false;
+  $("#actionCancel").focus();
+}
+function closeActionConfirm(){
+  $("#actionConfirm").hidden = true;
+  pendingAction = null;
 }
 
 /* ============================================================
-   Drawer — full record, plus the review-and-send step
+   Centered, read-only submission details. Actions stay in-table.
    ============================================================ */
-let previewOpen = true;
-
-function mergeDataFor(r){
-  return {
-    name: `${r[F.fn]} ${r[F.ln]}`.trim(),
-    firstName: r[F.fn], lastName: r[F.ln], email: r[F.em],
-    reference: r[F.ref], eventName: r[F.ev], brandName: r[F.brand],
-    primaryCategory: clean(r[F.cat1])==="—" ? "" : r[F.cat1],
-    secondaryCategory: clean(r[F.cat2])==="—" ? "" : r[F.cat2],
-    stallType: r[F.stall] || "", invoiceUrl: r[F.inv] || "",
-    reason: r[F.ereason] || ""
-  };
-}
-
-function previewSrcdoc(r){
-  const tplName = r[F.etpl] || EMAIL_FOR[r[F.status]] || "";
-  const data = mergeDataFor(r);
-  const body = ES.renderFor(tplName, data);
-  return `<!DOCTYPE html><html><head><meta charset="utf-8">
-    <style>body{margin:0;background:#f4f2ef;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-    .wrap{max-width:600px;margin:14px auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08)}</style>
-    </head><body><div class="wrap">${body}</div></body></html>`;
-}
-
-function commsHTML(r){
-  const st  = r[F.estate];
-  const due = EMAIL_FOR[r[F.status]];          // template this status calls for
-  const tplName = r[F.etpl] || due || "";
-
-  if(st === "pending"){
-    const data = mergeDataFor(r);
-    const subject = ES.subjectFor(tplName, data);
-    const presets = (REASON_PRESETS[tplName]||[]).map((p,i)=>
-      `<button data-preset="${i}">${esc(p.replace(/\{\{\w+\}\}/g,"…").slice(0,44))}${p.length>44?"…":""}</button>`).join("");
-    const missing = ES.templateNamed(tplName) ? "" :
-      `<div class="sim-note" style="color:var(--red-ink)">Template “${esc(tplName)}” no longer exists in Email templates. Recreate it or pick another before sending.</div>`;
-    return `
-    <div class="dsend is-pending">
-      <h4><span class="em em-pending">Pending review</span> ${esc(tplName)} email</h4>
-      <div class="subj"><span>Subject</span>${esc(subject)}</div>
-
-      <label class="fl" for="reasonBox">Reason shown to the artist <small>(fills <code>{{reason}}</code> — leave blank and the paragraph is dropped)</small></label>
-      <textarea id="reasonBox" placeholder="Optional. One or two sentences the applicant will read.">${esc(r[F.ereason]||"")}</textarea>
-      <div class="presets" id="presets">${presets}</div>
-
-      <div class="prev-head">
-        <span>Preview — merged with this applicant's details</span>
-        <span class="spacer"></span>
-        <button id="prevToggle">${previewOpen?"Hide":"Show"} preview</button>
-      </div>
-      <iframe class="prev ${previewOpen?"":"collapsed"}" id="prevFrame" title="Email preview" sandbox=""></iframe>
-
-      <div class="acts">
-        <button class="btn-send" id="sendGo">Send ${esc(tplName)} email</button>
-        <button class="btn-skip" id="sendSkip">Don't send</button>
-        <span class="spacer"></span>
-      </div>
-      <div class="sim-note">Status and email are separate: the application is already
-        <b>${esc(r[F.status])}</b>. Nothing has been emailed yet.<br>
-        Prototype — “Send” records the email as sent and does not deliver mail.</div>
-      ${missing}
-    </div>`;
-  }
-
-  if(st === "sent"){
-    return `<div class="dsend">
-      <h4><span class="em em-sent">Sent</span> ${esc(r[F.etpl])} email</h4>
-      <div class="sent-line"><b>${esc(r[F.etpl])}</b> sent ${esc(fmtDateTime(r[F.esent]))}.
-      ${r[F.ereason] ? `<br>Reason given: “${esc(r[F.ereason])}”` : "<br>No reason paragraph was included."}</div>
-      <div class="acts"><button class="btn-skip" id="reQueue">Queue again</button><span class="spacer"></span></div>
-    </div>`;
-  }
-
-  if(st === "skipped"){
-    return `<div class="dsend">
-      <h4><span class="em em-skipped">Skipped</span> ${esc(r[F.etpl])} email</h4>
-      <div class="sent-line">Marked as not to be sent. The application stays <b>${esc(r[F.status])}</b>.</div>
-      <div class="acts"><button class="btn-skip" id="reQueue">Queue again</button><span class="spacer"></span></div>
-    </div>`;
-  }
-
-  /* untracked — a decision made before this flow existed */
-  if(due){
-    return `<div class="dsend">
-      <h4><span class="em em-none">Not tracked</span> ${esc(due)} email</h4>
-      <div class="sent-line">This decision predates the review-and-send step, so no email state was
-      recorded. Nothing is assumed either way.</div>
-      <div class="acts"><button class="btn-skip" id="reQueue">Queue a ${esc(due)} email</button><span class="spacer"></span></div>
-    </div>`;
-  }
-  return "";
-}
-
-function openDrawer(ref){
+function openProfile(ref){
   const r = byRef(ref); if(!r) return;
   const row = (k,v)=> v ? `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>` : "";
   const rowRaw = (k,html)=> html ? `<dt>${esc(k)}</dt><dd>${html}</dd>` : "";
@@ -2498,16 +2395,13 @@ function openDrawer(ref){
       ${row("Name", r[F.a2fn]+" "+r[F.a2ln])}${rowRaw("Email", mailLink(r[F.a2em]))}${row("Brand", r[F.a2brand])}
       ${rowRaw("Instagram", igLink(r[F.a2ig]))}${row("Category", r[F.a2cat])}${row("Products", r[F.a2prod])}${row("Bio", r[F.a2bio])}
     </dl></div>` : "";
-  $("#drawer").innerHTML = `
+  $("#profileModalContent").innerHTML = `
     <div class="dh">
-      <div><h2>${esc(r[F.brand])}</h2>
+      <div><h2 id="profileTitle">${esc(r[F.brand])}</h2>
         <div class="sm">${esc(r[F.fn])} ${esc(r[F.ln])} · ${esc(r[F.ref])}</div></div>
-      <button class="icon-btn" id="drawerClose"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      <button class="icon-btn" id="profileClose" aria-label="Close submission details"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </div>
-    <div class="dstatus">${statusPill(r, true)}<span class="spacer"></span>${
-      r[F.wd] ? `<button class="btn-wd on" id="wdToggle">Undo withdrawal</button>`
-              : `<button class="btn-wd" id="wdToggle">Mark withdrawn</button>`}</div>
-    ${commsHTML(r)}
+    <div class="dstatus">${statusPill(r, true)}</div>
     <div class="dsec"><h4>Applicant</h4><dl class="dl">
       ${rowRaw("Email", mailLink(r[F.em]))}${rowRaw("Instagram", igLink(r[F.ig]))}${rowRaw("Website", webLink(r[F.web]))}
       ${row("Applied before", r[F.before])}${row("Insurance", r[F.ins])}
@@ -2523,83 +2417,73 @@ function openDrawer(ref){
     </dl></div>
     <div class="dsec"><h4>Admin</h4><dl class="dl">
       ${row("Submitted", r[F.sub])}${row("Decided", r[F.dec])}${row("Decided by", r[F.by])}
-      ${row("Withdrawn", r[F.wd])}
       ${row("Payment", PAY_LABEL[r[F.pay]])}${row("Paid at", r[F.paid])}
       ${rowRaw("Xero invoice", r[F.inv] ? extLink(r[F.inv], r[F.invId] || "View invoice") : esc(r[F.invId]||""))}${row("Internal note", r[F.notes])}
     </dl></div>
     ${second}`;
-  $("#drawer").hidden = false; $("#drawerVeil").hidden = false;
-  $("#drawerClose").onclick = closeDrawer;
+  $("#profileModal").hidden = false;
+  $("#profileClose").onclick = closeProfile;
+  $("#profileClose").focus();
+}
+function closeProfile(){ $("#profileModal").hidden = true; }
 
-  /* Recordkeeping only. Nothing else on the record is touched, by design. */
-  const wd = $("#wdToggle");
-  if(wd) wd.onclick = () => {
-    if(r[F.wd]){
-      r[F.wd] = "";
-      toast(`${r[F.ref]} — withdrawal cleared.`);
+/* ============================================================
+   Neutral popover shared by the coloured Application and Payment badges.
+   Native select menus inherit badge colours inconsistently across browsers.
+   ============================================================ */
+let stateMenuCtx = null;
+function closeStateMenu(){
+  const menu = $("#stateMenu");
+  if(!menu) return;
+  menu.hidden = true;
+  document.querySelectorAll('[data-state-menu][aria-expanded="true"]').forEach(b=>b.setAttribute("aria-expanded","false"));
+  stateMenuCtx = null;
+}
+function openStateMenu(trigger){
+  const r = byRef(trigger.dataset.stateRef); if(!r) return;
+  const kind = trigger.dataset.stateMenu;
+  const current = kind === "status" ? r[F.status] : r[F.pay];
+  const values = kind === "status"
+    ? STATUSES
+    : String(trigger.dataset.stateOptions||"").split(",").filter(Boolean);
+  const labelFor = v => kind === "status"
+    ? v.charAt(0).toUpperCase()+v.slice(1)
+    : (PAY_LABEL[v] || v);
+  const menu = $("#stateMenu");
+  closeStateMenu();
+  menu.innerHTML = values.map(v=>`<button type="button" role="option" data-state-value="${esc(v)}" aria-selected="${v===current}"><span class="check">${v===current?"✓":""}</span><span>${esc(labelFor(v))}</span></button>`).join("");
+  menu.hidden = false;
+  menu.style.width = `${Math.max(168, Math.ceil(trigger.getBoundingClientRect().width))}px`;
+  const anchor = trigger.getBoundingClientRect();
+  const box = menu.getBoundingClientRect();
+  const left = Math.min(Math.max(8, anchor.left), window.innerWidth-box.width-8);
+  let top = anchor.bottom+4;
+  if(top+box.height > window.innerHeight-8) top = Math.max(8, anchor.top-box.height-4);
+  menu.style.left = `${Math.round(left)}px`;
+  menu.style.top = `${Math.round(top)}px`;
+  trigger.setAttribute("aria-expanded","true");
+  stateMenuCtx = {kind, ref:r[F.ref], trigger};
+  const selected = menu.querySelector('[aria-selected="true"]');
+  if(selected) selected.focus();
+}
+function applyStateMenuValue(value){
+  if(!stateMenuCtx) return;
+  const {kind, ref} = stateMenuCtx;
+  const r = byRef(ref);
+  closeStateMenu();
+  if(!r) return;
+  if(kind === "status"){
+    if(value === r[F.status]) return;
+    if(r[F.status] === "accepted" && value !== "accepted" && r[F.stall]){
+      openStatusReleaseAction(r, value);
     } else {
-      r[F.wd] = nowStamp();
-      toast(`${r[F.ref]} marked withdrawn. Status, stall, invoice and email are unchanged.`);
+      applyStatus(r, value);
+      render();
     }
-    render(); openDrawer(ref);
-  };
-
-  bindComms(r);
-}
-function closeDrawer(){ $("#drawer").hidden = true; $("#drawerVeil").hidden = true; }
-
-function refreshPreview(r){
-  const f = $("#prevFrame");
-  if(f) f.srcdoc = previewSrcdoc(r);
-}
-
-function bindComms(r){
-  const box = $("#reasonBox");
-  if(box){
-    let t = null;
-    box.addEventListener("input", ()=>{
-      r[F.ereason] = box.value;
-      clearTimeout(t); t = setTimeout(()=>refreshPreview(r), 220);
-    });
+  } else if(kind === "payment" && value !== r[F.pay]){
+    r[F.pay] = value;
+    render();
   }
-  const presets = $("#presets");
-  if(presets) presets.onclick = e => {
-    const b = e.target.closest("button[data-preset]"); if(!b) return;
-    const list = REASON_PRESETS[r[F.etpl]] || [];
-    const text = list[+b.dataset.preset]; if(!text) return;
-    const filled = text.replace(/\{\{\s*(\w+)\s*\}\}/g, (m,k) => mergeDataFor(r)[k] || "your");
-    r[F.ereason] = filled;
-    if($("#reasonBox")) $("#reasonBox").value = filled;
-    refreshPreview(r);
-  };
-  const tog = $("#prevToggle");
-  if(tog) tog.onclick = () => {
-    previewOpen = !previewOpen;
-    $("#prevFrame").classList.toggle("collapsed", !previewOpen);
-    tog.textContent = (previewOpen?"Hide":"Show") + " preview";
-    if(previewOpen) refreshPreview(r);
-  };
-  const go = $("#sendGo");
-  if(go) go.onclick = () => {
-    r[F.estate] = "sent"; r[F.esent] = nowStamp();
-    toast(`${r[F.etpl]} email recorded as sent to ${r[F.em]}.`);
-    render(); openDrawer(r[F.ref]);
-  };
-  const skip = $("#sendSkip");
-  if(skip) skip.onclick = () => {
-    r[F.estate] = "skipped"; r[F.esent] = "";
-    toast(`${r[F.ref]} — ${r[F.etpl]} email marked as not to be sent.`);
-    render(); openDrawer(r[F.ref]);
-  };
-  const req = $("#reQueue");
-  if(req) req.onclick = () => {
-    r[F.etpl] = r[F.etpl] || EMAIL_FOR[r[F.status]] || "";
-    r[F.estate] = "pending"; r[F.esent] = "";
-    state.queueDismissed = false;
-    toast(`${r[F.ref]} — ${r[F.etpl]} email queued for review.`);
-    render(); openDrawer(r[F.ref]);
-  };
-  if(previewOpen) refreshPreview(r);
 }
 
 /* ============================================================
@@ -2627,7 +2511,7 @@ function showScreen(name){
   document.querySelectorAll('nav.nav a[data-screen]').forEach(a =>
     a.classList.toggle("on", a.dataset.screen === name));
   if(name === "email") ES.boot();
-  closeDrawer();
+  closeProfile();
 }
 
 /* ============================================================
@@ -2637,12 +2521,11 @@ function boot(){
   opt($("#fStatus"), [["","All application"]].concat(STATUSES.map(s=>[s, s.charAt(0).toUpperCase()+s.slice(1)])), "");
   opt($("#bulkStatus"), [["","Change status…"]].concat(STATUSES.map(s=>[s, s.charAt(0).toUpperCase()+s.slice(1)])), "");
   opt($("#fPay"), [["","All payment"]].concat(PAYS.map(p=>[p, PAY_LABEL[p]])), "");   /* all six states */
-  opt($("#fEmail"), [["","All email"],["pending","Email: pending review"],["sent","Email: sent"],
+  opt($("#fEmail"), [["","All email"],["pending","Email: ready to send"],["sent","Email: sent"],
                      ["skipped","Email: skipped"],["__none__","Email: not tracked"]], "");
   const events = [...new Set(RAW.map(r=>r[F.ev]))];
   opt($("#fEvent"), [["","All event"]].concat(events.map(e=>[e,e])), "");
   opt($("#fArchive"), [["active","Active"],["archived","Archived"],
-                       ["withdrawn","Withdrawn"],["notwithdrawn","Not withdrawn"],
                        ["all","All"]], "active");
 
   $("#q").oninput = e => { state.q = e.target.value; state.page = 0; render(); };
@@ -2679,19 +2562,25 @@ function boot(){
   let pendingBulkStatus = "";
   $("#bulkStatus").onchange = e => {
     state.bulkStatus = e.target.value;
-    $("#bulkApply").disabled = !state.bulkStatus || state.selected.size === 0;
+    renderBulkBar();
   };
   $("#bulkClear").onclick = () => {
     state.selected.clear(); state.bulkStatus = ""; render();
   };
   $("#bulkApply").onclick = () => {
     if(!state.bulkStatus || !state.selected.size) return;
-    pendingBulkStatus = state.bulkStatus;
-    const label = pendingBulkStatus.charAt(0).toUpperCase()+pendingBulkStatus.slice(1);
+    const rows = [...state.selected].map(byRef).filter(Boolean);
+    const next = state.bulkStatus;
+    const releases = rows.filter(r=>r[F.status]==="accepted" && next!=="accepted" && r[F.stall]).length;
+    pendingBulkStatus = next;
+    const label = next.charAt(0).toUpperCase()+next.slice(1);
     $("#bulkConfirmText").textContent = `Change ${state.selected.size.toLocaleString()} selected submission${state.selected.size===1?"":"s"} to ${label}?`;
-    $("#bulkConfirmNote").textContent = EMAIL_FOR[pendingBulkStatus]
-      ? `${EMAIL_FOR[pendingBulkStatus]} emails will be queued for individual review. Nothing will be sent automatically.`
-      : "Existing email tracking will be reset when it no longer matches the new status, following the current workflow.";
+    const emailNote = EMAIL_FOR[next]
+      ? `${EMAIL_FOR[next]} emails will be prepared. Nothing will be sent automatically.`
+      : "Accepted submissions must be assigned a stall before Send invoice becomes available.";
+    $("#bulkConfirmNote").textContent = releases
+      ? `${emailNote} ${releases} assigned stall${releases===1?"":"s"} will be released.`
+      : emailNote;
     $("#bulkConfirmGo").textContent = `Apply ${label}`;
     $("#bulkConfirm").hidden = false;
     $("#bulkCancel").focus();
@@ -2701,23 +2590,38 @@ function boot(){
   $("#bulkConfirm").onclick = e => { if(e.target.id === "bulkConfirm") closeBulkConfirm(); };
   $("#bulkConfirmGo").onclick = () => {
     if(!pendingBulkStatus) return;
-    const rows = [...state.selected].map(byRef).filter(Boolean);
     const next = pendingBulkStatus;
+    const rows = [...state.selected].map(byRef).filter(Boolean);
     rows.forEach(r=>applyStatus(r, next, false));
+    const label = next.charAt(0).toUpperCase()+next.slice(1);
+    const message = `${rows.length.toLocaleString()} submission${rows.length===1?"":"s"} changed to ${label}.`;
     $("#bulkConfirm").hidden = true;
     state.selected.clear(); state.bulkStatus = ""; pendingBulkStatus = "";
     render();
-    const label = next.charAt(0).toUpperCase()+next.slice(1);
-    toast(`${rows.length.toLocaleString()} submission${rows.length===1?"":"s"} changed to ${label}.`);
+    toast(message);
   };
 
-  /* queue bar */
-  $("#queueGo").onclick = () => {
-    state.email = "pending"; state.status = ""; state.page = 0;
-    $("#fEmail").value = "pending"; $("#fStatus").value = "";
-    render(); $(".scroll").scrollTo(0,0);
+  /* direct row action confirmation */
+  $("#actionCancel").onclick = closeActionConfirm;
+  $("#actionConfirm").onclick = e => { if(e.target.id === "actionConfirm") closeActionConfirm(); };
+  $("#actionConfirmGo").onclick = () => {
+    if(!pendingAction) return;
+    const action = pendingAction;
+    const r = byRef(action.ref);
+    if(!r){ closeActionConfirm(); return; }
+    let message = "";
+    if(action.type === "email" && markEmailSent(r))
+      message = `${r[F.etpl]} email recorded as sent to ${r[F.em]}. Nothing was delivered.`;
+    else if(action.type === "invoice" && markInvoiceSent(r))
+      message = `${r[F.ref]} invoice recorded as sent. Payment is now Awaiting payment.`;
+    else if(action.type === "status"){
+      applyStatus(r, action.next, false);
+      message = `${r[F.ref]} changed to ${action.next}. Its stall was released.`;
+    }
+    closeActionConfirm();
+    render();
+    if(message) toast(message);
   };
-  $("#queueDismiss").onclick = () => { state.queueDismissed = true; renderQueueBar(); };
 
   /* column picker */
   $("#btnCols").onclick = e => {
@@ -2744,7 +2648,7 @@ function boot(){
       saveCols(); renderColPop(); render();
     }
   });
-  document.addEventListener("click", () => { $("#colPop").hidden = true; });
+  document.addEventListener("click", () => { $("#colPop").hidden = true; closeStateMenu(); });
 
   $("#btnCopy").onclick = () => {
     const list = filtered().map(r=>r[F.em]);
@@ -2837,6 +2741,18 @@ function boot(){
 
   /* table interactions — the whole row opens the record */
   $("#view").addEventListener("click", e => {
+    const stateTrigger = e.target.closest("[data-state-menu]");
+    if(stateTrigger){
+      e.stopPropagation();
+      if(stateMenuCtx && stateMenuCtx.kind===stateTrigger.dataset.stateMenu && stateMenuCtx.ref===stateTrigger.dataset.stateRef) closeStateMenu();
+      else openStateMenu(stateTrigger);
+      return;
+    }
+    const emailAction = e.target.closest("[data-email-action]");
+    if(emailAction){ const r=byRef(emailAction.dataset.emailAction); if(r) openEmailAction(r); return; }
+    const invoiceAction = e.target.closest("[data-invoice-action]");
+    if(invoiceAction){ const r=byRef(invoiceAction.dataset.invoiceAction); if(r) openInvoiceAction(r); return; }
+
     const note = e.target.closest("[data-note]");
     if(note){ noteRef = note.dataset.note; const r = byRef(noteRef);
       $("#noteWho").textContent = `${r[F.brand]} · ${r[F.ref]}`;
@@ -2849,16 +2765,17 @@ function boot(){
       render(); return; }
 
     /* inline controls keep their own behaviour */
-    if(e.target.closest("select, input[type=checkbox], .pill-wrap, a[href]")) return;
+    if(e.target.closest("select, input[type=checkbox], button, .pill-wrap, a[href]")) return;
 
     const open = e.target.closest("[data-open]");
-    if(open){ e.preventDefault(); openDrawer(open.dataset.open); }
+    if(open){ e.preventDefault(); openProfile(open.dataset.open); }
   });
 
   $("#view").addEventListener("keydown", e => {
     if(e.key !== "Enter" && e.key !== " ") return;
+    if(e.target.closest("button, select, input, a")) return;
     const row = e.target.closest("tr.rowlink"); if(!row) return;
-    e.preventDefault(); openDrawer(row.dataset.open);
+    e.preventDefault(); openProfile(row.dataset.open);
   });
 
   $("#view").addEventListener("change", e => {
@@ -2874,23 +2791,50 @@ function boot(){
       else state.selected.delete(s.dataset.selectRef);
       render();
     }
-    else if(s.dataset.status){
-      const r = byRef(s.dataset.status);
-      applyStatus(r, s.value);
-      render();   /* stall cell visibility depends on status */
+    else if(s.dataset.stall){
+      const r = byRef(s.dataset.stall);
+      const next = s.value;
+      if(!r || !next || STALLS.indexOf(next) === -1){
+        toast("Choose a valid stall option."); render(); return;
+      }
+      r[F.stall] = next;
+      render();
+      toast(`${r[F.ref]} assigned to ${next}. Send invoice is now available.`);
     }
-    else if(s.dataset.pay){ const r = byRef(s.dataset.pay); r[F.pay] = s.value; render(); }
-    else if(s.dataset.stall){ const r = byRef(s.dataset.stall); r[F.stall] = s.value; render(); }
   });
 
-  $("#drawerVeil").onclick = closeDrawer;
+  $("#stateMenu").addEventListener("click", e => {
+    e.stopPropagation();
+    const item = e.target.closest("[data-state-value]");
+    if(item) applyStateMenuValue(item.dataset.stateValue);
+  });
+  $("#stateMenu").addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+      const trigger = stateMenuCtx && stateMenuCtx.trigger;
+      closeStateMenu();
+      if(trigger) trigger.focus();
+      e.stopPropagation();
+      return;
+    }
+    if(e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    const items = [...$("#stateMenu").querySelectorAll("button")];
+    const index = items.indexOf(document.activeElement);
+    const next = e.key === "ArrowDown" ? (index+1)%items.length : (index-1+items.length)%items.length;
+    items[next].focus();
+    e.preventDefault();
+  });
+  $(".scroll").addEventListener("scroll", closeStateMenu, {passive:true});
+  window.addEventListener("resize", closeStateMenu);
+
+  $("#profileModal").onclick = e => { if(e.target.id === "profileModal") closeProfile(); };
   document.addEventListener("keydown", e => {
     if(e.key !== "Escape") return;
-    closeDrawer(); $("#noteModal").hidden = true; $("#colPop").hidden = true;
+    closeProfile(); closeStateMenu(); $("#noteModal").hidden = true; $("#colPop").hidden = true;
     if(!backingUp) $("#bkModal").hidden = true;
     $("#bkConfirm").hidden = true;
     $("#wipeModal").hidden = true;
     $("#bulkConfirm").hidden = true;
+    closeActionConfirm();
   });
 
   showScreen("inquiries");
