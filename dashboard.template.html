@@ -494,6 +494,7 @@
   #es-root .crumb{color:var(--ink-2);font-size:13px}
   #es-root .crumb b{color:var(--ink);font-weight:600}
   #es-root .page{padding:26px 30px;max-width:1500px;width:100%}
+  #es-root .library-page{min-height:calc(100vh - 64px);max-width:none;padding-bottom:72px;background:#f7f7f6}
   #es-root h1.page-title{font-size:24px;font-weight:700;letter-spacing:-.01em}
   #es-root .page-sub{color:var(--ink-2);margin-top:3px}
   /* ---------- Buttons ---------- */
@@ -507,6 +508,16 @@
   #es-root .btn-danger-ghost:hover{background:#fdf1f0}
   /* ---------- Template list ---------- */
   #es-root .list-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+  #es-root .list-head > div:first-child{max-width:50%}
+  #es-root .list-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:nowrap}
+  #es-root .scope-filter{display:flex;align-items:center;gap:7px;color:#71717a;font-size:12px}
+  #es-root .library-scope{height:34px;width:230px;min-width:0;border:1px solid #d4d4d8;border-radius:8px;background:#fff;padding:0 32px 0 10px;font-size:13px;outline:none;text-overflow:ellipsis}
+  #es-root .library-scope:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
+  #es-root .list-actions .btn{height:34px;white-space:nowrap}
+  #es-root .template-group{margin-bottom:30px}
+  #es-root .template-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  #es-root .template-group-head h2{font-size:14px;margin:0}
+  #es-root .template-group-head p{color:#71717a;font-size:12px;margin:2px 0 0}
   #es-root .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
   #es-root .tpl-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:box-shadow .15s, transform .15s;cursor:pointer}
   #es-root .tpl-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
@@ -514,7 +525,12 @@
   #es-root .tpl-thumb .scaler{width:600px;transform:scale(.5);transform-origin:0 0}
   #es-root .tpl-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(25,22,19,.06))}
   #es-root .tpl-meta{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+  #es-root .tpl-scope-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:22px}
+  #es-root .scope-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid #e4e4e7;border-radius:999px;background:#fafafa;color:#52525b;padding:3px 8px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #es-root .scope-chip.custom{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+  #es-root .scope-chip.inherited{background:#f4f4f5;color:#71717a}
   #es-root .tpl-name{font-weight:650;font-size:14.5px;display:flex;align-items:center;gap:8px}
+  #es-root .tpl-created{padding-left:15px;color:var(--ink-3);font-size:11.5px;line-height:1.35}
   #es-root .status-dot{width:7px;height:7px;border-radius:99px;background:#3ba55d;flex-shrink:0}
   #es-root .status-dot.draft{background:#c9c4bd}
   #es-root .tpl-sub{color:var(--ink-2);font-size:12.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -527,6 +543,10 @@
   #es-root .tpl-card.new-card{border-style:dashed;border-color:var(--border-strong);background:transparent;box-shadow:none;align-items:center;justify-content:center;min-height:280px;color:var(--ink-2);gap:10px}
   #es-root .tpl-card.new-card:hover{background:#f6f4f1;transform:none}
   #es-root .new-card .plus{width:42px;height:42px;border-radius:12px;background:var(--panel);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ink)}
+  #es-root .tpl-card.inherited{cursor:default}
+  #es-root .tpl-card.inherited:hover{transform:none;box-shadow:var(--shadow)}
+  #es-root .tpl-customize{width:100%;justify-content:center;margin-top:2px}
+  #es-root .library-empty{border:1px dashed #d4d4d8;border-radius:12px;padding:32px;text-align:center;color:#71717a;background:#fafafa}
   /* ---------- Branding ---------- */
   #es-root .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
   #es-root .brand-card{max-width:760px;padding:24px;margin-top:22px}
@@ -577,6 +597,19 @@
   #es-root .inline-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   #es-root .upload-row{display:flex;gap:8px}
   #es-root .upload-row .input{flex:1;min-width:0}
+  #es-root .brand-check{display:flex;align-items:center;gap:8px;font-size:12px;color:#52525b}
+  #es-root .brand-check input{width:15px;height:15px;accent-color:#18181b}
+  #es-root .social-links-editor{display:flex;flex-direction:column;gap:8px}
+  #es-root .social-link-row{display:grid;grid-template-columns:minmax(90px,.65fr) minmax(0,1.35fr) 30px;gap:6px;align-items:center}
+  #es-root .social-link-row .input{min-width:0}
+  #es-root .social-link-row .icon-btn{border:1px solid #e4e4e7;background:#fff;color:#71717a}
+  #es-root .logo-upload{display:flex;align-items:center;gap:10px;padding:10px;border:1px dashed #d4d4d8;border-radius:9px;background:#fafafa}
+  #es-root .logo-upload-preview{width:54px;height:42px;border:1px solid #e4e4e7;border-radius:7px;background:#fff;display:grid;place-items:center;overflow:hidden;color:#a1a1aa;flex:none}
+  #es-root .logo-upload-preview img{max-width:100%;max-height:100%;object-fit:contain}
+  #es-root .logo-upload-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+  #es-root .logo-upload-copy b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #es-root .logo-upload-copy span{font-size:11px;color:#71717a}
+  #es-root .logo-upload-actions{display:flex;gap:5px;flex:none}
   #es-root .range-row{display:flex;align-items:center;gap:10px}
   #es-root .range-row input[type=range]{flex:1;accent-color:var(--brand-dark)}
   #es-root .range-row output{font-size:12px;color:var(--ink-2);width:40px;text-align:right}
@@ -625,12 +658,16 @@
   /* modal */
   #es-root .modal-back{position:fixed;inset:0;background:rgba(25,22,19,.4);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .15s}
   #es-root .modal-back.open{opacity:1;pointer-events:auto}
-  #es-root .modal{background:var(--panel);border-radius:14px;padding:22px;width:440px;box-shadow:var(--shadow-lg);transform:translateY(8px);transition:transform .15s}
+  #es-root .modal{position:relative;background:var(--panel);border-radius:14px;padding:22px;width:min(520px,calc(100vw - 32px));max-height:min(760px,calc(100vh - 40px));overflow:auto;box-shadow:var(--shadow-lg);transform:translateY(8px);transition:transform .15s}
   #es-root .modal-back.open .modal{transform:none}
+  #es-root .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-right:28px}
+  #es-root .modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#71717a}
+  #es-root .modal-close:hover{background:#f4f4f5;color:#18181b}
   #es-root .modal h3{font-size:16px;margin-bottom:4px}
   #es-root .modal p{color:var(--ink-2);margin-bottom:16px;font-size:13px}
   #es-root .modal .opts{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
-  #es-root .opt-btn{border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:left;display:flex;gap:12px;align-items:center;background:var(--panel)}
+  #es-root #dup-opts{display:flex;flex-direction:column;gap:8px}
+  #es-root .opt-btn{width:100%;border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:left;display:flex;gap:12px;align-items:center;background:var(--panel)}
   #es-root .opt-btn:hover{border-color:var(--brand-dark);box-shadow:var(--shadow)}
   #es-root .opt-btn .ic{font-size:20px}
   #es-root .opt-btn b{display:block;font-size:13.5px}
@@ -645,10 +682,212 @@
   #es-root{font-size:14px;line-height:1.5}
   #es-root button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   #es-root ::placeholder{color:var(--ink-3)}
+  #es-root .lucide-icon{display:inline-block;flex:none;vertical-align:-.18em;stroke:currentColor}
+  #es-root button .lucide-icon{pointer-events:none}
 
   #es-root .topbar{display:none}      /* the shell supplies the breadcrumb bar */
   #es-root .page{max-width:none}
   #es-root #btn-new{white-space:nowrap;flex-shrink:0}   /* was wrapping to two lines */
+
+  /* ---------- Nova focused email workspace ---------- */
+  .app.email-mode .sidebar,
+  .app.email-mode > .main > .topbar{display:none}
+  .app.email-mode .scroll{overflow:hidden}
+  #es-root{height:100%;background:#f7f7f6;color:#171714}
+  #es-root .es-main{height:100%;min-height:0}
+  #es-root #view-editor{height:100%;min-height:0;max-height:100%;overflow:hidden}
+  #es-root #view-editor.studio-shell{height:100%;min-height:0;max-height:100%;display:grid;grid-template-rows:60px minmax(0,1fr);background:#f7f7f6}
+  #es-root .studio-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:5px 0;border-bottom:1px solid #e4e4e1;background:#fff;min-width:0;z-index:50;box-shadow:0 1px 2px rgb(0 0 0/.03)}
+  #es-root .studio-crumbs{display:flex;align-items:center;gap:10px;padding:0 14px;min-width:0;font-size:14px}
+  #es-root .crumb-link{height:32px;padding:0 9px;border-radius:8px;color:#42423d;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;white-space:nowrap}
+  #es-root .crumb-link:hover{background:#f4f4f2;color:#171714}
+  #es-root .studio-title{min-width:0;display:flex;align-items:center;gap:7px;padding-left:10px;border-left:1px solid #e4e4e7}
+  #es-root .studio-title strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+  #es-root .draft-chip{font-family:inherit;font-size:11px;color:#777771;background:#f1f1ef;border-radius:99px;padding:3px 8px}
+  #es-root .draft-chip.active{color:#166534;background:#dcfce7}
+  #es-root .scope-control{min-width:0;display:flex;align-items:center;gap:6px;color:#71717a;font-size:11px}
+  #es-root .scope-select{height:32px;width:clamp(180px,19vw,285px);border:1px solid #e4e4e7;border-radius:8px;background:#fff;padding:0 28px 0 9px;font-size:12px;outline:none;text-overflow:ellipsis}
+  #es-root .scope-select:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
+  #es-root .studio-actions{display:flex;align-items:center;gap:8px;padding:0 14px;white-space:nowrap}
+  #es-root .saved-chip{font-size:12px;color:#5f625c;margin-right:4px}
+  #es-root .studio-actions .btn{height:32px;padding:0 12px;border-radius:8px;font-size:12px}
+  #es-root .studio-actions .btn-dark{background:#171714}
+  #es-root .studio-grid{display:grid;grid-template-columns:250px minmax(560px,1fr) 320px;min-height:0;overflow:hidden}
+  #es-root.preview-mode .studio-grid{grid-template-columns:minmax(0,1fr)}
+  #es-root.preview-mode .template-rail,
+  #es-root.preview-mode .studio-inspector{display:none}
+  #es-root.preview-mode .canvas-instruction,
+  #es-root.preview-mode .pv-block .blk-toolbar,
+  #es-root.preview-mode .pv-block .blk-label{display:none!important}
+  #es-root.preview-mode .pv-block{cursor:default}
+  #es-root.preview-mode .pv-block::after{display:none}
+
+  #es-root .template-rail{background:#fff;border-right:1px solid #e4e4e1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  #es-root .template-rail-head{padding:16px 12px 10px}
+  #es-root .template-rail-head h2{font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.3;margin:0}
+  #es-root .template-rail-head p{font-family:Georgia,"Times New Roman",serif;font-size:12px;color:#676762;margin-top:3px}
+  #es-root .template-nav{padding:4px 8px 10px;display:flex;flex-direction:column;gap:2px}
+  #es-root .template-option{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) 16px;align-items:center;gap:8px;padding:7px 7px;border-radius:8px;text-align:left}
+  #es-root .template-option:hover{background:#f5f5f3}
+  #es-root .template-option.on{background:#f1f1ef}
+  #es-root .template-state-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:15px;font-weight:700}
+  #es-root .template-state-icon.approved{background:#dcfce7;color:#087a39}
+  #es-root .template-state-icon.rejected{background:#ffe2e2;color:#c10007}
+  #es-root .template-state-icon.waitlist{background:#fef3c7;color:#946200}
+  #es-root .template-state-icon.pending{background:#eeeeeb;color:#686863}
+  #es-root .template-state-icon.withdrawn{background:#ede9fe;color:#6d28d9}
+  #es-root .template-copy{min-width:0;display:flex;flex-direction:column}
+  #es-root .template-copy b{font-family:Georgia,"Times New Roman",serif;font-size:14px;font-weight:600;line-height:1.25}
+  #es-root .template-copy span{font-family:Georgia,"Times New Roman",serif;color:#666660;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #es-root .template-arrow{color:#6f6f69;font-size:17px;text-align:center;display:grid;place-items:center}
+  #es-root .trigger-chip{display:inline-flex;align-items:center;gap:5px}
+  #es-root .rail-divider{border-top:1px solid #e7e7e3;margin:0 10px}
+  #es-root .rail-tabs{margin:12px 10px 8px;display:grid;grid-template-columns:1fr 1fr;background:#f2f2f0;border-radius:8px;padding:2px}
+  #es-root .rail-tabs button{height:28px;border-radius:7px;font-family:Georgia,"Times New Roman",serif;font-size:12px;color:#555550}
+  #es-root .rail-tabs button.on{background:#fff;color:#171714;box-shadow:0 1px 3px rgb(0 0 0/.08)}
+  #es-root .rail-content{padding:0 10px 14px;overflow:auto;min-height:0}
+  #es-root .nova-palette{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #es-root .nova-palette .pal-btn{min-height:72px;border-radius:8px;background:#fff;font-family:Georgia,"Times New Roman",serif;color:#171714;font-size:12px}
+  #es-root .nova-palette .pal-btn .ic{display:grid;place-items:center;height:24px;margin-bottom:2px;color:#44443f}
+  #es-root .outline-list{display:flex;flex-direction:column;gap:4px}
+  #es-root .outline-item{display:flex;align-items:center;gap:8px;width:100%;padding:8px;border:1px solid transparent;border-radius:7px;text-align:left;font-size:12px;color:#555550}
+  #es-root .outline-item:hover{background:#f5f5f3}
+  #es-root .outline-item.on{border-color:#171714;background:#fff;color:#171714}
+  #es-root .outline-item .grip{display:grid;place-items:center;color:#a0a09b}
+  #es-root .outline-item.dragging{opacity:.4}
+  #es-root .outline-item.drop-above{box-shadow:inset 0 2px #171714}
+  #es-root .outline-item.drop-below{box-shadow:inset 0 -2px #171714}
+  #es-root .rail-hint{font-family:Georgia,"Times New Roman",serif;color:#73736d;font-size:11px;line-height:1.4;margin-top:8px}
+  #es-root .prototype-note{margin-top:auto;border-top:1px solid #e7e7e3;padding:14px 12px;font-family:Georgia,"Times New Roman",serif}
+  #es-root .prototype-note b{font-size:12px;display:block;margin-bottom:3px}
+  #es-root .prototype-note span{font-size:11px;color:#6d6d68;line-height:1.35;display:block}
+
+  #es-root .studio-canvas{min-width:0;min-height:0;overflow:auto;background:#f5f5f4}
+  #es-root .canvas-toolbar{position:sticky;top:0;z-index:20;height:48px;border-bottom:1px solid #e1e1de;background:rgba(255,255,255,.94);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 20px;backdrop-filter:blur(10px)}
+  #es-root .history-actions{display:flex;gap:4px}
+  #es-root .history-actions button{width:28px;height:28px;border-radius:6px;color:#777771;font-size:17px}
+  #es-root .history-actions button:hover:not(:disabled){background:#efefec;color:#171714}
+  #es-root .history-actions button:disabled{opacity:.35;cursor:default}
+  #es-root .device-toggle{margin:0;background:#f1f1ef;padding:2px;border:none;border-radius:8px;overflow:visible}
+  #es-root .device-toggle button{height:28px;padding:0 10px;border-radius:6px;background:transparent;font-family:Georgia,"Times New Roman",serif;font-size:12px;font-weight:400}
+  #es-root .device-toggle button{display:inline-flex;align-items:center;gap:6px}
+  #es-root .device-toggle button.on{background:#fff;color:#171714;box-shadow:0 1px 3px rgb(0 0 0/.1)}
+  #es-root .design-label{justify-self:end;font-family:Georgia,"Times New Roman",serif;font-size:11px;letter-spacing:.08em;color:#706f68}
+  #es-root .canvas-content{padding:20px 28px 80px;display:flex;flex-direction:column;align-items:center}
+  #es-root .canvas-intro{width:min(640px,100%);margin-bottom:14px}
+  #es-root .canvas-intro h1{font-family:Georgia,"Times New Roman",serif;font-size:21px;line-height:1.25;margin:0}
+  #es-root .canvas-intro p{font-family:Georgia,"Times New Roman",serif;color:#65655f;font-size:12px;margin-top:3px}
+  #es-root .nova-email-details{width:min(640px,100%);margin:0 0 18px;border:1px solid #deded9;border-radius:8px;background:#fff}
+  #es-root .nova-email-details summary{list-style:none;cursor:pointer;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+  #es-root .nova-email-details summary::-webkit-details-marker{display:none}
+  #es-root .subject-copy{min-width:0;display:flex;flex-direction:column;font-family:Georgia,"Times New Roman",serif}
+  #es-root .subject-copy b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #es-root .subject-copy span{font-size:11px;color:#676762;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #es-root .details-chevron{font-size:18px}
+  #es-root .email-details-form{border-top:1px solid #ecece8;padding:12px;display:grid;gap:10px}
+  #es-root .canvas-instruction{width:min(640px,100%);text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:11.5px;color:#777771;margin:0 0 14px}
+  #es-root .canvas-instruction{display:flex;align-items:center;justify-content:center;gap:5px}
+  #es-root .panel-preview{flex:none;width:100%;padding:0;background:none;display:flex;align-items:center}
+  #es-root .panel-preview .email-frame{width:600px;border:1px solid #ddddda;border-radius:0;box-shadow:none}
+  #es-root .panel-preview .email-frame.mobile{width:375px}
+
+  #es-root .studio-inspector{background:#fff;border-left:1px solid #e4e4e1;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+  #es-root .inspector-tabs{height:48px;border-bottom:1px solid #e4e4e1;display:grid;grid-template-columns:1fr 1fr;padding:0 10px}
+  #es-root .inspector-tabs button{position:relative;font-family:Georgia,"Times New Roman",serif;font-size:12px;color:#686862}
+  #es-root .inspector-tabs button{display:flex;align-items:center;justify-content:center;gap:6px}
+  #es-root .inspector-tabs button.on{color:#171714}
+  #es-root .inspector-tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#171714}
+  #es-root .inspector-scroll{overflow:auto;padding:14px 12px 50px;min-height:0}
+  #es-root .inspector-heading{display:flex;gap:9px;align-items:center;margin-bottom:14px}
+  #es-root .inspector-heading .type-icon{width:32px;height:32px;border-radius:8px;background:#f1f1ef;display:grid;place-items:center;font-size:17px}
+  #es-root .inspector-heading b{font-family:Georgia,"Times New Roman",serif;font-size:13px;display:block}
+  #es-root .inspector-heading span{font-family:Georgia,"Times New Roman",serif;color:#6c6c66;font-size:11px}
+  #es-root .studio-inspector .settings-head{border-bottom:1px solid #ecece8;padding-bottom:10px}
+  #es-root .studio-inspector .settings-form{gap:14px}
+  #es-root .studio-inspector .input,
+  #es-root .studio-inspector textarea.input{border-radius:7px;font-size:12px;padding:8px 9px}
+  #es-root .studio-inspector .brand-scope{font-size:11px}
+  #es-root .studio-inspector .sect{margin-bottom:18px}
+  #es-root .merge-panel{margin-top:20px;padding-top:16px;border-top:1px solid #ecece8}
+  #es-root .merge-panel h4{font-family:Georgia,"Times New Roman",serif;font-size:12px;margin-bottom:8px}
+
+  #es-root .review-backdrop{position:fixed;inset:0;background:rgb(20 20 18/.38);z-index:300;display:grid;place-items:center;padding:24px}
+  #es-root .review-backdrop[hidden]{display:none}
+  #es-root .review-card{width:min(620px,100%);max-height:min(760px,90vh);overflow:auto;background:#fff;border-radius:14px;box-shadow:0 24px 70px rgb(0 0 0/.22)}
+  #es-root .review-head{padding:20px 22px;border-bottom:1px solid #e7e7e3}
+  #es-root .review-head h2{font-family:Georgia,"Times New Roman",serif;font-size:20px;margin:0}
+  #es-root .review-head p{font-size:12px;color:#686862;margin-top:4px}
+  #es-root .review-body{padding:18px 22px;display:grid;gap:12px}
+  #es-root .review-row{display:grid;grid-template-columns:110px 1fr;gap:12px;font-size:12px}
+  #es-root .review-row span{color:#73736d}
+  #es-root .review-warning{background:#fff8df;border:1px solid #ead9a0;border-radius:8px;padding:10px 12px;color:#725c13;font-size:12px}
+  #es-root .review-actions{border-top:1px solid #e7e7e3;padding:14px 22px;display:flex;justify-content:flex-end;gap:8px}
+  #es-root .test-card{width:min(440px,100%)}
+  #es-root .test-form{display:grid;gap:8px;padding:18px 22px}
+  #es-root .test-form label{font-size:12px;font-weight:600}
+  #es-root .test-form p{margin:0;color:#71717a;font-size:12px}
+  #es-root .btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+
+  /* Match the dashboard's shadcn-inspired component language. The email body
+     keeps its own brand typography; application chrome uses Geist. */
+  #es-root{
+    font-family:"Geist","Geist Variable",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  #es-root .studio-crumbs,
+  #es-root .template-rail-head h2,
+  #es-root .template-rail-head p,
+  #es-root .template-copy b,
+  #es-root .template-copy span,
+  #es-root .rail-tabs button,
+  #es-root .nova-palette .pal-btn,
+  #es-root .rail-hint,
+  #es-root .prototype-note,
+  #es-root .device-toggle button,
+  #es-root .design-label,
+  #es-root .canvas-intro h1,
+  #es-root .canvas-intro p,
+  #es-root .subject-copy,
+  #es-root .canvas-instruction,
+  #es-root .inspector-tabs button,
+  #es-root .inspector-heading b,
+  #es-root .inspector-heading span,
+  #es-root .merge-panel h4,
+  #es-root .review-head h2{font-family:inherit}
+  #es-root .crumb-link,
+  #es-root .template-option,
+  #es-root .rail-tabs,
+  #es-root .nova-palette .pal-btn,
+  #es-root .outline-item,
+  #es-root .device-toggle,
+  #es-root .nova-email-details,
+  #es-root .studio-inspector .input,
+  #es-root .studio-inspector textarea.input,
+  #es-root .review-warning{border-radius:.625rem}
+  #es-root .btn{border-radius:.5rem;font-weight:500}
+  #es-root .btn-dark{background:#171717;color:#fff}
+  #es-root .btn-dark:hover{background:#2f2f2f}
+  #es-root .input,
+  #es-root textarea.input{border-color:#e4e4e7;border-radius:.5rem;background:#fff;box-shadow:0 1px 2px rgb(0 0 0/.02)}
+  #es-root .input:focus,
+  #es-root textarea.input:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
+
+  @media (max-width:1200px){
+    #es-root .studio-grid{grid-template-columns:230px minmax(500px,1fr) 290px}
+    #es-root .studio-header{grid-template-columns:minmax(220px,1fr) auto}
+    #es-root .studio-actions .saved-chip{display:none}
+    #es-root .scope-control > span{display:none}
+  }
+  @media (max-width:980px){
+    #es-root .list-head{align-items:flex-start;flex-direction:column}
+    #es-root .list-head > div:first-child{max-width:none}
+    #es-root .list-actions{width:100%;justify-content:flex-start}
+    #es-root .studio-grid{grid-template-columns:210px minmax(480px,1fr)}
+    #es-root .studio-inspector{display:none}
+    #es-root .studio-header{grid-template-columns:minmax(180px,1fr) auto}
+    #es-root .studio-actions .btn-ghost{display:none}
+    #es-root .studio-title{max-width:180px}
+    #es-root .scope-select{width:170px}
+  }
 
 /* ===== footer bits ===== */
   .footbar .rows-lbl{color:var(--muted-foreground)}
@@ -764,14 +1003,18 @@
         <div class="es-main"></div>
         <div id="es-toast"></div>
         <div class="modal-back" id="modal-new">
-          <div class="modal">
-            <h3>Create a new template</h3>
-            <p>Start from scratch, or duplicate one of your existing templates.</p>
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="new-template-title">
+            <button class="modal-close" id="close-new-template" aria-label="Close create template dialog"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            <div class="modal-head"><h3 id="new-template-title">Create a new template</h3></div>
+            <p>Create a manual email in the global library or for one event. Status-linked system templates remain protected.</p>
+            <div class="inline-2" style="margin-bottom:14px">
+              <div class="field"><label for="new-template-name">Template name</label><input class="input" id="new-template-name" placeholder="e.g. Event reminder"></div>
+              <div class="field"><label for="new-template-scope">Event</label><select class="input" id="new-template-scope"></select></div>
+            </div>
             <div class="opts">
-              <button class="opt-btn" onclick="ES.createTemplate(null)"><span class="ic">✨</span><span><b>Blank template</b><span>Starter layout with a hero, text and button block</span></span></button>
+              <button class="opt-btn" id="create-blank"><span class="ic"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span><b>Blank template</b><span>Starter layout with a hero, text and button block</span></span></button>
               <div id="dup-opts"></div>
             </div>
-            <div style="text-align:right;margin-top:10px"><button class="btn btn-ghost" onclick="ES.closeModal()">Cancel</button></div>
           </div>
         </div>
         <input type="file" id="file-input" accept="image/*" hidden>
@@ -916,7 +1159,7 @@ const SAMPLE = {
   amount:'AUD 220.00', dueDate:'13 Aug 2026', bankAccountName:'Mellow Art Australia',
   bankBsb:'083-004', bankAccountNumber:'12 345 678',
   confirmationFormUrl:'https://mellowart.com.au/confirm', contactEmail:'hello@mellowart.com.au',
-  brandName:'Mellow Art', primaryCategory:'Ceramics', secondaryCategory:'', reason:'This round was extremely competitive for the Ceramics category.'
+  brandName:'Mellow Art', primaryCategory:'Ceramics', secondaryCategory:''
 };
 
 const TRIGGERS = [
@@ -924,6 +1167,7 @@ const TRIGGERS = [
   'On application submitted',
   'On application rejected',
   'On added to waitlist',
+  'On application withdrawn',
   'Manual send only'
 ];
 
@@ -941,9 +1185,14 @@ function defaultState(){
   return {
     branding:{
       fromName:'Mellow Art', contactEmail:'hello@mellowart.com.au', logoUrl:'',
+      logoFileName:'', logoCustomWidth:false, logoWidth:160,
       heroBg:'#2C2422', accent:'#F2C4CE', button:'#2C2422', headerBg:'#FFFDF2',
       websiteUrl:'https://www.mellowart.com.au', instagramUrl:'https://www.instagram.com/mellowart',
       facebookUrl:'', tiktokUrl:'', footerBg:'#2C2422',
+      socialLinks:[
+        {id:uid(),label:'Website',url:'https://www.mellowart.com.au'},
+        {id:uid(),label:'Instagram',url:'https://www.instagram.com/mellowart'}
+      ],
       footerText:'This is an automated message from Mellow Art.\n© 2026 Mellow Art · Australia'
     },
     templates:[
@@ -972,7 +1221,7 @@ function defaultState(){
         preheader:'Thank you for applying to {{eventName}}.',
         blocks:[
           {id:uid(),type:'hero',props:{badge:'Application Update',heading:'Thank you, {{firstName}}',subtext:'An update on your application for {{eventName}}.',bg:'#2C2422',image:''}},
-          {id:uid(),type:'text',props:{content:'Hi {{firstName}},\n\nThank you so much for applying. Unfortunately we’re unable to offer you a stall this time.\n\n{{reason}}\n\nWe’d love to see you apply again for future events.',align:'left',hideIf:''}}
+          {id:uid(),type:'text',props:{content:'Hi {{firstName}},\n\nThank you so much for applying. Unfortunately we’re unable to offer you a stall this time.\n\nWe’d love to see you apply again for future events.',align:'left',hideIf:''}}
         ]},
       { id:uid(), key:'waitlist', name:'Waitlist', status:'Draft', trigger:TRIGGERS[3], updated:'Edited 3 weeks ago',
         subject:'You’re on the waitlist for {{eventName}}',
@@ -980,6 +1229,13 @@ function defaultState(){
         blocks:[
           {id:uid(),type:'hero',props:{badge:'Waitlist',heading:'You’re on the list, {{firstName}}',subtext:'We’ll contact you if a spot opens for {{eventName}}.',bg:'#2C2422',image:''}},
           {id:uid(),type:'text',props:{content:'Hi {{firstName}},\n\nYour application impressed us, and you’re high on our waitlist for {{eventName}}. If a spot opens up, we’ll email you right away with next steps.',align:'left',hideIf:''}}
+        ]},
+      { id:uid(), key:'withdrawal', name:'Withdrawal confirmation', status:'Active', trigger:TRIGGERS[4], updated:'New system template',
+        subject:'Your {{eventName}} application has been withdrawn',
+        preheader:'Confirmation that your application has been withdrawn.',
+        blocks:[
+          {id:uid(),type:'hero',props:{badge:'Application Withdrawn',heading:'Your application has been withdrawn',subtext:'This confirms the update to your {{eventName}} application.',bg:'#2C2422',image:''}},
+          {id:uid(),type:'text',props:{content:'Hi {{firstName}},\n\nThis email confirms that your application for {{eventName}} has been withdrawn. No further action is required.\n\nIf this was unexpected, please contact {{contactEmail}} and include your reference {{reference}}.',align:'left',hideIf:''}}
         ]}
     ]
   };
@@ -992,8 +1248,32 @@ catch(e){ state = defaultState(); }
 
 /* Back-compat: stamp factory keys onto state saved before Reset existed. */
 (function(){
-  const facts = defaultState().templates;
+  const defaults = defaultState();
+  const facts = defaults.templates;
+  state.branding = Object.assign({}, defaults.branding, state.branding || {});
+  if(!Array.isArray(state.branding.socialLinks)){
+    state.branding.socialLinks = [
+      ['Website',state.branding.websiteUrl],
+      ['Instagram',state.branding.instagramUrl],
+      ['Facebook',state.branding.facebookUrl],
+      ['TikTok',state.branding.tiktokUrl]
+    ].filter(([,url])=>url).map(([label,url])=>({id:uid(),label,url}));
+  }
+  state.branding.socialLinks.forEach(link=>{ if(!link.id) link.id=uid(); });
   state.templates.forEach(t=>{ if(!t.key){ const m = facts.find(x=>x.name===t.name); if(m) t.key = m.key; } });
+  facts.forEach(factory=>{
+    if(!state.templates.some(t=>t.key===factory.key)) state.templates.push(factory);
+  });
+  state.eventTemplates = state.eventTemplates || {};
+  const cleanReason = list => (list||[]).forEach(t=>{
+    if(t.key==='rejection') t.blocks.forEach(block=>{
+      if(block.type==='text' && typeof block.props?.content==='string'){
+        block.props.content = block.props.content.replace(/\n\n\{\{reason\}\}\n\n/g,'\n\n');
+      }
+    });
+  });
+  cleanReason(state.templates);
+  Object.values(state.eventTemplates).forEach(cleanReason);
 })();
 
 /* ---------- undo history (in memory only, never persisted) ---------- */
@@ -1003,19 +1283,125 @@ let past = [];                // serialized states, oldest first
 let future = [];              // states undone, ready to redo
 let snapshot = JSON.stringify(state);
 let lastPush = 0;
-let view = 'list';            // list | editor
+let view = 'list';            // Email templates opens on the template library
 let editorTab = 'content';    // content | branding (combined editor tabs)
-let currentId = null;         // template id in editor
+let leftTab = 'blocks';        // blocks | outline
+let currentId = state.templates[0]?.id || null;
 let selectedBlock = null;     // block id
 let device = 'desktop';
+let previewMode = false;
+let scopeKey = localStorage.getItem('mellowDashV2.email.scope') || 'global';
+let listScopeKey = localStorage.getItem('mellowDashV2.email.libraryScope') || 'global';
 let lastField = null;         // last focused input for merge-tag insertion
 let dragIdx = null;
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LUCIDE = {
+  arrowDown:'<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',
+  arrowLeft:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  arrowUp:'<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+  calendar:'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  chevronRight:'<path d="m9 18 6-6-6-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  eye:'<path d="M2.1 12a10.8 10.8 0 0 1 19.8 0 10.8 10.8 0 0 1-19.8 0Z"/><circle cx="12" cy="12" r="3"/>',
+  image:'<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  layers:'<path d="m12.8 2.7 8 4a1 1 0 0 1 0 1.8l-8 4a2 2 0 0 1-1.8 0l-8-4a1 1 0 0 1 0-1.8l8-4a2 2 0 0 1 1.8 0Z"/><path d="m22 12.5-9.2 4.6a2 2 0 0 1-1.8 0l-9-4.5"/><path d="m22 17.5-9.2 4.6a2 2 0 0 1-1.8 0l-9-4.5"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.9 5.7a2 2 0 0 1-2.2 0L2 7"/>',
+  minus:'<path d="M5 12h14"/>',
+  monitor:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+  mousePointerClick:'<path d="m9 9 5 12 2.1-5.1L21 14 9 9Z"/><path d="M7.2 2.2 8 5.1"/><path d="m2.2 7.2 2.9.8"/><path d="m3.8 3.8 2.1 2.1"/>',
+  moveVertical:'<path d="M8 18 12 22l4-4"/><path d="M12 2v20"/><path d="m8 6 4-4 4 4"/>',
+  palette:'<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 22a10 10 0 1 1 10-10c0 2.2-1.8 4-4 4h-1.8a2 2 0 0 0-1.6 3.2l.3.4A1.5 1.5 0 0 1 13.7 22H12Z"/>',
+  panelTop:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  receiptText:'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6"/><path d="M16 12h-6"/><path d="M13 16h-3"/>',
+  redo:'<path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 14.9-6.7L21 13"/>',
+  rotateCcw:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  rows3:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h10"/><path d="M7 12h10"/><path d="M7 16h10"/>',
+  smartphone:'<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+  tag:'<path d="M12.6 2.6H5a2 2 0 0 0-2 2v7.6a2 2 0 0 0 .6 1.4l7.8 7.8a2 2 0 0 0 2.8 0l7.2-7.2a2 2 0 0 0 0-2.8l-7.8-7.8a2 2 0 0 0-1-.6Z"/><circle cx="8" cy="8" r="1"/>',
+  trash:'<path d="M3 6h18"/><path d="M8 6V4c0-1 .9-2 2-2h4c1.1 0 2 1 2 2v2"/><path d="M19 6l-1 14c-.1 1.1-.9 2-2 2H8c-1.1 0-1.9-.9-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',
+  type:'<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>',
+  undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-14.9-6.7L3 13"/>',
+  upload:'<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M5 21h14"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  zap:'<path d="M4 14a1 1 0 0 1-.8-1.6l9-10a.5.5 0 0 1 .9.4l-1.7 6.6a1 1 0 0 0 1 1.2h7.5a1 1 0 0 1 .7 1.7l-9 9.4a.5.5 0 0 1-.9-.5l1.7-6a1 1 0 0 0-1-1.2H4Z"/>'
+};
+const icon = (name,size=16,label='') => `<svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${label?` role="img" aria-label="${esc(label)}"`:' aria-hidden="true"'}>${LUCIDE[name]||''}</svg>`;
 const merge = s => esc(s).replace(/\{\{\s*(\w+)\s*\}\}/g,(m,k)=> k in SAMPLE ? `<strong>${esc(SAMPLE[k])}</strong>` : m).replace(/\n/g,'<br>');
 const mergePlain = s => String(s??'').replace(/\{\{\s*(\w+)\s*\}\}/g,(m,k)=> SAMPLE[k] ?? m);
 const save = (discrete)=>{ pushHistory(discrete); localStorage.setItem('mellowDashV2.email', JSON.stringify(state)); flashSaved(); };
+
+function availableEvents(){
+  const index=COLS.indexOf('Event');
+  if(index<0) return [];
+  return [...new Set(RAW.map(row=>String(row[index]||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+}
+function scopeTemplates(){
+  return scopeKey==='global' ? state.templates : (state.eventTemplates[scopeKey] || state.templates);
+}
+function createEventOverride(eventName){
+  if(!eventName || state.eventTemplates[eventName]) return false;
+  state.eventTemplates[eventName] = state.templates.map(source=>{
+    const copy=JSON.parse(JSON.stringify(source));
+    copy.id=uid(); copy.status='Draft'; copy.updated=`Created for ${eventName}`;
+    copy.blocks.forEach(block=>block.id=uid());
+    return copy;
+  });
+  return true;
+}
+function templatesForScope(key){
+  return key==='global' ? state.templates : (state.eventTemplates[key] || state.templates);
+}
+function eventHasOverride(eventName){ return !!state.eventTemplates[eventName]; }
+function openLibrary(nextScope){
+  if(nextScope) listScopeKey=nextScope;
+  localStorage.setItem('mellowDashV2.email.libraryScope',listScopeKey);
+  view='list'; selectedBlock=null; editorTab='content'; previewMode=false;
+  $('#es-root')?.classList.remove('preview-mode');
+  render();
+}
+function openEditor(nextScope,templateId){
+  scopeKey=nextScope||'global';
+  localStorage.setItem('mellowDashV2.email.scope',scopeKey);
+  currentId=templateId || templatesForScope(scopeKey)[0]?.id || null;
+  selectedBlock=null; editorTab='content'; previewMode=false; view='editor';
+  $('#es-root')?.classList.remove('preview-mode');
+  render();
+}
+function activateEventScope(eventName,templateKey){
+  const created=createEventOverride(eventName);
+  if(created) save(true);
+  const list=templatesForScope(eventName);
+  const target=(templateKey && list.find(t=>(t.key||t.id)===templateKey)) || list[0];
+  openEditor(eventName,target?.id);
+  if(created) toast(`Event templates created for ${eventName}`);
+}
+function resetEventScope(eventName){
+  if(!state.eventTemplates[eventName]) return;
+  if(!confirm(`Reset all ${eventName} email templates to the global defaults?\n\nThe event-specific drafts will be removed from this prototype.`)) return;
+  delete state.eventTemplates[eventName];
+  save(true); render(); toast(`${eventName} now uses global defaults`);
+}
+function switchScope(nextScope){
+  const previousKey=tpl()?.key || tpl()?.id;
+  scopeKey=nextScope||'global';
+  localStorage.setItem('mellowDashV2.email.scope',scopeKey);
+  let created=false;
+  if(scopeKey!=='global' && !state.eventTemplates[scopeKey]){
+    createEventOverride(scopeKey); created=true;
+  }
+  const list=scopeTemplates();
+  currentId=(list.find(t=>(t.key||t.id)===previousKey)||list[0])?.id||null;
+  selectedBlock=null; editorTab='content';
+  if(created) save(true);
+  render();
+  toast(scopeKey==='global' ? 'Editing global default templates' : `${created?'Event templates created':'Editing event templates'}: ${scopeKey}`);
+}
 
 /* discrete=true forces its own undo step (adding, deleting, reordering).
    Otherwise rapid edits inside COALESCE_MS collapse, so one undo clears a
@@ -1041,7 +1427,7 @@ function restore(serialized){
   state = JSON.parse(serialized);
   snapshot = JSON.stringify(state); lastPush = 0;
   localStorage.setItem('mellowDashV2.email', JSON.stringify(state));
-  if(currentId && !state.templates.some(t=>t.id===currentId)){ view='list'; currentId=null; }
+  if(!currentId || !scopeTemplates().some(t=>t.id===currentId)) currentId=scopeTemplates()[0]?.id || null;
   if(selectedBlock){ const t=tpl(); if(!t || !t.blocks.some(b=>b.id===selectedBlock)) selectedBlock=null; }
   render();
 }
@@ -1066,21 +1452,34 @@ function resetTemplate(){
   const d = t.key ? defaultState().templates.find(x=>x.key===t.key) : null;
   if(!d){ toast('This template has no factory default'); return; }
   if(!confirm(`Reset \u201c${t.name}\u201d to its default content?\n\nThe subject, preheader and every block are replaced. You can undo this.`)) return;
-  const i = state.templates.findIndex(x=>x.id===t.id);
-  state.templates[i] = Object.assign(d, { id:t.id, updated:'Reset just now' });
+  const list=scopeTemplates();
+  const i = list.findIndex(x=>x.id===t.id);
+  list[i] = Object.assign(d, { id:t.id, updated:'Reset just now' });
   selectedBlock = null;
   save(true); render(); toast('Template reset to default');
 }
-const tpl = ()=> state.templates.find(t=>t.id===currentId);
+const tpl = ()=> scopeTemplates().find(t=>t.id===currentId) || scopeTemplates()[0];
+
+const TEMPLATE_META = {
+  approval:{label:'Approved', title:'Approved application', note:'Welcome & next steps', tone:'approved'},
+  received:{label:'Pending', title:'Pending application', note:'Application received', tone:'pending'},
+  rejection:{label:'Rejected', title:'Rejected application', note:'A thoughtful update', tone:'rejected'},
+  waitlist:{label:'Waitlist', title:'Waitlisted application', note:'Keep the possibility open', tone:'waitlist'},
+  withdrawal:{label:'Withdrawn', title:'Withdrawn application', note:'Confirmation & next steps', tone:'withdrawn'}
+};
+function templateMeta(t){
+  return TEMPLATE_META[t?.key] || {label:t?.name||'Template',title:t?.name||'Email template',note:t?.trigger||'',tone:'pending'};
+}
+function blockName(block){ return BLOCKS[block.type]?.label || block.type; }
 
 function toast(msg){ const t=$('#es-toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200); }
-function flashSaved(){ const c=$('#saved-chip'); if(!c) return; c.classList.add('flash'); c.textContent='✓ Saved'; clearTimeout(c._h); c._h=setTimeout(()=>{c.classList.remove('flash');c.textContent='Autosaved';},1400); }
+function flashSaved(){ const c=$('#saved-chip'); if(!c) return; c.classList.add('flash'); c.innerHTML=`${icon('check',13)} Saved on this device`; clearTimeout(c._h); c._h=setTimeout(()=>{c.classList.remove('flash');c.innerHTML=`${icon('check',13)} Saved on this device`;},1400); }
 
 /* =============================================================
    BLOCK DEFINITIONS
 ============================================================= */
 const BLOCKS = {
-  hero:{ label:'Hero banner', icon:'🏷',
+  hero:{ label:'Hero banner', icon:icon('tag',18),
     defaults:()=>({badge:'New badge',heading:'Heading goes here',subtext:'Supporting text goes here.',bg:state.branding.heroBg,image:''}),
     render(p,b){
       const img = p.image ? `<img src="${esc(p.image)}" style="width:100%;display:block" alt="">` : '';
@@ -1100,7 +1499,7 @@ const BLOCKS = {
       ${fImage('Banner image <small>(optional, shown above heading)</small>','image',p.image)}`
   },
 
-  text:{ label:'Text', icon:'¶',
+  text:{ label:'Text', icon:icon('type',18),
     defaults:()=>({content:'Write something…\n\nUse merge tags like {{firstName}} to personalise.',align:'left',hideIf:''}),
     render(p){ return `<div style="padding:26px 34px;color:#3d3733;font-size:14.5px;line-height:1.7;text-align:${esc(p.align||'left')}">${merge(p.content)}</div>`; },
     settings:p=>`
@@ -1109,7 +1508,7 @@ const BLOCKS = {
       ${fHide(p)}`
   },
 
-  image:{ label:'Image', icon:'🖼',
+  image:{ label:'Image', icon:icon('image',18),
     defaults:()=>({src:PLACEHOLDER_IMG,alt:'',width:100,align:'center',href:'',radius:0}),
     render(p){
       const img = `<img src="${esc(p.src||PLACEHOLDER_IMG)}" alt="${esc(p.alt)}" style="width:${+p.width||100}%;display:inline-block;border-radius:${+p.radius||0}px">`;
@@ -1124,7 +1523,7 @@ const BLOCKS = {
       ${fText('Link URL <small>(optional)</small>','href',p.href)}`
   },
 
-  button:{ label:'Button', icon:'⬢',
+  button:{ label:'Button', icon:icon('mousePointerClick',18),
     defaults:()=>({label:'Click me',href:'https://',align:'center',full:false,bg:'',hideIf:''}),
     render(p){
       return `<div style="padding:8px 34px 26px;text-align:${esc(p.align||'center')}">
@@ -1139,7 +1538,7 @@ const BLOCKS = {
       ${fHide(p)}`
   },
 
-  invoice:{ label:'Invoice summary', icon:'▤',
+  invoice:{ label:'Invoice summary', icon:icon('receiptText',18),
     defaults:()=>({title:'Invoice summary',showEvent:true,showRef:true,showDue:true,showAmount:true}),
     render(p){
       const row=(l,v,last)=>`<tr><td style="padding:11px 16px;color:#6f6a64;font-size:13.5px;${last?'':'border-bottom:1px solid #eee9e2'}">${esc(l)}</td><td style="padding:11px 16px;text-align:right;font-weight:600;font-size:13.5px;${last?'':'border-bottom:1px solid #eee9e2'}">${esc(v)}</td></tr>`;
@@ -1161,13 +1560,13 @@ const BLOCKS = {
       <div class="mini-note">Values are pulled automatically from the applicant’s submission and invoice.</div>`
   },
 
-  divider:{ label:'Divider', icon:'—',
+  divider:{ label:'Divider', icon:icon('minus',18),
     defaults:()=>({}),
     render(){ return `<div style="padding:6px 34px"><div style="border-top:1px solid #eee9e2"></div></div>`; },
     settings:()=>`<div class="mini-note">A simple horizontal line. No settings needed.</div>`
   },
 
-  spacer:{ label:'Spacer', icon:'↕',
+  spacer:{ label:'Spacer', icon:icon('moveVertical',18),
     defaults:()=>({height:24}),
     render(p){ return `<div style="height:${+p.height||24}px"></div>`; },
     settings:p=>fRange('Height','height',p.height??24,8,80,'px')
@@ -1186,7 +1585,7 @@ const fImage=(label,prop,val,required)=>`
   <div class="field"><label>${label}</label>
     <div class="upload-row">
       <input class="input" data-prop="${prop}" value="${esc(val??'')}" placeholder="Paste image URL…">
-      <button class="btn btn-ghost btn-sm" data-upload="${prop}">⤒ Upload</button>
+      <button class="btn btn-ghost btn-sm" data-upload="${prop}">${icon('upload',14)} Upload</button>
     </div>
     ${val?`<img src="${esc(val)}" style="margin-top:8px;max-width:100%;max-height:110px;border-radius:8px;border:1px solid var(--border)">`:''}
     ${!val&&!required?`<div class="mini-note" style="margin-top:6px">No image set — this area is hidden in the email.</div>`:''}
@@ -1198,16 +1597,16 @@ const fImage=(label,prop,val,required)=>`
 function renderEmailHTML(t, interactive){
   const b = state.branding;
   const logo = b.logoUrl
-    ? `<img src="${esc(b.logoUrl)}" style="height:44px" alt="${esc(b.fromName)}">`
+    ? `<img src="${esc(b.logoUrl)}" style="${b.logoCustomWidth?`width:${Math.max(80,Math.min(320,Number(b.logoWidth)||160))}px;height:auto`:'height:44px;width:auto'};max-width:100%" alt="${esc(b.fromName)}">`
     : `<div style="font-family:Georgia,serif;font-weight:700;letter-spacing:.06em;color:${esc(b.heroBg)};font-size:19px">MELLOW ART<span style="color:${esc(b.accent)}"> ✿</span><div style="font-size:9px;letter-spacing:.4em;font-family:inherit;opacity:.6">AUSTRALIA</div></div>`;
 
   const header = `<div class="${interactive?'pv-locked':''}" style="background:${esc(b.headerBg)};text-align:center;padding:24px 20px">
-      ${interactive?'<span class="lock-badge">◐ Shared branding — click to edit</span>':''}${logo}</div>`;
+      ${interactive?`<span class="lock-badge">${icon('palette',13)} Shared branding — click to edit</span>`:''}${logo}</div>`;
 
-  const social = [ b.websiteUrl&&'Website', b.instagramUrl&&'Instagram', b.facebookUrl&&'Facebook', b.tiktokUrl&&'TikTok' ].filter(Boolean)
-    .map(s=>`<a href="#" style="color:#fff;opacity:.75;text-decoration:underline;font-size:12px;margin:0 7px">${s}</a>`).join('');
+  const social = (b.socialLinks||[]).filter(link=>link?.label&&link?.url)
+    .map(link=>`<a href="${esc(link.url)}" target="_blank" rel="noopener" style="color:#fff;opacity:.75;text-decoration:underline;font-size:12px;margin:0 7px">${esc(link.label)}</a>`).join('');
   const footer = `<div class="${interactive?'pv-locked':''}" style="background:${esc(b.footerBg)};color:#fff;text-align:center;padding:28px 24px">
-      ${interactive?'<span class="lock-badge">◐ Shared branding — click to edit</span>':''}
+      ${interactive?`<span class="lock-badge">${icon('palette',13)} Shared branding — click to edit</span>`:''}
       <div style="font-family:Georgia,serif;font-weight:700;letter-spacing:.08em;font-size:14px;margin-bottom:10px">MELLOW ART</div>
       <div style="font-size:12px;opacity:.75;line-height:1.7">${merge(b.footerText)}</div>
       <div style="margin-top:12px">${social}</div></div>`;
@@ -1226,10 +1625,10 @@ function renderEmailHTML(t, interactive){
       return `<div class="pv-block ${selectedBlock===blk.id?'selected':''}" draggable="true" data-block="${blk.id}" data-idx="${i}">
         <span class="blk-label">${def.icon} ${def.label}</span>
         <div class="blk-toolbar">
-          <button data-act="up" title="Move up">↑</button>
-          <button data-act="down" title="Move down">↓</button>
-          <button data-act="dup" title="Duplicate">⧉</button>
-          <button data-act="del" title="Delete">🗑</button>
+          <button data-act="up" title="Move up" aria-label="Move block up">${icon('arrowUp',14)}</button>
+          <button data-act="down" title="Move down" aria-label="Move block down">${icon('arrowDown',14)}</button>
+          <button data-act="dup" title="Duplicate" aria-label="Duplicate block">${icon('copy',14)}</button>
+          <button data-act="del" title="Delete" aria-label="Delete block">${icon('trash',14)}</button>
         </div>${ghost}${inner}</div>`;
     }).join('');
   }
@@ -1244,40 +1643,93 @@ function render(){
   main.innerHTML = view==='list' ? viewList() : viewEditor();
   if(view==='editor'){ renderPreview(); renderSettings(); }
   bindCommon();
+  const app=document.querySelector('.app');
+  const visible=!$('#es-root').hidden;
+  app?.classList.toggle('email-mode',visible && view==='editor');
 }
 
 /* ---------- template list ---------- */
-function viewList(){
-  const cards = state.templates.map(t=>`
-    <div class="tpl-card" data-open="${t.id}">
+function templateCard(t,scope,inherited=false){
+  const label=scope==='global' ? 'Global default' : (inherited ? 'Using global default' : `Custom for ${scope}`);
+  const scopeClass=scope==='global' ? '' : (inherited?'inherited':'custom');
+  const sourceKey=t.key||t.id;
+  const meta=templateMeta(t);
+  return `
+    <div class="tpl-card ${inherited?'inherited':''}" ${inherited?'':`data-open="${t.id}"`} data-scope="${esc(scope)}">
       <div class="tpl-thumb"><div class="scaler">${renderEmailHTML(t,false)}</div></div>
       <div class="tpl-meta">
-        <div class="tpl-name"><span class="status-dot ${t.status==='Draft'?'draft':''}"></span>${esc(t.name)}
-          <span style="margin-left:auto;font-weight:400;font-size:11.5px;color:var(--ink-3)">${esc(t.updated)}</span></div>
+        <div class="tpl-scope-row">
+          <span class="scope-chip ${scopeClass}">${icon(scope==='global'?'layers':'calendar',12)} ${esc(label)}</span>
+          <span class="draft-chip ${t.status==='Active'?'active':''}">${esc(t.status)}</span>
+        </div>
+        <div class="tpl-name"><span class="status-dot ${t.status==='Draft'?'draft':''}"></span><span>${esc(t.name)}</span></div>
+        <div class="tpl-created">${esc(t.updated)}</div>
         <div class="tpl-sub">${esc(mergePlain(t.subject))}</div>
         <div class="tpl-foot">
-          <span class="trigger-chip">⚡ ${esc(t.trigger.length>34 ? t.trigger.slice(0,34)+'…' : t.trigger)}</span>
+          <span class="trigger-chip">${icon('zap',13)} ${esc(t.trigger.length>34 ? t.trigger.slice(0,34)+'…' : t.trigger)}</span>
           <span class="tpl-actions">
-            <button class="icon-btn" title="Duplicate" data-dup="${t.id}">⧉</button>
-            <button class="icon-btn" title="Delete" data-del="${t.id}">🗑</button>
+            ${inherited?'':`<button class="icon-btn" title="Duplicate" aria-label="Duplicate template" data-dup="${t.id}" data-template-scope="${esc(scope)}">${icon('copy',14)}</button>`}
+            ${!inherited&&!t.key?`<button class="icon-btn" title="Delete" aria-label="Delete template" data-del="${t.id}" data-template-scope="${esc(scope)}">${icon('trash',14)}</button>`:''}
           </span>
         </div>
+        ${inherited?`<button class="btn btn-ghost btn-sm tpl-customize" data-customize="${esc(scope)}" data-template-key="${esc(sourceKey)}">Customize for this event</button>`:''}
       </div>
-    </div>`).join('');
+    </div>`;
+}
+function templateGroup(title,subtitle,templates,scope,inherited=false,includeNew=false){
+  return `<section class="template-group">
+    <div class="template-group-head"><div><h2>${esc(title)}</h2><p>${esc(subtitle)}</p></div></div>
+    <div class="tpl-grid">
+      ${templates.map(t=>templateCard(t,scope,inherited)).join('')}
+      ${includeNew?`<button class="tpl-card new-card" id="btn-new-2"><span class="plus">${icon('plus',18)}</span><b>Create a template</b><span style="font-size:12px">Blank, or duplicate an existing one</span></button>`:''}
+    </div>
+  </section>`;
+}
+function viewList(){
+  const events=availableEvents();
+  if(!['all','global',...events].includes(listScopeKey)) listScopeKey='global';
+  const options=[['all','All events'],['global','Global default'],...events.map(event=>[event,event])]
+    .map(([value,label])=>`<option value="${esc(value)}"${value===listScopeKey?' selected':''}>${esc(label)}</option>`).join('');
+  let content='';
+  if(listScopeKey==='all'){
+    content+=templateGroup('Global defaults','Fallback templates used when an event has no custom version.',state.templates,'global');
+    events.forEach(event=>{
+      const configured=eventHasOverride(event);
+      content+=templateGroup(
+        event,
+        configured?'Templates customized for this event.':'Currently uses the global defaults. Customize a card only if this event needs different content.',
+        configured?state.eventTemplates[event]:state.templates,
+        event,
+        !configured
+      );
+    });
+  } else if(listScopeKey==='global'){
+    content=templateGroup('Global defaults','Used automatically by events without custom templates.',state.templates,'global',false,true);
+  } else {
+    const configured=eventHasOverride(listScopeKey);
+    content=templateGroup(
+      listScopeKey,
+      configured?'Templates customized for this event.':'Currently uses the global defaults. Customize a card only if this event needs different content.',
+      configured?state.eventTemplates[listScopeKey]:state.templates,
+      listScopeKey,
+      !configured,
+      configured
+    );
+  }
   return `
   <div class="topbar"><span class="crumb"><b>Email templates</b></span></div>
-  <div class="page">
+  <div class="page library-page">
     <div class="list-head">
       <div>
         <h1 class="page-title">Email templates</h1>
-        <div class="page-sub">Create and customize the emails sent to applicants. Content and shared branding are edited together in one place — open any template and switch between the <b>Content</b> and <b>Branding</b> tabs.</div>
+        <div class="page-sub">Manage reusable application emails, then customize a complete template set for a specific event when needed.</div>
       </div>
-      <button class="btn btn-dark" id="btn-new">＋ New template</button>
+      <div class="list-actions">
+        <label class="scope-filter" for="library-scope"><span>Event</span><select class="library-scope" id="library-scope">${options}</select></label>
+        <button class="btn btn-dark" id="btn-new">${icon('plus',15)} New template</button>
+      </div>
     </div>
-    <div class="tpl-grid">
-      ${cards}
-      <button class="tpl-card new-card" id="btn-new-2"><span class="plus">＋</span><b>Create a template</b><span style="font-size:12px">Blank, or duplicate an existing one</span></button>
-    </div>
+    ${content || '<div class="library-empty">No templates are available in this scope.</div>'}
   </div>`;
 }
 
@@ -1287,8 +1739,13 @@ function brandingFormHTML(){
   const col=(label,prop)=>`<div class="field"><label>${label}</label><div class="color-row">
       <input type="color" data-brand="${prop}" value="${esc(b[prop])}">
       <input class="input" data-brand="${prop}" value="${esc(b[prop])}" style="flex:1"></div></div>`;
+  const socialRows=(b.socialLinks||[]).map((link,index)=>`<div class="social-link-row">
+      <input class="input" data-social-index="${index}" data-social-prop="label" value="${esc(link.label)}" placeholder="Platform or label">
+      <input class="input" data-social-index="${index}" data-social-prop="url" value="${esc(link.url)}" placeholder="https://…">
+      <button class="icon-btn" type="button" data-social-remove="${index}" title="Remove social link" aria-label="Remove ${esc(link.label||'social')} link">${icon('trash',14)}</button>
+    </div>`).join('');
   return `
-    <div class="brand-scope">◐ <span><b>Shared across all ${state.templates.length} templates.</b> Logo, colors, footer and social links update every email — the preview on the right changes live as you type. Autosaved.</span></div>
+    <div class="brand-scope">${icon('palette',16)} <span><b>Shared across all ${state.templates.length} templates.</b> Logo, colors, footer and social links update every email — the preview on the right changes live as you type. Autosaved.</span></div>
     <div class="sect">
       <h4>Identity <span class="line"></span></h4>
       <div class="settings-form">
@@ -1296,7 +1753,19 @@ function brandingFormHTML(){
           <div class="field"><label>From name</label><input class="input" data-brand="fromName" value="${esc(b.fromName)}"></div>
           <div class="field"><label>Contact email</label><input class="input" data-brand="contactEmail" value="${esc(b.contactEmail)}"></div>
         </div>
-        <div class="field"><label>Logo URL <small>(header — empty = text logo)</small></label><input class="input" data-brand="logoUrl" value="${esc(b.logoUrl)}" placeholder="https://…"></div>
+        <div class="field"><label>Header logo</label><div class="logo-upload">
+          <div class="logo-upload-preview">${b.logoUrl?`<img src="${esc(b.logoUrl)}" alt="Uploaded header logo">`:icon('image',18)}</div>
+          <div class="logo-upload-copy"><b>${esc(b.logoFileName||'No logo uploaded')}</b><span>PNG, JPG, SVG or WebP</span></div>
+          <div class="logo-upload-actions">
+            <button class="btn btn-ghost btn-sm" type="button" id="upload-brand-logo">${icon('upload',14)} ${b.logoUrl?'Replace':'Upload'}</button>
+            ${b.logoUrl?`<button class="icon-btn" type="button" id="remove-brand-logo" title="Remove logo" aria-label="Remove uploaded logo">${icon('trash',14)}</button>`:''}
+          </div>
+        </div></div>
+        <label class="brand-check"><input type="checkbox" data-brand="logoCustomWidth" ${b.logoCustomWidth?'checked':''}> Set a custom header logo width</label>
+        <div class="field" id="logo-width-control" ${b.logoCustomWidth?'':'hidden'}><label>Header logo width</label><div class="range-row">
+          <input type="range" min="80" max="320" step="4" data-brand="logoWidth" value="${esc(b.logoWidth||160)}">
+          <output>${esc(b.logoWidth||160)}px</output>
+        </div></div>
       </div>
     </div>
     <div class="sect">
@@ -1310,11 +1779,11 @@ function brandingFormHTML(){
     <div class="sect">
       <h4>Footer & links <span class="line"></span></h4>
       <div class="settings-form">
-        <div class="field"><label>Website URL</label><input class="input" data-brand="websiteUrl" value="${esc(b.websiteUrl)}"></div>
-        <div class="inline-2">
-          <div class="field"><label>Instagram URL</label><input class="input" data-brand="instagramUrl" value="${esc(b.instagramUrl)}"></div>
-          <div class="field"><label>Facebook URL</label><input class="input" data-brand="facebookUrl" value="${esc(b.facebookUrl)}"></div>
+        <div class="field">
+          <label>Social accounts <small>(add any platform or profile)</small></label>
+          <div class="social-links-editor">${socialRows || '<div class="mini-note">No social links added yet.</div>'}</div>
         </div>
+        <button class="btn btn-ghost btn-sm" type="button" id="add-social-link">${icon('plus',14)} Add social link</button>
         <div class="field"><label>Footer text</label><textarea class="input" data-brand="footerText">${esc(b.footerText)}</textarea></div>
       </div>
     </div>`;
@@ -1323,75 +1792,154 @@ function brandingFormHTML(){
 /* ---------- editor ---------- */
 function viewEditor(){
   const t = tpl();
+  if(!t) return '<div class="pv-empty">No email templates are available.</div>';
+  if(!selectedBlock || !t.blocks.some(b=>b.id===selectedBlock)){
+    selectedBlock = t.blocks.find(b=>b.type==='text')?.id || t.blocks[0]?.id || null;
+  }
+  const meta = templateMeta(t);
+  const selectedDef = BLOCKS[t.blocks.find(block=>block.id===selectedBlock)?.type] || BLOCKS.text;
+  const events = availableEvents();
+  const scopeOptions = [`<option value="global"${scopeKey==='global'?' selected':''}>Global default</option>`]
+    .concat(events.map(event=>`<option value="${esc(event)}"${scopeKey===event?' selected':''}>${esc(event)}</option>`)).join('');
   const palette = Object.entries(BLOCKS).map(([k,d])=>
     `<button class="pal-btn" data-add="${k}"><span class="ic">${d.icon}</span>${d.label}</button>`).join('');
   const tagChips = Object.keys(SAMPLE).map(k=>`<button class="tag-chip" data-tag="{{${k}}}">{{${k}}}</button>`).join('');
+  const templateNav = scopeTemplates().map(item=>{
+    const m=templateMeta(item);
+    const symbols={approved:'check',rejected:'x',waitlist:'clock',pending:'clock',withdrawn:'rotateCcw'};
+    return `<button class="template-option ${item.id===t.id?'on':''}" data-template-id="${item.id}">
+      <span class="template-state-icon ${m.tone}">${icon(symbols[m.tone]||'mail',15)}</span>
+      <span class="template-copy"><b>${esc(m.label)}</b><span>${esc(m.note)}</span></span>
+      <span class="template-arrow">${item.id===t.id?icon('chevronRight',15):''}</span>
+    </button>`;
+  }).join('');
+  const outline = t.blocks.map((block,index)=>`<button class="outline-item ${block.id===selectedBlock?'on':''}" draggable="true" data-outline="${block.id}" data-idx="${index}" title="Drag to reorder">
+    <span class="grip">${icon('moveVertical',14)}</span><span>${index+1}. ${esc(blockName(block))}</span>
+  </button>`).join('');
+  const hasLocalImage = t.blocks.some(block=>Object.values(block.props||{}).some(v=>typeof v==='string'&&v.startsWith('data:image/')));
   return `
-  <div id="view-editor">
-    <div class="editor-topbar">
-      <button class="btn btn-ghost btn-sm" data-goto="list">← Templates</button>
-      <input class="tpl-name-input" id="tpl-name" value="${esc(t.name)}">
-      <span class="saved-chip" id="saved-chip">Autosaved</span>
-      <button class="btn btn-ghost btn-sm" id="es-undo" title="Undo last change (⌘Z)">↺ Undo</button>
-      <button class="btn btn-ghost btn-sm" id="es-redo" title="Redo (⇧⌘Z)">↻ Redo</button>
-      <button class="btn btn-ghost btn-sm" id="es-reset" title="Reset this template to its default content">⟲ Reset</button>
-      <div class="device-toggle">
-        <button data-dev="desktop" class="${device==='desktop'?'on':''}">Desktop</button>
-        <button data-dev="mobile" class="${device==='mobile'?'on':''}">Mobile</button>
+  <div id="view-editor" class="studio-shell">
+    <header class="studio-header">
+      <div class="studio-crumbs">
+        <button class="crumb-link" id="studio-back" title="Back to all templates">${icon('arrowLeft',14)} All templates</button>
+        <div class="studio-title"><strong>${esc(meta.title)}</strong><span class="draft-chip ${t.status==='Active'?'active':''}">${esc(t.status)}</span></div>
+        <label class="scope-control"><span>Event</span><select class="scope-select" id="event-scope" aria-label="Template event">${scopeOptions}</select></label>
       </div>
-      <button class="btn btn-ghost" id="btn-test">Send test</button>
-      <button class="btn btn-dark" data-goto="list">Done</button>
-    </div>
-    <div class="editor-body">
-      <div class="panel-left">
-        <div class="panel-tabs">
-          <button data-tab="content" class="${editorTab==='content'?'on':''}">¶ Content</button>
-          <button data-tab="branding" class="${editorTab==='branding'?'on':''}">◐ Branding</button>
+      <div class="studio-actions">
+        <span class="saved-chip" id="saved-chip">${icon('check',13)} Saved on this device</span>
+        <button class="btn btn-ghost" id="studio-preview">${icon('eye',14)} ${previewMode?'Exit preview':'Preview'}</button>
+        <button class="btn btn-dark" id="studio-review">Review email ${icon('chevronRight',14)}</button>
+      </div>
+    </header>
+
+    <div class="studio-grid">
+      <aside class="template-rail">
+        <div class="template-rail-head"><h2>Application emails</h2><p>The right message for every outcome.</p></div>
+        <div class="template-nav">${templateNav}</div>
+        <div class="rail-divider"></div>
+        <div class="rail-tabs">
+          <button data-left-tab="blocks" class="${leftTab==='blocks'?'on':''}">Add blocks</button>
+          <button data-left-tab="outline" class="${leftTab==='outline'?'on':''}">Outline</button>
         </div>
-        <div id="tab-branding" style="${editorTab==='branding'?'':'display:none'}">${brandingFormHTML()}</div>
-        <div id="tab-content" style="${editorTab==='content'?'':'display:none'}">
-        <div class="sect">
-          <details class="acc" open>
-            <summary>✉ Email details <span class="chev">›</span></summary>
-            <div class="acc-body">
-              <div class="field"><label>Template status & trigger</label>
-                <div class="inline-2">
-                  <select class="input" data-meta="status"><option ${t.status==='Active'?'selected':''}>Active</option><option ${t.status==='Draft'?'selected':''}>Draft</option></select>
-                  <select class="input" data-meta="trigger">${TRIGGERS.map(x=>`<option ${x===t.trigger?'selected':''}>${esc(x)}</option>`).join('')}</select>
-                </div>
+        <div class="rail-content" id="rail-blocks" style="${leftTab==='blocks'?'':'display:none'}">
+          <div class="nova-palette">${palette}</div>
+          <p class="rail-hint">New blocks appear after your selection.</p>
+        </div>
+        <div class="rail-content" id="rail-outline" style="${leftTab==='outline'?'':'display:none'}">
+          <div class="outline-list">${outline}</div>
+          <p class="rail-hint">Drag to reorder, or use ↑ / ↓ on the selected block. Ctrl/Cmd + D duplicates; Delete removes.</p>
+        </div>
+        <div class="prototype-note"><b>Prototype workspace</b><span>Try your ideas freely. Drafts save on this device. No emails are sent.</span></div>
+      </aside>
+
+      <main class="studio-canvas">
+        <div class="canvas-toolbar">
+          <div class="history-actions">
+            <button id="es-undo" title="Undo last change (Ctrl/⌘ Z)" aria-label="Undo last change">${icon('undo',16)}</button>
+            <button id="es-redo" title="Redo" aria-label="Redo last change">${icon('redo',16)}</button>
+          </div>
+          <div class="device-toggle">
+            <button data-dev="desktop" class="${device==='desktop'?'on':''}">${icon('monitor',14)} Desktop</button>
+            <button data-dev="mobile" class="${device==='mobile'?'on':''}">${icon('smartphone',14)} Mobile</button>
+          </div>
+          <span class="design-label">DESIGN</span>
+        </div>
+        <div class="canvas-content">
+          <div class="canvas-intro"><h1>${esc(meta.title)}</h1><p>• ${esc(t.trigger)}</p></div>
+          <details class="nova-email-details">
+            <summary>
+              <span class="subject-copy"><b>${esc(mergePlain(t.subject))||'Add an email subject'}</b><span>${esc(mergePlain(t.preheader))||'Add inbox preview text'}</span></span>
+              <span class="details-chevron">${icon('chevronRight',16)}</span>
+            </summary>
+            <div class="email-details-form">
+              ${!t.key?`<div class="field"><label>Template name</label><input class="input" data-meta="name" value="${esc(t.name)}"></div>`:''}
+              <div class="inline-2">
+                <div class="field"><label>Status</label><select class="input" data-meta="status"><option ${t.status==='Active'?'selected':''}>Active</option><option ${t.status==='Draft'?'selected':''}>Draft</option></select></div>
+                <div class="field"><label>Trigger</label><select class="input" data-meta="trigger">${TRIGGERS.map(x=>`<option ${x===t.trigger?'selected':''}>${esc(x)}</option>`).join('')}</select></div>
               </div>
-              ${`<div class="field"><label>Subject</label><input class="input" data-meta="subject" value="${esc(t.subject)}"></div>`}
-              ${`<div class="field"><label>Preheader <small>(inbox preview text)</small></label><input class="input" data-meta="preheader" value="${esc(t.preheader)}"></div>`}
+              <div class="field"><label>Subject</label><input class="input" data-meta="subject" value="${esc(t.subject)}"></div>
+              <div class="field"><label>Preheader <small>(inbox preview text)</small></label><input class="input" data-meta="preheader" value="${esc(t.preheader)}"></div>
             </div>
           </details>
+          <p class="canvas-instruction">${icon('mousePointerClick',13)} Click any block to edit. Select a template on the left to switch outcomes.</p>
+          <div class="panel-preview">
+            <div class="email-frame ${device==='mobile'?'mobile':''}" id="email-frame"></div>
+          </div>
         </div>
-        <div class="sect">
-          <h4>Add content <span class="line"></span></h4>
-          <div class="palette">${palette}</div>
-          <div class="mini-note" style="margin-top:8px">Click to add a block, then click any block in the preview to edit it. Drag blocks to reorder.</div>
+      </main>
+
+      <aside class="studio-inspector">
+        <div class="inspector-tabs">
+          <button data-tab="content" class="${editorTab==='content'?'on':''}">${icon('rows3',14)} Block</button>
+          <button data-tab="branding" class="${editorTab==='branding'?'on':''}">${icon('palette',14)} Brand style</button>
         </div>
-        <div class="sect">
-          <h4>Block settings <span class="line"></span></h4>
-          <div id="settings-panel"></div>
+        <div class="inspector-scroll">
+          <div id="tab-content" style="${editorTab==='content'?'':'display:none'}">
+            <div class="inspector-heading"><span class="type-icon">${selectedDef.icon}</span><span><b>Selected block</b><span>Make this block your own</span></span></div>
+            <div id="settings-panel"></div>
+            <div class="merge-panel"><h4>Personalize & link</h4><p class="mini-note">Insert a field into the last text field you edited.</p><div class="tags-wrap" style="margin-top:8px">${tagChips}</div></div>
+            <div style="margin-top:20px"><button class="btn btn-ghost" id="es-reset">${icon('rotateCcw',14)} Reset template to default</button></div>
+          </div>
+          <div id="tab-branding" style="${editorTab==='branding'?'':'display:none'}">${brandingFormHTML()}</div>
         </div>
-        <div class="sect">
-          <details class="acc">
-            <summary>⚡ Merge tags <span class="chev">›</span></summary>
-            <div class="acc-body">
-              <div class="mini-note">Click a tag to insert it into the field you were editing (or copy it).</div>
-              <div class="tags-wrap">${tagChips}</div>
-            </div>
-          </details>
+      </aside>
+    </div>
+
+    <div class="review-backdrop" id="review-modal" hidden>
+      <div class="review-card" role="dialog" aria-modal="true" aria-labelledby="review-title">
+        <div class="review-head"><h2 id="review-title">Review ${esc(meta.title)}</h2><p>Check the essentials before this template is used by the dashboard.</p></div>
+        <div class="review-body">
+          <div class="review-row"><span>Template</span><b>${esc(t.name)}</b></div>
+          <div class="review-row"><span>Event</span><b>${scopeKey==='global'?'Global default':esc(scopeKey)}</b></div>
+          <div class="review-row"><span>Trigger</span><b>${esc(t.trigger)}</b></div>
+          <div class="review-row"><span>Subject</span><b>${esc(mergePlain(t.subject))}</b></div>
+          <div class="review-row"><span>Content</span><b>${t.blocks.length} blocks · Desktop and mobile ready</b></div>
+          ${hasLocalImage?'<div class="review-warning">Local image previews are still stored on this device. Replace them with permanent hosted images before real delivery.</div>':''}
+          <div class="review-warning">Prototype mode: publishing only marks this local template Active. No applicant email will be delivered.</div>
         </div>
+        <div class="review-actions">
+          <button class="btn btn-ghost" id="review-cancel">Back to edit</button>
+          <button class="btn btn-ghost" id="review-test">Send test (demo)</button>
+          <button class="btn btn-dark" id="review-publish">Publish changes</button>
         </div>
       </div>
-      <div class="panel-preview">
-        <div class="pv-subjectbar">
-          <div><b>${esc(mergePlain(t.subject))||'<span style="color:var(--ink-3)">No subject</span>'}</b></div>
-          <div id="pv-preheader">${esc(mergePlain(t.preheader))}</div>
+    </div>
+    <div class="review-backdrop" id="test-modal" hidden>
+      <div class="review-card test-card" role="dialog" aria-modal="true" aria-labelledby="test-title">
+        <div class="review-head" style="position:relative;padding-right:58px">
+          <button class="modal-close" id="test-close" aria-label="Close test email dialog">${icon('x',17)}</button>
+          <h2 id="test-title">Send test email</h2>
+          <p>Enter the inbox that should receive this simulated test.</p>
         </div>
-        <div class="email-frame ${device==='mobile'?'mobile':''}" id="email-frame"></div>
-        <div class="mini-note" style="margin-top:14px;max-width:600px;text-align:center">Live preview rendered with sample applicant data. Blocks with a "hidden" banner are skipped in real sends when their variable is empty.</div>
+        <div class="test-form">
+          <label for="test-recipient">Recipient email</label>
+          <input class="input" id="test-recipient" type="email" autocomplete="off" placeholder="name@example.com">
+          <p>Prototype only — no email will actually be delivered.</p>
+        </div>
+        <div class="review-actions">
+          <button class="btn btn-ghost" id="test-back">Back</button>
+          <button class="btn btn-dark" id="test-send" disabled>Send test email</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -1419,7 +1967,7 @@ function renderSettings(){
   panel.innerHTML = `
     <div class="settings-head">
       <span class="bname"><span class="ic">${def.icon}</span>${def.label}</span>
-      <button class="btn btn-danger-ghost btn-sm" data-delsel>Remove</button>
+      <button class="btn btn-danger-ghost btn-sm" data-delsel>${icon('trash',14)} Remove</button>
     </div>
     <div class="settings-form">${def.settings(blk.props)}</div>`;
   bindSettings(panel, blk);
@@ -1435,19 +1983,123 @@ function bindCommon(){
   /* the shell owns sidebar routing in mellow-dashv2 */
 
   if(view==='list'){
+    const libraryScope=$('#library-scope');
+    if(libraryScope) libraryScope.onchange=()=>{
+      listScopeKey=libraryScope.value;
+      localStorage.setItem('mellowDashV2.email.libraryScope',listScopeKey);
+      render();
+    };
     document.querySelectorAll('[data-open]').forEach(c=>{
-      c.onclick = ()=>{ currentId=c.dataset.open; selectedBlock=null; view='editor'; render(); };
+      c.onclick = e=>{ if(e.target.closest('button')) return; openEditor(c.dataset.scope,c.dataset.open); };
     });
-    document.querySelectorAll('[data-dup]').forEach(b=> b.onclick = e=>{ e.stopPropagation(); duplicateTemplate(b.dataset.dup); });
+    document.querySelectorAll('[data-dup]').forEach(b=> b.onclick = e=>{ e.stopPropagation(); duplicateTemplate(b.dataset.dup,b.dataset.templateScope); });
     document.querySelectorAll('[data-del]').forEach(b=> b.onclick = e=>{ e.stopPropagation();
-      const t = state.templates.find(x=>x.id===b.dataset.del);
+      const list=templatesForScope(b.dataset.templateScope);
+      const t=list.find(x=>x.id===b.dataset.del);
+      if(!t || t.key) return;
       if(confirm(`Delete template "${t.name}"? This can’t be undone.`)){
-        state.templates = state.templates.filter(x=>x.id!==b.dataset.del); save(true); render(); toast('Template deleted'); } });
-    const openNew = ()=> openModal();
-    $('#btn-new').onclick = openNew; $('#btn-new-2').onclick = openNew;
+        const filtered=list.filter(x=>x.id!==b.dataset.del);
+        if(b.dataset.templateScope==='global') state.templates=filtered;
+        else state.eventTemplates[b.dataset.templateScope]=filtered;
+        save(true); render(); toast('Template deleted'); } });
+    document.querySelectorAll('[data-create-event]').forEach(button=> button.onclick=()=>activateEventScope(button.dataset.createEvent));
+    document.querySelectorAll('[data-customize]').forEach(button=> button.onclick=e=>{
+      e.stopPropagation(); activateEventScope(button.dataset.customize,button.dataset.templateKey);
+    });
+    document.querySelectorAll('[data-reset-event]').forEach(button=> button.onclick=()=>resetEventScope(button.dataset.resetEvent));
+    const openNew = ()=> openModal(listScopeKey==='all'?'global':listScopeKey);
+    const newTop=$('#btn-new'); if(newTop) newTop.onclick=openNew;
+    const newCard=$('#btn-new-2'); if(newCard) newCard.onclick=openNew;
   }
 
   if(view==='editor'){
+    const scopeSelect=$('#event-scope');
+    if(scopeSelect) scopeSelect.onchange=()=>switchScope(scopeSelect.value);
+    document.querySelectorAll('[data-template-id]').forEach(button=>{
+      button.onclick=()=>{
+        currentId=button.dataset.templateId;
+        selectedBlock=null;
+        editorTab='content';
+        render();
+      };
+    });
+    document.querySelectorAll('[data-left-tab]').forEach(button=>{
+      button.onclick=()=>{ leftTab=button.dataset.leftTab; render(); };
+    });
+    document.querySelectorAll('[data-outline]').forEach(button=>{
+      button.onclick=()=>{ selectedBlock=button.dataset.outline; editorTab='content'; render(); };
+      button.addEventListener('dragstart',()=>{ dragIdx=Number(button.dataset.idx); button.classList.add('dragging'); });
+      button.addEventListener('dragend',()=>{
+        dragIdx=null;
+        document.querySelectorAll('.outline-item').forEach(item=>item.classList.remove('dragging','drop-above','drop-below'));
+      });
+      button.addEventListener('dragover',event=>{
+        event.preventDefault();
+        const rect=button.getBoundingClientRect();
+        const above=event.clientY<rect.top+rect.height/2;
+        button.classList.toggle('drop-above',above);
+        button.classList.toggle('drop-below',!above);
+      });
+      button.addEventListener('dragleave',()=>button.classList.remove('drop-above','drop-below'));
+      button.addEventListener('drop',event=>{
+        event.preventDefault();
+        if(dragIdx===null||dragIdx===undefined) return;
+        const t=tpl();
+        const to=Number(button.dataset.idx);
+        const rect=button.getBoundingClientRect();
+        const above=event.clientY<rect.top+rect.height/2;
+        const [moved]=t.blocks.splice(dragIdx,1);
+        let target=above?to:to+1;
+        if(dragIdx<to) target--;
+        t.blocks.splice(Math.max(0,Math.min(target,t.blocks.length)),0,moved);
+        selectedBlock=moved.id;
+        dragIdx=null;
+        save(true); render(); toast('Block order updated');
+      });
+    });
+    const back=$('#studio-back');
+    if(back) back.onclick=()=> openLibrary(scopeKey);
+    const preview=$('#studio-preview');
+    if(preview) preview.onclick=()=>{
+      previewMode=!previewMode;
+      $('#es-root').classList.toggle('preview-mode',previewMode);
+      render();
+    };
+    const review=$('#studio-review');
+    const reviewModal=$('#review-modal');
+    if(review) review.onclick=()=>{ reviewModal.hidden=false; $('#review-cancel')?.focus(); };
+    if(reviewModal) reviewModal.onclick=e=>{ if(e.target===reviewModal) reviewModal.hidden=true; };
+    const reviewCancel=$('#review-cancel');
+    if(reviewCancel) reviewCancel.onclick=()=> reviewModal.hidden=true;
+    const reviewTest=$('#review-test');
+    const testModal=$('#test-modal');
+    const testRecipient=$('#test-recipient');
+    const testSend=$('#test-send');
+    const emailValid=value=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim());
+    if(reviewTest) reviewTest.onclick=()=>{
+      reviewModal.hidden=true;
+      testRecipient.value='';
+      testSend.disabled=true;
+      testModal.hidden=false;
+      testRecipient.focus();
+    };
+    if(testRecipient) testRecipient.oninput=()=>{ testSend.disabled=!emailValid(testRecipient.value); };
+    if(testSend) testSend.onclick=()=>{
+      const recipient=testRecipient.value.trim();
+      if(!emailValid(recipient)) return;
+      testModal.hidden=true;
+      toast(`Test email to ${recipient} simulated — nothing was delivered`);
+    };
+    const closeTest=()=>{ testModal.hidden=true; };
+    const testClose=$('#test-close'); if(testClose) testClose.onclick=closeTest;
+    const testBack=$('#test-back'); if(testBack) testBack.onclick=()=>{ testModal.hidden=true; reviewModal.hidden=false; reviewTest.focus(); };
+    if(testModal) testModal.onclick=e=>{ if(e.target===testModal) closeTest(); };
+    const reviewPublish=$('#review-publish');
+    if(reviewPublish) reviewPublish.onclick=()=>{
+      tpl().status='Active'; tpl().updated='Published just now';
+      save(true); reviewModal.hidden=true; render(); toast('Template published locally');
+    };
+
     /* undo + reset */
     const ub = $('#es-undo'); if(ub) ub.onclick = undo;
     const rdb = $('#es-redo'); if(rdb) rdb.onclick = redo;
@@ -1455,10 +2107,10 @@ function bindCommon(){
     syncHistoryBtns();
 
     /* Content / Branding tab switching */
-    document.querySelectorAll('.panel-tabs button').forEach(b=>{
+    document.querySelectorAll('.inspector-tabs button').forEach(b=>{
       b.onclick = ()=>{
         editorTab = b.dataset.tab;
-        document.querySelectorAll('.panel-tabs button').forEach(x=>x.classList.toggle('on',x===b));
+        document.querySelectorAll('.inspector-tabs button').forEach(x=>x.classList.toggle('on',x===b));
         $('#tab-content').style.display = editorTab==='content' ? '' : 'none';
         $('#tab-branding').style.display = editorTab==='branding' ? '' : 'none';
       };
@@ -1466,14 +2118,69 @@ function bindCommon(){
     /* Branding inputs — live-update the preview, autosave */
     document.querySelectorAll('[data-brand]').forEach(inp=>{
       inp.addEventListener('input', ()=>{
-        state.branding[inp.dataset.brand] = inp.value;
-        document.querySelectorAll(`[data-brand="${inp.dataset.brand}"]`).forEach(x=>{ if(x!==inp) x.value=inp.value; });
+        const prop=inp.dataset.brand;
+        const value=inp.type==='checkbox' ? inp.checked : (inp.type==='range' ? Number(inp.value) : inp.value);
+        state.branding[prop] = value;
+        document.querySelectorAll(`[data-brand="${prop}"]`).forEach(x=>{
+          if(x===inp) return;
+          if(x.type==='checkbox') x.checked=Boolean(value); else x.value=value;
+        });
+        if(inp.type==='range') inp.closest('.range-row')?.querySelector('output')?.replaceChildren(`${value}px`);
+        if(prop==='logoCustomWidth'){
+          const control=$('#logo-width-control');
+          if(control) control.hidden=!value;
+        }
         save(); renderPreview();
       });
     });
-    $('#tpl-name').addEventListener('input', e=>{ tpl().name=e.target.value; save(); });
+    const uploadBrandLogo=$('#upload-brand-logo');
+    if(uploadBrandLogo) uploadBrandLogo.onclick=()=>{
+      const fi=$('#file-input');
+      fi.onchange=()=>{
+        const file=fi.files?.[0];
+        if(!file) return;
+        if(!file.type.startsWith('image/')){ toast('Choose an image file'); fi.value=''; return; }
+        const reader=new FileReader();
+        reader.onload=()=>{
+          state.branding.logoUrl=reader.result;
+          state.branding.logoFileName=file.name;
+          save(true); render(); toast('Header logo uploaded');
+        };
+        reader.readAsDataURL(file);
+        fi.value='';
+      };
+      fi.click();
+    };
+    const removeBrandLogo=$('#remove-brand-logo');
+    if(removeBrandLogo) removeBrandLogo.onclick=()=>{
+      state.branding.logoUrl='';
+      state.branding.logoFileName='';
+      save(true); render(); toast('Header logo removed');
+    };
+    document.querySelectorAll('[data-social-index]').forEach(inp=>{
+      inp.addEventListener('input',()=>{
+        const link=state.branding.socialLinks?.[Number(inp.dataset.socialIndex)];
+        if(!link) return;
+        link[inp.dataset.socialProp]=inp.value;
+        save(); renderPreview();
+      });
+    });
+    document.querySelectorAll('[data-social-remove]').forEach(button=>{
+      button.onclick=()=>{
+        state.branding.socialLinks.splice(Number(button.dataset.socialRemove),1);
+        save(true); render(); toast('Social link removed');
+      };
+    });
+    const addSocial=$('#add-social-link');
+    if(addSocial) addSocial.onclick=()=>{
+      state.branding.socialLinks.push({id:uid(),label:'Social link',url:''});
+      save(true); render(); toast('Social link added');
+    };
+    const nameInput=$('#tpl-name');
+    if(nameInput) nameInput.addEventListener('input', e=>{ tpl().name=e.target.value; save(); });
     document.querySelectorAll('[data-meta]').forEach(inp=>{
       inp.addEventListener('input', ()=>{ tpl()[inp.dataset.meta]=inp.value; tpl().updated='Edited just now'; save();
+        if(inp.dataset.meta==='name') document.querySelector('.studio-title strong').textContent=inp.value||'Untitled template';
         if(inp.dataset.meta==='subject'||inp.dataset.meta==='preheader') renderPreview(); });
     });
     document.querySelectorAll('[data-add]').forEach(b=>{
@@ -1490,7 +2197,6 @@ function bindCommon(){
     document.querySelectorAll('[data-dev]').forEach(b=> b.onclick=()=>{ device=b.dataset.dev;
       document.querySelectorAll('[data-dev]').forEach(x=>x.classList.toggle('on',x===b));
       $('#email-frame').classList.toggle('mobile',device==='mobile'); });
-    $('#btn-test').onclick = ()=> toast('Test email sent to mellowartmarket@gmail.com (demo)');
     document.querySelectorAll('.tag-chip').forEach(c=>{
       c.onclick = ()=>{
         const tag=c.dataset.tag;
@@ -1506,6 +2212,34 @@ function bindCommon(){
   }
 }
 
+function applySelectedBlockAction(action){
+  const t=tpl();
+  const index=t?.blocks.findIndex(block=>block.id===selectedBlock) ?? -1;
+  if(index<0) return false;
+  let message='';
+  if(action==='up'){
+    if(index===0) return false;
+    [t.blocks[index-1],t.blocks[index]]=[t.blocks[index],t.blocks[index-1]];
+    message='Block moved up';
+  } else if(action==='down'){
+    if(index===t.blocks.length-1) return false;
+    [t.blocks[index+1],t.blocks[index]]=[t.blocks[index],t.blocks[index+1]];
+    message='Block moved down';
+  } else if(action==='dup'){
+    const copy=JSON.parse(JSON.stringify(t.blocks[index]));
+    copy.id=uid();
+    t.blocks.splice(index+1,0,copy);
+    selectedBlock=copy.id;
+    message='Block duplicated';
+  } else if(action==='del'){
+    t.blocks.splice(index,1);
+    selectedBlock=t.blocks[Math.min(index,t.blocks.length-1)]?.id || null;
+    message='Block removed';
+  } else return false;
+  save(true); render(); toast(message);
+  return true;
+}
+
 function bindPreview(frame){
   frame.querySelectorAll('.pv-block').forEach(el=>{
     el.onclick = e=>{
@@ -1517,13 +2251,8 @@ function bindPreview(frame){
     el.querySelectorAll('.blk-toolbar button').forEach(btn=>{
       btn.onclick = e=>{
         e.stopPropagation();
-        const t=tpl(); const i=t.blocks.findIndex(b=>b.id===el.dataset.block);
-        const act=btn.dataset.act;
-        if(act==='up'&&i>0) [t.blocks[i-1],t.blocks[i]]=[t.blocks[i],t.blocks[i-1]];
-        if(act==='down'&&i<t.blocks.length-1) [t.blocks[i+1],t.blocks[i]]=[t.blocks[i],t.blocks[i+1]];
-        if(act==='dup'){ const cp=JSON.parse(JSON.stringify(t.blocks[i])); cp.id=uid(); t.blocks.splice(i+1,0,cp); selectedBlock=cp.id; }
-        if(act==='del'){ t.blocks.splice(i,1); selectedBlock=null; }
-        save(true); renderPreview(); renderSettings();
+        selectedBlock=el.dataset.block;
+        applySelectedBlockAction(btn.dataset.act);
       };
     });
     /* drag & drop reorder */
@@ -1543,7 +2272,8 @@ function bindPreview(frame){
       const [moved]=t.blocks.splice(dragIdx,1);
       let target = above?to:to+1; if(dragIdx<to) target--;
       t.blocks.splice(Math.max(0,Math.min(target,t.blocks.length)),0,moved);
-      dragIdx=null; save(true); renderPreview();
+      selectedBlock=moved.id;
+      dragIdx=null; save(true); render(); toast('Block order updated');
     });
   });
   frame.querySelectorAll('.pv-locked').forEach(el=>{
@@ -1579,7 +2309,7 @@ function bindSettings(panel, blk){
       fi.onchange = ()=>{
         const f=fi.files[0]; if(!f) return;
         const rd=new FileReader();
-        rd.onload = ()=>{ blk.props[btn.dataset.upload]=rd.result; save(true); renderPreview(); renderSettings(); toast('Image uploaded & placed ✓'); };
+        rd.onload = ()=>{ blk.props[btn.dataset.upload]=rd.result; save(true); renderPreview(); renderSettings(); toast('Image uploaded and placed'); };
         rd.readAsDataURL(f); fi.value='';
       };
       fi.click();
@@ -1593,23 +2323,45 @@ function bindSettings(panel, blk){
 }
 
 /* ---------- new template modal ---------- */
-function openModal(){
-  $('#dup-opts').innerHTML = state.templates.map(t=>
-    `<button class="opt-btn" onclick="ES.createTemplate('${t.id}')"><span class="ic">⧉</span><span><b>Duplicate “${esc(t.name)}”</b><span>Start from this template’s layout & content</span></span></button>`).join('');
+function findTemplate(id,scope){ return templatesForScope(scope||'global').find(t=>t.id===id) || null; }
+function renderDuplicateOptions(targetScope){
+  const sourceScope=targetScope!=='global'&&eventHasOverride(targetScope) ? targetScope : 'global';
+  $('#dup-opts').innerHTML=templatesForScope(sourceScope).map(t=>
+    `<button class="opt-btn" data-new-from="${t.id}" data-new-source="${esc(sourceScope)}"><span class="ic">${icon('copy',18)}</span><span><b>Duplicate “${esc(t.name)}”</b><span>Creates a separate manual template</span></span></button>`).join('');
+  document.querySelectorAll('[data-new-from]').forEach(button=> button.onclick=()=>createTemplate(button.dataset.newFrom,button.dataset.newSource));
+}
+function openModal(preferredScope='global'){
+  const events=availableEvents();
+  const scopeSelect=$('#new-template-scope');
+  const safeScope=['global',...events].includes(preferredScope)?preferredScope:'global';
+  scopeSelect.innerHTML=[['global','Global default'],...events.map(event=>[event,event])]
+    .map(([value,label])=>`<option value="${esc(value)}"${value===safeScope?' selected':''}>${esc(label)}</option>`).join('');
+  $('#new-template-name').value='';
+  renderDuplicateOptions(safeScope);
+  scopeSelect.onchange=()=>renderDuplicateOptions(scopeSelect.value);
+  $('#create-blank').onclick=()=>createTemplate(null,null);
+  $('#close-new-template').onclick=closeModal;
   $('#modal-new').classList.add('open');
+  $('#new-template-name').focus();
 }
 function closeModal(){ $('#modal-new').classList.remove('open'); }
 $('#modal-new').addEventListener('click', e=>{ if(e.target.id==='modal-new') closeModal(); });
 
-function createTemplate(fromId){
+function createTemplate(fromId,sourceScope){
+  const targetScope=$('#new-template-scope')?.value || listScopeKey || 'global';
+  const requestedName=$('#new-template-name')?.value.trim();
+  if(targetScope!=='global') createEventOverride(targetScope);
+  const targetList=templatesForScope(targetScope);
   let t;
   if(fromId){
-    const src = state.templates.find(x=>x.id===fromId);
+    const src=findTemplate(fromId,sourceScope||targetScope);
+    if(!src){ toast('Source template is no longer available'); return; }
     t = JSON.parse(JSON.stringify(src));
-    t.id=uid(); t.name = src.name+' (copy)'; t.status='Draft';
+    t.id=uid(); t.name=requestedName||src.name+' (copy)'; t.status='Draft'; t.trigger='Manual send only';
+    delete t.key;
     t.blocks.forEach(b=>b.id=uid());
   } else {
-    t = { id:uid(), name:'Untitled template', status:'Draft', trigger:TRIGGERS[4],
+    t = { id:uid(), name:requestedName||'Untitled template', status:'Draft', trigger:TRIGGERS[TRIGGERS.length-1],
       subject:'Your subject line — use {{eventName}} or {{firstName}}', preheader:'',
       blocks:[
         {id:uid(),type:'hero',props:BLOCKS.hero.defaults()},
@@ -1618,29 +2370,61 @@ function createTemplate(fromId){
       ]};
   }
   t.updated='Created just now';
-  state.templates.push(t); save(true);
+  targetList.push(t); save(true);
   closeModal();
-  currentId=t.id; selectedBlock=null; editorTab='content'; view='editor'; render();
+  listScopeKey=targetScope;
+  localStorage.setItem('mellowDashV2.email.libraryScope',listScopeKey);
+  openEditor(targetScope,t.id);
   toast(fromId?'Template duplicated — you’re now editing the copy':'New template created');
 }
-function duplicateTemplate(id){ createTemplate(id); }
+function duplicateTemplate(id,templateScope='global'){
+  const src=findTemplate(id,templateScope); if(!src) return;
+  if(templateScope!=='global') createEventOverride(templateScope);
+  const copy=JSON.parse(JSON.stringify(src));
+  copy.id=uid(); copy.name=src.name+' (copy)'; copy.status='Draft'; copy.trigger='Manual send only'; copy.updated='Created just now';
+  delete copy.key; copy.blocks.forEach(block=>block.id=uid());
+  templatesForScope(templateScope).push(copy); save(true); openEditor(templateScope,copy.id);
+  toast('Template duplicated — you’re now editing the copy');
+}
 
 /* ---------- boot ---------- */
 
   /* ---------- bridge for the rest of the app ---------- */
   let booted = false;
-  function boot(){ if(booted) return; booted = true; bindKeys(); render(); }
+  function boot(){
+    if(!booted){ booted=true; bindKeys(); }
+    openLibrary();
+  }
 
-  /* Cmd+Z / Ctrl+Z, only while the Email templates screen is open. */
+  /* Editor keyboard controls, only while Email templates is open. */
   function bindKeys(){
     document.addEventListener('keydown', e=>{
       const k = String(e.key).toLowerCase();
-      if(k !== 'z' && k !== 'y') return;
-      if(!(e.metaKey || e.ctrlKey) || e.altKey) return;
       const root = $('#es-root'); if(!root || root.hidden) return;
+      const editable=Boolean(e.target.closest?.('input,textarea,select,[contenteditable="true"]'));
+      const command=e.metaKey||e.ctrlKey;
+      if(command&&!e.altKey&&(k==='z'||k==='y')){
+        if(editable) return;
+        e.preventDefault();
+        /* ⌘Z undo · ⇧⌘Z redo · Ctrl+Y redo (Windows) */
+        (k==='y'||e.shiftKey) ? redo() : undo();
+        return;
+      }
+      if(view!=='editor'||!selectedBlock||editable) return;
+      let action='';
+      if(command&&!e.altKey&&!e.shiftKey&&k==='d') action='dup';
+      else if(!command&&!e.altKey&&!e.shiftKey&&e.key==='ArrowUp') action='up';
+      else if(!command&&!e.altKey&&!e.shiftKey&&e.key==='ArrowDown') action='down';
+      else if(!command&&!e.altKey&&!e.shiftKey&&e.key==='Delete') action='del';
+      if(!action) return;
       e.preventDefault();
-      /* ⌘Z undo · ⇧⌘Z redo · Ctrl+Y redo (Windows) */
-      (k === 'y' || e.shiftKey) ? redo() : undo();
+      applySelectedBlockAction(action);
+    });
+    document.addEventListener('keydown',e=>{
+      if(e.key!=='Escape') return;
+      closeModal();
+      const reviewModal=$('#review-modal'); if(reviewModal) reviewModal.hidden=true;
+      const testModal=$('#test-modal'); if(testModal) testModal.hidden=true;
     });
   }
 
@@ -1664,7 +2448,7 @@ function duplicateTemplate(id){ createTemplate(id); }
   function templateNamed(name){ return state.templates.find(x => x.name === name) || null; }
   function templateNames(){ return state.templates.map(t => t.name); }
 
-  return { boot, renderFor, subjectFor, templateNamed, templateNames,
+  return { boot, openLibrary, renderFor, subjectFor, templateNamed, templateNames,
            createTemplate, closeModal, openModal };
 
 })();
@@ -1755,6 +2539,15 @@ const state = { q:"", status:"", pay:"", email:"", event:"", archive:"active",
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uiIconPaths = {
+  arrowDown:'<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',
+  arrowUp:'<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+  arrowUpDown:'<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  chevronRight:'<path d="m9 18 6-6-6-6"/>',
+  externalLink:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
+};
+const uiIcon = (name,size=14) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${uiIconPaths[name]||''}</svg>`;
 const money = n => "$" + n.toLocaleString("en-AU") + " AUD";
 const fmtDate = s => { if(!s) return "—";
   const d = new Date(String(s).replace(" ","T")+"Z"); if(isNaN(d)) return s;
@@ -2153,7 +2946,7 @@ const clean = v => (/^\s*select/i.test(String(v||"")) ? "—" : (v || "—"));
 const DEAD_VALUE = /^\s*(n\/?a|none|nil|tbc|-+|—)\s*$/i;
 const extLink = (href, label) =>
   `<a class="dlink" href="${esc(href)}" target="_blank" rel="noopener noreferrer"` +
-  ` title="${esc(href)}">${esc(label)}<span class="ext" aria-hidden="true">↗</span></a>`;
+  ` title="${esc(href)}">${esc(label)}<span class="ext" aria-hidden="true">${uiIcon('externalLink',11)}</span></a>`;
 
 function mailLink(v){
   const t = String(v||"").trim();
@@ -2284,7 +3077,7 @@ function render(){
       const k = c.sort;
       const on = k!=null && k===state.sort.key;
       return `<th class="${k!=null?"sortable":""} ${on?"sorted":""}" ${k!=null?`data-sort="${k}"`:""}>${esc(c.label)}${
-        k!=null?`<span class="arw">${on?(state.sort.dir>0?"↑":"↓"):"⇅"}</span>`:""}</th>`;
+        k!=null?`<span class="arw">${on?(state.sort.dir>0?uiIcon('arrowUp',11):uiIcon('arrowDown',11)):uiIcon('arrowUpDown',11)}</span>`:""}</th>`;
     }).join("") + `<th></th><th></th>`;
     const group = `<col style="width:40px">` + cols.map(c=>`<col style="width:${c.w}px">`).join("")
                 + `<col style="width:44px"><col style="width:24px">`;
@@ -2330,7 +3123,7 @@ function rowHTML(r, cols){
     cols.map(c=>c.cell(r)).join("")
   }<td><button class="note-btn ${hasNote?"has":""}" data-note="${esc(r[F.ref])}" title="${hasNote?"Internal note: "+esc(r[F.notes]):"Add internal note"}">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5" fill="none" stroke="#fff"/></svg>
-    </button></td><td class="chev-cell"><span class="chev">›</span></td></tr>`;
+    </button></td><td class="chev-cell"><span class="chev">${uiIcon('chevronRight',15)}</span></td></tr>`;
 }
 
 function renderBulkBar(){
@@ -2451,7 +3244,7 @@ function openStateMenu(trigger){
     : (PAY_LABEL[v] || v);
   const menu = $("#stateMenu");
   closeStateMenu();
-  menu.innerHTML = values.map(v=>`<button type="button" role="option" data-state-value="${esc(v)}" aria-selected="${v===current}"><span class="check">${v===current?"✓":""}</span><span>${esc(labelFor(v))}</span></button>`).join("");
+  menu.innerHTML = values.map(v=>`<button type="button" role="option" data-state-value="${esc(v)}" aria-selected="${v===current}"><span class="check">${v===current?uiIcon('check',13):""}</span><span>${esc(labelFor(v))}</span></button>`).join("");
   menu.hidden = false;
   menu.style.width = `${Math.max(168, Math.ceil(trigger.getBoundingClientRect().width))}px`;
   const anchor = trigger.getBoundingClientRect();
@@ -2505,11 +3298,16 @@ function renderColPop(){
    Shell routing
    ============================================================ */
 function showScreen(name){
+  if(name!=="email"&&name!=="inquiries") name="inquiries";
   $("#screen-inquiries").hidden = name !== "inquiries";
   $("#es-root").hidden = name !== "email";
+  $(".app").classList.toggle("email-mode", name === "email");
   $(".topbar .crumb").textContent = name === "email" ? "Email templates" : "Inquiries";
   document.querySelectorAll('nav.nav a[data-screen]').forEach(a =>
     a.classList.toggle("on", a.dataset.screen === name));
+  localStorage.setItem("mellowDashV2.screen",name);
+  const targetHash=name==="email"?"#email-templates":"#inquiries";
+  if(location.hash!==targetHash) history.replaceState(null,"",targetHash);
   if(name === "email") ES.boot();
   closeProfile();
 }
@@ -2837,7 +3635,9 @@ function boot(){
     closeActionConfirm();
   });
 
-  showScreen("inquiries");
+  const savedScreen=localStorage.getItem("mellowDashV2.screen");
+  const initialScreen=location.hash==="#email-templates"||savedScreen==="email" ? "email" : "inquiries";
+  showScreen(initialScreen);
   render();
 }
 boot();
