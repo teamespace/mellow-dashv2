@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-09-22
+
+- Integrated the Nova-inspired Email Templates library and focused block editor
+  into the dashboard shell, with persistent sidebar/hash routing so refreshing
+  the page keeps the current Email Templates view.
+- Added Global and event filtering while retaining the five protected
+  status-linked templates: Application received, Approval / invoice, Rejection,
+  Waitlist and Withdrawal confirmation.
+- Added drag-and-drop outline reordering and keyboard controls for selected
+  blocks: `Ctrl/Cmd+D` to duplicate, Arrow Up/Down to move and Delete to remove.
+- Replaced the header-logo URL field with an image upload, including an optional
+  custom-width control, and added editable social-account links to shared branding.
+- Added a recipient-address confirmation modal for Send test. This remains a
+  local simulation and does not deliver email.
+- Refined the template cards, editor top bar and create-template dialog; the
+  latter now closes from its top-right icon, backdrop click or Escape.
+
 ## 2026-09-21
 
 - Moved Withdrawn into the application status flow and removed its separate
