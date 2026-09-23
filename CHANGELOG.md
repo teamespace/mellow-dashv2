@@ -5,9 +5,12 @@
 - Removed free-form email template creation, duplication, deletion, and global
   template selection from the Email Templates library; templates are now shown
   only per event and remain tied to the application status flow.
+- Hid template scope/status badges from the Email Templates library cards,
+  defaulted status-linked templates to Active, and added extra select padding
+  so dropdown chevrons are not crowded.
 - Improved library thumbnail previews so email mockups fill the card width
-  cleanly, aligned the status dot with the template title, and truncated
-  updated metadata to one line.
+  cleanly in a three-column desktop grid, aligned the status dot with the
+  template title, and truncated updated metadata to one line.
 - Made every email block responsive in the 375px mobile preview, including
   wrapped invoice values so long event names remain fully visible.
 - Hid Undo and Redo controls while Preview mode is active and restored them

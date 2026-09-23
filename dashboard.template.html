@@ -511,14 +511,14 @@
   #es-root .list-head > div:first-child{max-width:50%}
   #es-root .list-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:nowrap}
   #es-root .scope-filter{display:flex;align-items:center;gap:7px;color:#71717a;font-size:12px}
-  #es-root .library-scope{height:34px;width:230px;min-width:0;border:1px solid #d4d4d8;border-radius:8px;background:#fff;padding:0 32px 0 10px;font-size:13px;outline:none;text-overflow:ellipsis}
+  #es-root .library-scope{height:34px;width:230px;min-width:0;border:1px solid #d4d4d8;border-radius:8px;background:#fff;padding:0 44px 0 10px;font-size:13px;outline:none;text-overflow:ellipsis;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23171717' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:14px}
   #es-root .library-scope:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
   #es-root .list-actions .btn{height:34px;white-space:nowrap}
   #es-root .template-group{margin-bottom:30px}
   #es-root .template-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
   #es-root .template-group-head h2{font-size:14px;margin:0}
   #es-root .template-group-head p{color:#71717a;font-size:12px;margin:2px 0 0}
-  #es-root .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+  #es-root .tpl-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
   #es-root .tpl-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:box-shadow .15s, transform .15s;cursor:pointer}
   #es-root .tpl-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
   #es-root .tpl-thumb{height:172px;background:#efedea;overflow:hidden;position:relative;pointer-events:none}
@@ -545,7 +545,7 @@
   #es-root .tpl-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
   #es-root .tpl-name{font-weight:650;font-size:14.5px;display:flex;align-items:center;gap:8px;min-width:0;flex:1;line-height:1.35}
   #es-root .tpl-name > span:last-child{min-width:0;overflow-wrap:anywhere}
-  #es-root .tpl-created{max-width:42%;color:var(--ink-3);font-size:11.5px;line-height:1.35;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #es-root .tpl-created{max-width:50%;color:var(--ink-3);font-size:11.5px;line-height:1.35;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #es-root .status-dot{width:7px;height:7px;border-radius:99px;background:#3ba55d;flex-shrink:0}
   #es-root .status-dot.draft{background:#c9c4bd}
   #es-root .tpl-sub{color:var(--ink-2);font-size:12.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -721,7 +721,7 @@
   #es-root .draft-chip{font-family:inherit;font-size:11px;color:#777771;background:#f1f1ef;border-radius:99px;padding:3px 8px}
   #es-root .draft-chip.active{color:#166534;background:#dcfce7}
   #es-root .scope-control{min-width:0;display:flex;align-items:center;gap:6px;color:#71717a;font-size:11px}
-  #es-root .scope-select{height:32px;width:clamp(180px,19vw,285px);border:1px solid #e4e4e7;border-radius:8px;background:#fff;padding:0 28px 0 9px;font-size:12px;outline:none;text-overflow:ellipsis}
+  #es-root .scope-select{height:32px;width:clamp(180px,19vw,285px);border:1px solid #e4e4e7;border-radius:8px;background:#fff;padding:0 42px 0 9px;font-size:12px;outline:none;text-overflow:ellipsis;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23171717' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:14px}
   #es-root .scope-select:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
   #es-root .studio-actions{display:flex;align-items:center;gap:8px;padding:0 14px;white-space:nowrap}
   #es-root .saved-chip{font-size:12px;color:#5f625c;margin-right:4px}
@@ -904,6 +904,7 @@
   #es-root textarea.input:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
 
   @media (max-width:1200px){
+    #es-root .tpl-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     #es-root .studio-grid{grid-template-columns:230px minmax(500px,1fr) 290px}
     #es-root .studio-header{grid-template-columns:minmax(220px,1fr) auto}
     #es-root .studio-actions .saved-chip{display:none}
@@ -919,6 +920,9 @@
     #es-root .studio-actions .btn-ghost{display:none}
     #es-root .studio-title{max-width:180px}
     #es-root .scope-select{width:170px}
+  }
+  @media (max-width:720px){
+    #es-root .tpl-grid{grid-template-columns:1fr}
   }
 
 /* ===== footer bits ===== */
@@ -1240,7 +1244,7 @@ function defaultState(){
           {id:uid(),type:'hero',props:{badge:'Application Update',heading:'Thank you, {{firstName}}',subtext:'An update on your application for {{eventName}}.',bg:'#2C2422',image:''}},
           {id:uid(),type:'text',props:{content:'Hi {{firstName}},\n\nThank you so much for applying. Unfortunately we’re unable to offer you a stall this time.\n\nWe’d love to see you apply again for future events.',align:'left',hideIf:''}}
         ]},
-      { id:uid(), key:'waitlist', name:'Waitlist', status:'Draft', trigger:TRIGGERS[3], updated:'Edited 3 weeks ago',
+      { id:uid(), key:'waitlist', name:'Waitlist', status:'Active', trigger:TRIGGERS[3], updated:'Edited 3 weeks ago',
         subject:'You’re on the waitlist for {{eventName}}',
         preheader:'We’ll be in touch if a spot opens up.',
         blocks:[
@@ -1291,6 +1295,16 @@ catch(e){ state = defaultState(); }
   });
   cleanReason(state.templates);
   Object.values(state.eventTemplates).forEach(cleanReason);
+  let normalizedStatus=false;
+  const activateSystemTemplates = list => (list||[]).forEach(t=>{
+    if(t.key && t.status!=='Active'){
+      t.status='Active';
+      normalizedStatus=true;
+    }
+  });
+  activateSystemTemplates(state.templates);
+  Object.values(state.eventTemplates).forEach(activateSystemTemplates);
+  if(normalizedStatus) localStorage.setItem('mellowDashV2.email', JSON.stringify(state));
 })();
 
 /* ---------- undo history (in memory only, never persisted) ---------- */
@@ -1375,7 +1389,7 @@ function createEventOverride(eventName){
   if(!eventName || state.eventTemplates[eventName]) return false;
   state.eventTemplates[eventName] = systemTemplates(state.templates).map(source=>{
     const copy=JSON.parse(JSON.stringify(source));
-    copy.id=uid(); copy.status='Draft'; copy.updated=`Created for ${eventName}`;
+    copy.id=uid(); copy.status='Active'; copy.updated=`Created for ${eventName}`;
     copy.blocks.forEach(block=>block.id=uid());
     return copy;
   });
@@ -1679,17 +1693,11 @@ function render(){
 
 /* ---------- template list ---------- */
 function templateCard(t,scope,inherited=false){
-  const label=`Custom for ${scope}`;
-  const scopeClass='custom';
   const meta=templateMeta(t);
   return `
     <div class="tpl-card" data-open="${t.id}" data-scope="${esc(scope)}">
       <div class="tpl-thumb"><div class="scaler">${renderEmailHTML(t,false)}</div></div>
       <div class="tpl-meta">
-        <div class="tpl-scope-row">
-          <span class="scope-chip ${scopeClass}">${icon('calendar',12)} ${esc(label)}</span>
-          <span class="draft-chip ${t.status==='Active'?'active':''}">${esc(t.status)}</span>
-        </div>
         <div class="tpl-title-row">
           <div class="tpl-name"><span class="status-dot ${t.status==='Draft'?'draft':''}"></span><span>${esc(t.name)}</span></div>
           <div class="tpl-created" title="${esc(t.updated)}">${esc(t.updated)}</div>
@@ -2344,11 +2352,11 @@ function createTemplate(fromId,sourceScope){
     const src=findTemplate(fromId,sourceScope||targetScope);
     if(!src){ toast('Source template is no longer available'); return; }
     t = JSON.parse(JSON.stringify(src));
-    t.id=uid(); t.name=requestedName||src.name+' (copy)'; t.status='Draft'; t.trigger='Manual send only';
+    t.id=uid(); t.name=requestedName||src.name+' (copy)'; t.status='Active'; t.trigger='Manual send only';
     delete t.key;
     t.blocks.forEach(b=>b.id=uid());
   } else {
-    t = { id:uid(), name:requestedName||'Untitled template', status:'Draft', trigger:TRIGGERS[TRIGGERS.length-1],
+    t = { id:uid(), name:requestedName||'Untitled template', status:'Active', trigger:TRIGGERS[TRIGGERS.length-1],
       subject:'Your subject line — use {{eventName}} or {{firstName}}', preheader:'',
       blocks:[
         {id:uid(),type:'hero',props:BLOCKS.hero.defaults()},
@@ -2368,7 +2376,7 @@ function duplicateTemplate(id,templateScope='global'){
   const src=findTemplate(id,templateScope); if(!src) return;
   if(templateScope!=='global') createEventOverride(templateScope);
   const copy=JSON.parse(JSON.stringify(src));
-  copy.id=uid(); copy.name=src.name+' (copy)'; copy.status='Draft'; copy.trigger='Manual send only'; copy.updated='Created just now';
+  copy.id=uid(); copy.name=src.name+' (copy)'; copy.status='Active'; copy.trigger='Manual send only'; copy.updated='Created just now';
   delete copy.key; copy.blocks.forEach(block=>block.id=uid());
   templatesForScope(templateScope).push(copy); save(true); openEditor(templateScope,copy.id);
   toast('Template duplicated — you’re now editing the copy');
