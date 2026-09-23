@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-09-23
+
+- Removed free-form email template creation, duplication, deletion, and global
+  template selection from the Email Templates library; templates are now shown
+  only per event and remain tied to the application status flow.
+- Improved library thumbnail previews so email mockups fill the card width
+  cleanly, aligned the status dot with the template title, and truncated
+  updated metadata to one line.
+- Made every email block responsive in the 375px mobile preview, including
+  wrapped invoice values so long event names remain fully visible.
+- Hid Undo and Redo controls while Preview mode is active and restored them
+  automatically when returning to edit mode.
+- Kept template-card titles and update metadata in a left/right layout, with
+  the update metadata truncated to one line and full text available on hover.
+
 ## 2026-09-22
 
 - Integrated the Nova-inspired Email Templates library and focused block editor

@@ -522,15 +522,30 @@
   #es-root .tpl-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:box-shadow .15s, transform .15s;cursor:pointer}
   #es-root .tpl-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
   #es-root .tpl-thumb{height:172px;background:#efedea;overflow:hidden;position:relative;pointer-events:none}
-  #es-root .tpl-thumb .scaler{width:600px;transform:scale(.5);transform-origin:0 0}
+  #es-root .tpl-thumb .scaler{width:100%;height:100%;overflow:hidden}
+  #es-root .tpl-thumb .email-header{padding:16px 12px!important}
+  #es-root .tpl-thumb .email-header img{max-height:30px!important;width:auto!important;max-width:72%!important}
+  #es-root .tpl-thumb .email-header > div{font-size:11px!important}
+  #es-root .tpl-thumb .email-hero-copy{padding:20px 18px 24px!important}
+  #es-root .tpl-thumb .email-hero-badge{font-size:6.5px!important;padding:4px 10px!important;margin-bottom:9px!important}
+  #es-root .tpl-thumb .email-hero-heading{font-size:17px!important;line-height:1.2!important}
+  #es-root .tpl-thumb .email-hero-subtext{font-size:8px!important;line-height:1.35!important}
+  #es-root .tpl-thumb .email-text{padding:14px 18px!important;font-size:7.5px!important;line-height:1.45!important}
+  #es-root .tpl-thumb .email-image{max-height:130px;overflow:hidden}
+  #es-root .tpl-thumb .email-button,
+  #es-root .tpl-thumb .email-invoice,
+  #es-root .tpl-thumb .email-divider,
+  #es-root .tpl-thumb .email-footer{display:none}
   #es-root .tpl-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(25,22,19,.06))}
   #es-root .tpl-meta{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
   #es-root .tpl-scope-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:22px}
   #es-root .scope-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid #e4e4e7;border-radius:999px;background:#fafafa;color:#52525b;padding:3px 8px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #es-root .scope-chip.custom{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
   #es-root .scope-chip.inherited{background:#f4f4f5;color:#71717a}
-  #es-root .tpl-name{font-weight:650;font-size:14.5px;display:flex;align-items:center;gap:8px}
-  #es-root .tpl-created{padding-left:15px;color:var(--ink-3);font-size:11.5px;line-height:1.35}
+  #es-root .tpl-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+  #es-root .tpl-name{font-weight:650;font-size:14.5px;display:flex;align-items:center;gap:8px;min-width:0;flex:1;line-height:1.35}
+  #es-root .tpl-name > span:last-child{min-width:0;overflow-wrap:anywhere}
+  #es-root .tpl-created{max-width:42%;color:var(--ink-3);font-size:11.5px;line-height:1.35;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #es-root .status-dot{width:7px;height:7px;border-radius:99px;background:#3ba55d;flex-shrink:0}
   #es-root .status-dot.draft{background:#c9c4bd}
   #es-root .tpl-sub{color:var(--ink-2);font-size:12.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -687,7 +702,7 @@
 
   #es-root .topbar{display:none}      /* the shell supplies the breadcrumb bar */
   #es-root .page{max-width:none}
-  #es-root #btn-new{white-space:nowrap;flex-shrink:0}   /* was wrapping to two lines */
+  #es-root #btn-new{white-space:nowrap;flex-shrink:0}   /* legacy create button, not rendered in event-only library */
 
   /* ---------- Nova focused email workspace ---------- */
   .app.email-mode .sidebar,
@@ -719,6 +734,7 @@
   #es-root.preview-mode .canvas-instruction,
   #es-root.preview-mode .pv-block .blk-toolbar,
   #es-root.preview-mode .pv-block .blk-label{display:none!important}
+  #es-root.preview-mode .history-actions{visibility:hidden;pointer-events:none}
   #es-root.preview-mode .pv-block{cursor:default}
   #es-root.preview-mode .pv-block::after{display:none}
 
@@ -790,6 +806,22 @@
   #es-root .panel-preview{flex:none;width:100%;padding:0;background:none;display:flex;align-items:center}
   #es-root .panel-preview .email-frame{width:600px;border:1px solid #ddddda;border-radius:0;box-shadow:none}
   #es-root .panel-preview .email-frame.mobile{width:375px}
+  #es-root .email-frame.mobile .email-header{padding:20px 16px!important}
+  #es-root .email-frame.mobile .email-header img{max-width:88%!important;height:auto!important}
+  #es-root .email-frame.mobile .email-hero-copy{padding:28px 20px 30px!important}
+  #es-root .email-frame.mobile .email-hero-heading{font-size:23px!important;overflow-wrap:anywhere}
+  #es-root .email-frame.mobile .email-hero-subtext{font-size:14px!important;overflow-wrap:anywhere}
+  #es-root .email-frame.mobile .email-text{padding:22px 20px!important;overflow-wrap:anywhere}
+  #es-root .email-frame.mobile .email-image{padding-left:20px!important;padding-right:20px!important}
+  #es-root .email-frame.mobile .email-image img{max-width:100%!important;height:auto!important}
+  #es-root .email-frame.mobile .email-button{padding:8px 20px 22px!important}
+  #es-root .email-frame.mobile .email-button a{max-width:100%;overflow-wrap:anywhere}
+  #es-root .email-frame.mobile .email-invoice{padding:4px 20px 20px!important}
+  #es-root .email-frame.mobile .email-invoice-table{table-layout:fixed}
+  #es-root .email-frame.mobile .email-invoice-label{width:40%;padding:10px 8px!important}
+  #es-root .email-frame.mobile .email-invoice-value{width:60%;padding:10px 8px!important;white-space:normal;overflow-wrap:anywhere;word-break:normal;vertical-align:top}
+  #es-root .email-frame.mobile .email-divider{padding-left:20px!important;padding-right:20px!important}
+  #es-root .email-frame.mobile .email-footer{padding:24px 20px!important;overflow-wrap:anywhere}
 
   #es-root .studio-inspector{background:#fff;border-left:1px solid #e4e4e1;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
   #es-root .inspector-tabs{height:48px;border-bottom:1px solid #e4e4e1;display:grid;grid-template-columns:1fr 1fr;padding:0 10px}
@@ -1002,21 +1034,6 @@
       <div id="es-root" hidden>
         <div class="es-main"></div>
         <div id="es-toast"></div>
-        <div class="modal-back" id="modal-new">
-          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="new-template-title">
-            <button class="modal-close" id="close-new-template" aria-label="Close create template dialog"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
-            <div class="modal-head"><h3 id="new-template-title">Create a new template</h3></div>
-            <p>Create a manual email in the global library or for one event. Status-linked system templates remain protected.</p>
-            <div class="inline-2" style="margin-bottom:14px">
-              <div class="field"><label for="new-template-name">Template name</label><input class="input" id="new-template-name" placeholder="e.g. Event reminder"></div>
-              <div class="field"><label for="new-template-scope">Event</label><select class="input" id="new-template-scope"></select></div>
-            </div>
-            <div class="opts">
-              <button class="opt-btn" id="create-blank"><span class="ic"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span><b>Blank template</b><span>Starter layout with a hero, text and button block</span></span></button>
-              <div id="dup-opts"></div>
-            </div>
-          </div>
-        </div>
         <input type="file" id="file-input" accept="image/*" hidden>
       </div>
     </div>
@@ -1341,12 +1358,22 @@ function availableEvents(){
   if(index<0) return [];
   return [...new Set(RAW.map(row=>String(row[index]||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
 }
+function systemTemplates(list){
+  return (list||[]).filter(t=>t.key);
+}
+function defaultEventScope(){
+  return availableEvents()[0] || 'global';
+}
+function normalizedEventScope(value){
+  const events=availableEvents();
+  return events.includes(value) ? value : (events[0] || 'global');
+}
 function scopeTemplates(){
-  return scopeKey==='global' ? state.templates : (state.eventTemplates[scopeKey] || state.templates);
+  return systemTemplates(templatesForScope(scopeKey));
 }
 function createEventOverride(eventName){
   if(!eventName || state.eventTemplates[eventName]) return false;
-  state.eventTemplates[eventName] = state.templates.map(source=>{
+  state.eventTemplates[eventName] = systemTemplates(state.templates).map(source=>{
     const copy=JSON.parse(JSON.stringify(source));
     copy.id=uid(); copy.status='Draft'; copy.updated=`Created for ${eventName}`;
     copy.blocks.forEach(block=>block.id=uid());
@@ -1355,18 +1382,20 @@ function createEventOverride(eventName){
   return true;
 }
 function templatesForScope(key){
-  return key==='global' ? state.templates : (state.eventTemplates[key] || state.templates);
+  if(key==='global') return systemTemplates(state.templates);
+  if(!state.eventTemplates[key]) createEventOverride(key);
+  return systemTemplates(state.eventTemplates[key]);
 }
 function eventHasOverride(eventName){ return !!state.eventTemplates[eventName]; }
 function openLibrary(nextScope){
-  if(nextScope) listScopeKey=nextScope;
+  listScopeKey=normalizedEventScope(nextScope || listScopeKey);
   localStorage.setItem('mellowDashV2.email.libraryScope',listScopeKey);
   view='list'; selectedBlock=null; editorTab='content'; previewMode=false;
   $('#es-root')?.classList.remove('preview-mode');
   render();
 }
 function openEditor(nextScope,templateId){
-  scopeKey=nextScope||'global';
+  scopeKey=normalizedEventScope(nextScope || scopeKey);
   localStorage.setItem('mellowDashV2.email.scope',scopeKey);
   currentId=templateId || templatesForScope(scopeKey)[0]?.id || null;
   selectedBlock=null; editorTab='content'; previewMode=false; view='editor';
@@ -1389,7 +1418,7 @@ function resetEventScope(eventName){
 }
 function switchScope(nextScope){
   const previousKey=tpl()?.key || tpl()?.id;
-  scopeKey=nextScope||'global';
+  scopeKey=normalizedEventScope(nextScope || scopeKey);
   localStorage.setItem('mellowDashV2.email.scope',scopeKey);
   let created=false;
   if(scopeKey!=='global' && !state.eventTemplates[scopeKey]){
@@ -1400,7 +1429,7 @@ function switchScope(nextScope){
   selectedBlock=null; editorTab='content';
   if(created) save(true);
   render();
-  toast(scopeKey==='global' ? 'Editing global default templates' : `${created?'Event templates created':'Editing event templates'}: ${scopeKey}`);
+  toast(`${created?'Event templates created':'Editing event templates'}: ${scopeKey}`);
 }
 
 /* discrete=true forces its own undo step (adding, deleting, reordering).
@@ -1483,12 +1512,12 @@ const BLOCKS = {
     defaults:()=>({badge:'New badge',heading:'Heading goes here',subtext:'Supporting text goes here.',bg:state.branding.heroBg,image:''}),
     render(p,b){
       const img = p.image ? `<img src="${esc(p.image)}" style="width:100%;display:block" alt="">` : '';
-      return `<div style="background:${esc(p.bg||state.branding.heroBg)};color:#fff;text-align:center">
+      return `<div class="email-hero" style="background:${esc(p.bg||state.branding.heroBg)};color:#fff;text-align:center">
         ${img}
-        <div style="padding:34px 30px 38px">
-          ${p.badge?`<span style="display:inline-block;background:${esc(state.branding.accent)};color:${esc(state.branding.heroBg)};font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 16px;border-radius:99px;margin-bottom:16px">${merge(p.badge)}</span>`:''}
-          <div style="font-size:26px;font-weight:700;margin-bottom:10px;line-height:1.25">${merge(p.heading)}</div>
-          <div style="font-size:14.5px;opacity:.85;line-height:1.6">${merge(p.subtext)}</div>
+        <div class="email-hero-copy" style="padding:34px 30px 38px">
+          ${p.badge?`<span class="email-hero-badge" style="display:inline-block;background:${esc(state.branding.accent)};color:${esc(state.branding.heroBg)};font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 16px;border-radius:99px;margin-bottom:16px">${merge(p.badge)}</span>`:''}
+          <div class="email-hero-heading" style="font-size:26px;font-weight:700;margin-bottom:10px;line-height:1.25">${merge(p.heading)}</div>
+          <div class="email-hero-subtext" style="font-size:14.5px;opacity:.85;line-height:1.6">${merge(p.subtext)}</div>
         </div></div>`;
     },
     settings:p=>`
@@ -1501,7 +1530,7 @@ const BLOCKS = {
 
   text:{ label:'Text', icon:icon('type',18),
     defaults:()=>({content:'Write something…\n\nUse merge tags like {{firstName}} to personalise.',align:'left',hideIf:''}),
-    render(p){ return `<div style="padding:26px 34px;color:#3d3733;font-size:14.5px;line-height:1.7;text-align:${esc(p.align||'left')}">${merge(p.content)}</div>`; },
+    render(p){ return `<div class="email-text" style="padding:26px 34px;color:#3d3733;font-size:14.5px;line-height:1.7;text-align:${esc(p.align||'left')}">${merge(p.content)}</div>`; },
     settings:p=>`
       ${fArea('Content','content',p.content,7)}
       ${fSeg('Alignment','align',p.align||'left',[['left','Left'],['center','Center'],['right','Right']])}
@@ -1512,7 +1541,7 @@ const BLOCKS = {
     defaults:()=>({src:PLACEHOLDER_IMG,alt:'',width:100,align:'center',href:'',radius:0}),
     render(p){
       const img = `<img src="${esc(p.src||PLACEHOLDER_IMG)}" alt="${esc(p.alt)}" style="width:${+p.width||100}%;display:inline-block;border-radius:${+p.radius||0}px">`;
-      return `<div style="padding:${(+p.width||100)===100?'0':'18px 34px'};text-align:${esc(p.align||'center')};font-size:0">${p.href?`<a href="#">${img}</a>`:img}</div>`;
+      return `<div class="email-image" style="padding:${(+p.width||100)===100?'0':'18px 34px'};text-align:${esc(p.align||'center')};font-size:0">${p.href?`<a href="#">${img}</a>`:img}</div>`;
     },
     settings:p=>`
       ${fImage('Image','src',p.src,true)}
@@ -1526,7 +1555,7 @@ const BLOCKS = {
   button:{ label:'Button', icon:icon('mousePointerClick',18),
     defaults:()=>({label:'Click me',href:'https://',align:'center',full:false,bg:'',hideIf:''}),
     render(p){
-      return `<div style="padding:8px 34px 26px;text-align:${esc(p.align||'center')}">
+      return `<div class="email-button" style="padding:8px 34px 26px;text-align:${esc(p.align||'center')}">
         <a href="#" style="display:${p.full?'block':'inline-block'};background:${esc(p.bg||state.branding.button)};color:#fff;font-weight:600;font-size:15px;text-decoration:none;padding:14px 30px;border-radius:12px;text-align:center">${merge(p.label)}</a></div>`;
     },
     settings:p=>`
@@ -1541,15 +1570,15 @@ const BLOCKS = {
   invoice:{ label:'Invoice summary', icon:icon('receiptText',18),
     defaults:()=>({title:'Invoice summary',showEvent:true,showRef:true,showDue:true,showAmount:true}),
     render(p){
-      const row=(l,v,last)=>`<tr><td style="padding:11px 16px;color:#6f6a64;font-size:13.5px;${last?'':'border-bottom:1px solid #eee9e2'}">${esc(l)}</td><td style="padding:11px 16px;text-align:right;font-weight:600;font-size:13.5px;${last?'':'border-bottom:1px solid #eee9e2'}">${esc(v)}</td></tr>`;
+      const row=(l,v,last)=>`<tr><td class="email-invoice-label" style="padding:11px 16px;color:#6f6a64;font-size:13.5px;${last?'':'border-bottom:1px solid #eee9e2'}">${esc(l)}</td><td class="email-invoice-value" style="padding:11px 16px;text-align:right;font-weight:600;font-size:13.5px;${last?'':'border-bottom:1px solid #eee9e2'}">${esc(v)}</td></tr>`;
       const rows=[];
       if(p.showEvent) rows.push(['Event',SAMPLE.eventName]);
       if(p.showRef) rows.push(['Submission ID',SAMPLE.reference]);
       if(p.showDue) rows.push(['Payment Due',SAMPLE.dueDate]);
       if(p.showAmount) rows.push(['Total Amount',SAMPLE.amount]);
-      return `<div style="padding:4px 34px 22px">
+      return `<div class="email-invoice" style="padding:4px 34px 22px">
         <div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#a09a93;text-transform:uppercase;margin:14px 0 10px">${merge(p.title)}</div>
-        <table style="width:100%;border-collapse:collapse;border:1px solid #eee9e2;border-radius:10px;overflow:hidden">${rows.map((r,i)=>row(r[0],r[1],i===rows.length-1)).join('')}</table></div>`;
+        <table class="email-invoice-table" style="width:100%;border-collapse:collapse;border:1px solid #eee9e2;border-radius:10px;overflow:hidden">${rows.map((r,i)=>row(r[0],r[1],i===rows.length-1)).join('')}</table></div>`;
     },
     settings:p=>`
       ${fText('Section title','title',p.title)}
@@ -1562,7 +1591,7 @@ const BLOCKS = {
 
   divider:{ label:'Divider', icon:icon('minus',18),
     defaults:()=>({}),
-    render(){ return `<div style="padding:6px 34px"><div style="border-top:1px solid #eee9e2"></div></div>`; },
+    render(){ return `<div class="email-divider" style="padding:6px 34px"><div style="border-top:1px solid #eee9e2"></div></div>`; },
     settings:()=>`<div class="mini-note">A simple horizontal line. No settings needed.</div>`
   },
 
@@ -1600,12 +1629,12 @@ function renderEmailHTML(t, interactive){
     ? `<img src="${esc(b.logoUrl)}" style="${b.logoCustomWidth?`width:${Math.max(80,Math.min(320,Number(b.logoWidth)||160))}px;height:auto`:'height:44px;width:auto'};max-width:100%" alt="${esc(b.fromName)}">`
     : `<div style="font-family:Georgia,serif;font-weight:700;letter-spacing:.06em;color:${esc(b.heroBg)};font-size:19px">MELLOW ART<span style="color:${esc(b.accent)}"> ✿</span><div style="font-size:9px;letter-spacing:.4em;font-family:inherit;opacity:.6">AUSTRALIA</div></div>`;
 
-  const header = `<div class="${interactive?'pv-locked':''}" style="background:${esc(b.headerBg)};text-align:center;padding:24px 20px">
+  const header = `<div class="email-header ${interactive?'pv-locked':''}" style="background:${esc(b.headerBg)};text-align:center;padding:24px 20px">
       ${interactive?`<span class="lock-badge">${icon('palette',13)} Shared branding — click to edit</span>`:''}${logo}</div>`;
 
   const social = (b.socialLinks||[]).filter(link=>link?.label&&link?.url)
     .map(link=>`<a href="${esc(link.url)}" target="_blank" rel="noopener" style="color:#fff;opacity:.75;text-decoration:underline;font-size:12px;margin:0 7px">${esc(link.label)}</a>`).join('');
-  const footer = `<div class="${interactive?'pv-locked':''}" style="background:${esc(b.footerBg)};color:#fff;text-align:center;padding:28px 24px">
+  const footer = `<div class="email-footer ${interactive?'pv-locked':''}" style="background:${esc(b.footerBg)};color:#fff;text-align:center;padding:28px 24px">
       ${interactive?`<span class="lock-badge">${icon('palette',13)} Shared branding — click to edit</span>`:''}
       <div style="font-family:Georgia,serif;font-weight:700;letter-spacing:.08em;font-size:14px;margin-bottom:10px">MELLOW ART</div>
       <div style="font-size:12px;opacity:.75;line-height:1.7">${merge(b.footerText)}</div>
@@ -1650,83 +1679,58 @@ function render(){
 
 /* ---------- template list ---------- */
 function templateCard(t,scope,inherited=false){
-  const label=scope==='global' ? 'Global default' : (inherited ? 'Using global default' : `Custom for ${scope}`);
-  const scopeClass=scope==='global' ? '' : (inherited?'inherited':'custom');
-  const sourceKey=t.key||t.id;
+  const label=`Custom for ${scope}`;
+  const scopeClass='custom';
   const meta=templateMeta(t);
   return `
-    <div class="tpl-card ${inherited?'inherited':''}" ${inherited?'':`data-open="${t.id}"`} data-scope="${esc(scope)}">
+    <div class="tpl-card" data-open="${t.id}" data-scope="${esc(scope)}">
       <div class="tpl-thumb"><div class="scaler">${renderEmailHTML(t,false)}</div></div>
       <div class="tpl-meta">
         <div class="tpl-scope-row">
-          <span class="scope-chip ${scopeClass}">${icon(scope==='global'?'layers':'calendar',12)} ${esc(label)}</span>
+          <span class="scope-chip ${scopeClass}">${icon('calendar',12)} ${esc(label)}</span>
           <span class="draft-chip ${t.status==='Active'?'active':''}">${esc(t.status)}</span>
         </div>
-        <div class="tpl-name"><span class="status-dot ${t.status==='Draft'?'draft':''}"></span><span>${esc(t.name)}</span></div>
-        <div class="tpl-created">${esc(t.updated)}</div>
+        <div class="tpl-title-row">
+          <div class="tpl-name"><span class="status-dot ${t.status==='Draft'?'draft':''}"></span><span>${esc(t.name)}</span></div>
+          <div class="tpl-created" title="${esc(t.updated)}">${esc(t.updated)}</div>
+        </div>
         <div class="tpl-sub">${esc(mergePlain(t.subject))}</div>
         <div class="tpl-foot">
           <span class="trigger-chip">${icon('zap',13)} ${esc(t.trigger.length>34 ? t.trigger.slice(0,34)+'…' : t.trigger)}</span>
-          <span class="tpl-actions">
-            ${inherited?'':`<button class="icon-btn" title="Duplicate" aria-label="Duplicate template" data-dup="${t.id}" data-template-scope="${esc(scope)}">${icon('copy',14)}</button>`}
-            ${!inherited&&!t.key?`<button class="icon-btn" title="Delete" aria-label="Delete template" data-del="${t.id}" data-template-scope="${esc(scope)}">${icon('trash',14)}</button>`:''}
-          </span>
         </div>
-        ${inherited?`<button class="btn btn-ghost btn-sm tpl-customize" data-customize="${esc(scope)}" data-template-key="${esc(sourceKey)}">Customize for this event</button>`:''}
       </div>
     </div>`;
 }
-function templateGroup(title,subtitle,templates,scope,inherited=false,includeNew=false){
+function templateGroup(title,subtitle,templates,scope){
   return `<section class="template-group">
     <div class="template-group-head"><div><h2>${esc(title)}</h2><p>${esc(subtitle)}</p></div></div>
     <div class="tpl-grid">
-      ${templates.map(t=>templateCard(t,scope,inherited)).join('')}
-      ${includeNew?`<button class="tpl-card new-card" id="btn-new-2"><span class="plus">${icon('plus',18)}</span><b>Create a template</b><span style="font-size:12px">Blank, or duplicate an existing one</span></button>`:''}
+      ${templates.map(t=>templateCard(t,scope)).join('')}
     </div>
   </section>`;
 }
 function viewList(){
   const events=availableEvents();
-  if(!['all','global',...events].includes(listScopeKey)) listScopeKey='global';
-  const options=[['all','All events'],['global','Global default'],...events.map(event=>[event,event])]
-    .map(([value,label])=>`<option value="${esc(value)}"${value===listScopeKey?' selected':''}>${esc(label)}</option>`).join('');
-  let content='';
-  if(listScopeKey==='all'){
-    content+=templateGroup('Global defaults','Fallback templates used when an event has no custom version.',state.templates,'global');
-    events.forEach(event=>{
-      const configured=eventHasOverride(event);
-      content+=templateGroup(
-        event,
-        configured?'Templates customized for this event.':'Currently uses the global defaults. Customize a card only if this event needs different content.',
-        configured?state.eventTemplates[event]:state.templates,
-        event,
-        !configured
+  listScopeKey=normalizedEventScope(listScopeKey);
+  const options=events.map(event=>`<option value="${esc(event)}"${event===listScopeKey?' selected':''}>${esc(event)}</option>`).join('');
+  const content=listScopeKey==='global'
+    ? ''
+    : templateGroup(
+        listScopeKey,
+        'Status-linked templates for this event.',
+        templatesForScope(listScopeKey),
+        listScopeKey
       );
-    });
-  } else if(listScopeKey==='global'){
-    content=templateGroup('Global defaults','Used automatically by events without custom templates.',state.templates,'global',false,true);
-  } else {
-    const configured=eventHasOverride(listScopeKey);
-    content=templateGroup(
-      listScopeKey,
-      configured?'Templates customized for this event.':'Currently uses the global defaults. Customize a card only if this event needs different content.',
-      configured?state.eventTemplates[listScopeKey]:state.templates,
-      listScopeKey,
-      !configured,
-      configured
-    );
-  }
   return `
   <div class="topbar"><span class="crumb"><b>Email templates</b></span></div>
   <div class="page library-page">
     <div class="list-head">
       <div>
         <h1 class="page-title">Email templates</h1>
-        <div class="page-sub">Manage reusable application emails, then customize a complete template set for a specific event when needed.</div>
+        <div class="page-sub">Manage the application emails used by each event status.</div>
       </div>
       <div class="list-actions">
         <label class="scope-filter" for="library-scope"><span>Event</span><select class="library-scope" id="library-scope">${options}</select></label>
-        <button class="btn btn-dark" id="btn-new">${icon('plus',15)} New template</button>
       </div>
     </div>
     ${content || '<div class="library-empty">No templates are available in this scope.</div>'}
@@ -1799,8 +1803,7 @@ function viewEditor(){
   const meta = templateMeta(t);
   const selectedDef = BLOCKS[t.blocks.find(block=>block.id===selectedBlock)?.type] || BLOCKS.text;
   const events = availableEvents();
-  const scopeOptions = [`<option value="global"${scopeKey==='global'?' selected':''}>Global default</option>`]
-    .concat(events.map(event=>`<option value="${esc(event)}"${scopeKey===event?' selected':''}>${esc(event)}</option>`)).join('');
+  const scopeOptions = events.map(event=>`<option value="${esc(event)}"${scopeKey===event?' selected':''}>${esc(event)}</option>`).join('');
   const palette = Object.entries(BLOCKS).map(([k,d])=>
     `<button class="pal-btn" data-add="${k}"><span class="ic">${d.icon}</span>${d.label}</button>`).join('');
   const tagChips = Object.keys(SAMPLE).map(k=>`<button class="tag-chip" data-tag="{{${k}}}">{{${k}}}</button>`).join('');
@@ -1910,7 +1913,7 @@ function viewEditor(){
         <div class="review-head"><h2 id="review-title">Review ${esc(meta.title)}</h2><p>Check the essentials before this template is used by the dashboard.</p></div>
         <div class="review-body">
           <div class="review-row"><span>Template</span><b>${esc(t.name)}</b></div>
-          <div class="review-row"><span>Event</span><b>${scopeKey==='global'?'Global default':esc(scopeKey)}</b></div>
+          <div class="review-row"><span>Event</span><b>${esc(scopeKey)}</b></div>
           <div class="review-row"><span>Trigger</span><b>${esc(t.trigger)}</b></div>
           <div class="review-row"><span>Subject</span><b>${esc(mergePlain(t.subject))}</b></div>
           <div class="review-row"><span>Content</span><b>${t.blocks.length} blocks · Desktop and mobile ready</b></div>
@@ -1992,24 +1995,6 @@ function bindCommon(){
     document.querySelectorAll('[data-open]').forEach(c=>{
       c.onclick = e=>{ if(e.target.closest('button')) return; openEditor(c.dataset.scope,c.dataset.open); };
     });
-    document.querySelectorAll('[data-dup]').forEach(b=> b.onclick = e=>{ e.stopPropagation(); duplicateTemplate(b.dataset.dup,b.dataset.templateScope); });
-    document.querySelectorAll('[data-del]').forEach(b=> b.onclick = e=>{ e.stopPropagation();
-      const list=templatesForScope(b.dataset.templateScope);
-      const t=list.find(x=>x.id===b.dataset.del);
-      if(!t || t.key) return;
-      if(confirm(`Delete template "${t.name}"? This can’t be undone.`)){
-        const filtered=list.filter(x=>x.id!==b.dataset.del);
-        if(b.dataset.templateScope==='global') state.templates=filtered;
-        else state.eventTemplates[b.dataset.templateScope]=filtered;
-        save(true); render(); toast('Template deleted'); } });
-    document.querySelectorAll('[data-create-event]').forEach(button=> button.onclick=()=>activateEventScope(button.dataset.createEvent));
-    document.querySelectorAll('[data-customize]').forEach(button=> button.onclick=e=>{
-      e.stopPropagation(); activateEventScope(button.dataset.customize,button.dataset.templateKey);
-    });
-    document.querySelectorAll('[data-reset-event]').forEach(button=> button.onclick=()=>resetEventScope(button.dataset.resetEvent));
-    const openNew = ()=> openModal(listScopeKey==='all'?'global':listScopeKey);
-    const newTop=$('#btn-new'); if(newTop) newTop.onclick=openNew;
-    const newCard=$('#btn-new-2'); if(newCard) newCard.onclick=openNew;
   }
 
   if(view==='editor'){
@@ -2325,14 +2310,16 @@ function bindSettings(panel, blk){
 /* ---------- new template modal ---------- */
 function findTemplate(id,scope){ return templatesForScope(scope||'global').find(t=>t.id===id) || null; }
 function renderDuplicateOptions(targetScope){
+  const dupOpts=$('#dup-opts'); if(!dupOpts) return;
   const sourceScope=targetScope!=='global'&&eventHasOverride(targetScope) ? targetScope : 'global';
-  $('#dup-opts').innerHTML=templatesForScope(sourceScope).map(t=>
+  dupOpts.innerHTML=templatesForScope(sourceScope).map(t=>
     `<button class="opt-btn" data-new-from="${t.id}" data-new-source="${esc(sourceScope)}"><span class="ic">${icon('copy',18)}</span><span><b>Duplicate “${esc(t.name)}”</b><span>Creates a separate manual template</span></span></button>`).join('');
   document.querySelectorAll('[data-new-from]').forEach(button=> button.onclick=()=>createTemplate(button.dataset.newFrom,button.dataset.newSource));
 }
 function openModal(preferredScope='global'){
   const events=availableEvents();
   const scopeSelect=$('#new-template-scope');
+  if(!scopeSelect) return;
   const safeScope=['global',...events].includes(preferredScope)?preferredScope:'global';
   scopeSelect.innerHTML=[['global','Global default'],...events.map(event=>[event,event])]
     .map(([value,label])=>`<option value="${esc(value)}"${value===safeScope?' selected':''}>${esc(label)}</option>`).join('');
@@ -2344,8 +2331,8 @@ function openModal(preferredScope='global'){
   $('#modal-new').classList.add('open');
   $('#new-template-name').focus();
 }
-function closeModal(){ $('#modal-new').classList.remove('open'); }
-$('#modal-new').addEventListener('click', e=>{ if(e.target.id==='modal-new') closeModal(); });
+function closeModal(){ $('#modal-new')?.classList.remove('open'); }
+$('#modal-new')?.addEventListener('click', e=>{ if(e.target.id==='modal-new') closeModal(); });
 
 function createTemplate(fromId,sourceScope){
   const targetScope=$('#new-template-scope')?.value || listScopeKey || 'global';
