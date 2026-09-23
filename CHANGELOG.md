@@ -8,6 +8,8 @@
 - Hid template scope/status badges from the Email Templates library cards,
   defaulted status-linked templates to Active, and added extra select padding
   so dropdown chevrons are not crowded.
+- Moved the Email Templates event filter into the topbar and made the page body
+  lead with the selected event name and status-linked template description.
 - Improved library thumbnail previews so email mockups fill the card width
   cleanly in a three-column desktop grid, aligned the status dot with the
   template title, and truncated updated metadata to one line.

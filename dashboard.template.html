@@ -107,6 +107,18 @@
   }
   .icon-btn:hover{background:var(--accent)}
   .topbar .crumb{font-size:14px}
+  .topbar-spacer{flex:1}
+  .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .topbar-actions[hidden]{display:none}
+  .topbar-event-filter{display:flex;align-items:center;gap:8px;color:var(--muted-foreground);font-size:12px}
+  .topbar-event-select{
+    height:34px;width:260px;max-width:32vw;min-width:0;border:1px solid var(--input);
+    border-radius:var(--radius);background:var(--background);padding:0 44px 0 10px;
+    font-size:13px;outline:none;text-overflow:ellipsis;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23171717' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center;background-size:14px
+  }
+  .topbar-event-select:focus{border-color:var(--ring);box-shadow:0 0 0 3px oklch(70.8% 0 0/.2)}
   .scroll{flex:1;overflow:auto}
   .page{padding:24px 24px 64px}
 
@@ -515,6 +527,8 @@
   #es-root .library-scope:focus{border-color:#a1a1aa;box-shadow:0 0 0 3px rgb(161 161 170/.18)}
   #es-root .list-actions .btn{height:34px;white-space:nowrap}
   #es-root .template-group{margin-bottom:30px}
+  #es-root .event-head{margin-bottom:18px}
+  #es-root .event-head .page-sub{font-size:13px}
   #es-root .template-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
   #es-root .template-group-head h2{font-size:14px;margin:0}
   #es-root .template-group-head p{color:#71717a;font-size:12px;margin:2px 0 0}
@@ -967,6 +981,8 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9.5 4v16"/></svg>
       </button>
       <span class="crumb">Inquiries</span>
+      <span class="topbar-spacer"></span>
+      <div class="topbar-actions" id="topbarEmailActions" hidden></div>
     </div>
 
     <div class="scroll">
@@ -1718,30 +1734,15 @@ function templateGroup(title,subtitle,templates,scope){
   </section>`;
 }
 function viewList(){
-  const events=availableEvents();
   listScopeKey=normalizedEventScope(listScopeKey);
-  const options=events.map(event=>`<option value="${esc(event)}"${event===listScopeKey?' selected':''}>${esc(event)}</option>`).join('');
-  const content=listScopeKey==='global'
-    ? ''
-    : templateGroup(
-        listScopeKey,
-        'Status-linked templates for this event.',
-        templatesForScope(listScopeKey),
-        listScopeKey
-      );
+  const templates=listScopeKey==='global' ? [] : templatesForScope(listScopeKey);
   return `
-  <div class="topbar"><span class="crumb"><b>Email templates</b></span></div>
   <div class="page library-page">
-    <div class="list-head">
-      <div>
-        <h1 class="page-title">Email templates</h1>
-        <div class="page-sub">Manage the application emails used by each event status.</div>
-      </div>
-      <div class="list-actions">
-        <label class="scope-filter" for="library-scope"><span>Event</span><select class="library-scope" id="library-scope">${options}</select></label>
-      </div>
+    <div class="event-head">
+      <h1 class="page-title">${esc(listScopeKey)}</h1>
+      <div class="page-sub">Status-linked templates for this event.</div>
     </div>
-    ${content || '<div class="library-empty">No templates are available in this scope.</div>'}
+    ${templates.length ? `<div class="tpl-grid">${templates.map(t=>templateCard(t,listScopeKey)).join('')}</div>` : '<div class="library-empty">No templates are available in this scope.</div>'}
   </div>`;
 }
 
@@ -1987,19 +1988,39 @@ function renderSettings(){
 /* =============================================================
    BINDINGS
 ============================================================= */
+function renderShellEventFilter(){
+  const slot=$('#topbarEmailActions');
+  if(!slot) return;
+  if(view!=='list'){
+    slot.hidden=true;
+    slot.innerHTML='';
+    return;
+  }
+  const events=availableEvents();
+  if(!events.length){
+    slot.hidden=true;
+    slot.innerHTML='';
+    return;
+  }
+  listScopeKey=normalizedEventScope(listScopeKey);
+  const options=events.map(event=>`<option value="${esc(event)}"${event===listScopeKey?' selected':''}>${esc(event)}</option>`).join('');
+  slot.hidden=false;
+  slot.innerHTML=`<label class="topbar-event-filter" for="topbar-event-scope"><span>Event</span><select class="topbar-event-select" id="topbar-event-scope">${options}</select></label>`;
+  const select=$('#topbar-event-scope');
+  if(select) select.onchange=()=>{
+    listScopeKey=select.value;
+    localStorage.setItem('mellowDashV2.email.libraryScope',listScopeKey);
+    render();
+  };
+}
 function bindCommon(){
+  renderShellEventFilter();
   document.querySelectorAll('[data-goto]').forEach(el=>{
     el.onclick = e=>{ e.stopPropagation(); view='list'; selectedBlock=null; editorTab='content'; render(); };
   });
   /* the shell owns sidebar routing in mellow-dashv2 */
 
   if(view==='list'){
-    const libraryScope=$('#library-scope');
-    if(libraryScope) libraryScope.onchange=()=>{
-      listScopeKey=libraryScope.value;
-      localStorage.setItem('mellowDashV2.email.libraryScope',listScopeKey);
-      render();
-    };
     document.querySelectorAll('[data-open]').forEach(c=>{
       c.onclick = e=>{ if(e.target.closest('button')) return; openEditor(c.dataset.scope,c.dataset.open); };
     });
@@ -3298,6 +3319,11 @@ function showScreen(name){
   $("#es-root").hidden = name !== "email";
   $(".app").classList.toggle("email-mode", name === "email");
   $(".topbar .crumb").textContent = name === "email" ? "Email templates" : "Inquiries";
+  const topbarEmailActions=$("#topbarEmailActions");
+  if(topbarEmailActions && name !== "email"){
+    topbarEmailActions.hidden = true;
+    topbarEmailActions.innerHTML = "";
+  }
   document.querySelectorAll('nav.nav a[data-screen]').forEach(a =>
     a.classList.toggle("on", a.dataset.screen === name));
   localStorage.setItem("mellowDashV2.screen",name);
