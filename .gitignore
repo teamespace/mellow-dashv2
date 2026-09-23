@@ -6,6 +6,7 @@ mellow-dashv2.html
 # generated immediately before deploy; never commit it.
 cloudflare/public/
 cloudflare/.preview-wrangler.json
+.wrangler/
 
 # Applicant data and uploaded documents.
 *.csv
